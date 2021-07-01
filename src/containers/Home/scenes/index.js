@@ -12,6 +12,8 @@ import icon3 from '../../../assets/img/icon3.png';
 import icon4 from '../../../assets/img/icon4.png';
 import scenes from '../../../assets/img/scenes.png';
 import Delete from '../../../assets/img/delete.png';
+import scenes2 from '../../../assets/img/scenes2.png';
+import Delete2 from '../../../assets/img/delete2.png';
 import jt_shang from '../../../assets/img/jt_shang.png';
 import jt_xia from '../../../assets/img/jt_xia.png';
 import Strings from '../../../i18n';
@@ -101,12 +103,16 @@ class Index extends Component {
     };
 
     render() {
-        const { home } = this.props;
+        const { home, isWhite } = this.props;
         const { customList } = home;
         return (
-            <View style={styles.soundContainer}>
+            <View style={{
+                minHeight: convertX(62),
+                borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                borderBottomWidth: convertX(1),
+            }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                    <Text style={{ fontSize: convertX(16), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dsc_Scenes')}</Text>
+                    <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Scenes')}</Text>
                     <TouchableOpacity style={{ marginRight: convertX(20) }} onPress={this.tapBtn}>
                         <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
                     </TouchableOpacity>
@@ -152,9 +158,9 @@ class Index extends Component {
                     align="top"
                 >
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: convertX(20) }}>
-                        <Text>{Strings.getLang('dsc_Custom_Scenes')}</Text>
+                        <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{Strings.getLang('dsc_Custom_Scenes')}</Text>
                         <TouchableOpacity onPress={this.deleteScene}>
-                            <Image source={Delete} style={{ width: convertX(15), height: convertX(15), left: convertX(120) }} />
+                            <Image source={isWhite ? Delete : Delete2} style={{ width: convertX(15), height: convertX(15), left: convertX(120) }} />
                         </TouchableOpacity>
                     </View>
                     {this.state.delete === true ?
@@ -184,7 +190,7 @@ class Index extends Component {
                             {customList.map((item, index) =>
                                 item === null || item.State !== '02' ?
                                     <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
-                                        <Image source={scenes} style={{ width: convertX(56), height: convertX(56) }} />
+                                        <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
                                     </TouchableOpacity>
                                     :
                                     <TouchableOpacity key={index} style={{

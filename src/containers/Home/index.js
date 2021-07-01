@@ -34,7 +34,7 @@ export default class Index extends Component {
         { value: 'white', label: Strings.getLang('dsc_white') },
       ],
       work_mode: 'colour',
-      selectIndex: 1,
+      selectIndex: '1',
       type: 'lullabies',
       dataSource2: [
         { value: 'lullabies', label: Strings.getLang('dsc_Lullabies') },
@@ -109,12 +109,12 @@ export default class Index extends Component {
     });
   };
 
-  onselect = code => {
+  onselect = (code, value) => {
     putDeviceData({
       song: code,
     });
     this.setState({
-      selectIndex: code,
+      selectIndex: value,
     });
   };
 
@@ -184,11 +184,11 @@ export default class Index extends Component {
         work_mode: work_mode,
       });
     }
-    if (song) {
-      this.setState({
-        selectIndex: song,
-      });
-    }
+    // if (song) {
+    //   this.setState({
+    //     selectIndex: song,
+    //   });
+    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -203,11 +203,11 @@ export default class Index extends Component {
         hsb: [H, S, V],
       });
     }
-    if (song && dpState.song !== prevdpState.song) {
-      this.setState({
-        selectIndex: song,
-      });
-    }
+    // if (song && dpState.song !== prevdpState.song) {
+    //   this.setState({
+    //     selectIndex: song,
+    //   });
+    // }
   }
 
   render() {
@@ -225,29 +225,28 @@ export default class Index extends Component {
         <TopBar isWhite={isWhite} />
         <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
           <View style={styles.topstyle}>
-            <Text style={{ color: '#2D365F' }}>SOOTHER</Text>
-            <Text>Noah's Room</Text>
+            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>SOOTHER</Text>
+            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }} >Noah's Room</Text>
           </View>
           <View style={styles.switchstyle}>
             <View style={styles.switchIcon}>
               {dpState.song && (
                 <View style={{ alignItems: 'center' }}>
                   <Image
-                    source={MusicMap[dpState.song - 1].icon}
+                    source={MusicMap[selectIndex - 1].icon}
                     style={{
                       width: convertX(40),
                       height: convertX(45)
                     }}
                   />
-                  <Text style={{ color: '#fff', top: convertX(16) }}>{MusicMap[dpState.song - 1].text}</Text>
+                  <Text style={{ color: '#fff', top: convertX(16) }}>{MusicMap[selectIndex - 1].text}</Text>
                 </View>
               )}
-              {dpState.timer ? null :
-                <View style={styles.timerstyle}>
-                  <Text style={{ fontSize: convertX(13), color: '#212B4C' }}>OFF in
-                    {timerhour}:{timerMin}
-                  </Text>
-                </View>
+              {dpState.timer ? <View style={styles.timerstyle}>
+                <Text style={{ fontSize: convertX(13), color: '#212B4C' }}>OFF in
+                  {timerhour}:{timerMin}
+                </Text>
+              </View> : null
               }
               <TouchableOpacity onPress={() => putDeviceData({ power_switch: !power_switch })}>
                 <Image
@@ -301,14 +300,14 @@ export default class Index extends Component {
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
             <View style={{ width: convertX(271) }}>
-              <Text style={{ fontSize: convertX(16), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dp_child_lock')}</Text>
-              <Text style={{ fontSize: convertX(14), left: convertX(20), color: '#2D365F', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
+              <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
+              <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
             </View>
             <SwitchButton
               value={child_lock}
               size={{ width: convertX(48), height: convertX(30), activeSize: convertX(25) }}
               style={{ right: convertX(20) }}
-              onTintColor={'#55A074'}
+              onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
               tintColor={'#868EAA'}
               onValueChange={() => this.onValueChange('child_lock')}
             />

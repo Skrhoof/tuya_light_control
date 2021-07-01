@@ -8,6 +8,7 @@ import { Utils, Collapsible, Tabs, Slider, SwitchButton } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
 import mute from '../../../../assets/img/Mute.png';
 import voice from '../../../../assets/img/voice.png';
+import music from '../../../../assets/img/music.png';
 import music2 from '../../../../assets/img/music2.png';
 import { LullabyMap, NaturemusicMap, SleepmusicMap } from '../utils';
 
@@ -31,17 +32,21 @@ export default class Index extends Component {
         this.setState({ activeKey1: tab.value });
     };
     render() {
-        const { musicSwitch, volume, onValueChange, onComplete, onselect, selectIndex } = this.props;
+        const { musicSwitch, volume, onValueChange, onComplete, onselect, selectIndex, isWhite } = this.props;
         return (
-            <View style={styles.soundContainer}>
+            <View style={{
+                minHeight: convertX(62),
+                borderBottomWidth: convertX(1),
+                borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+            }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                    <Text style={{ fontSize: convertX(17), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dsc_Sounds')}</Text>
+                    <Text style={{ fontSize: convertX(17), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Sounds')}</Text>
                     {/* <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} /> */}
                     <SwitchButton
                         value={musicSwitch}
                         size={{ width: convertX(48), height: convertX(30), activeSize: convertX(25) }}
                         style={{ right: convertX(20) }}
-                        onTintColor={'#55A074'}
+                        onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
                         tintColor={'#868EAA'}
                         onValueChange={() => onValueChange && onValueChange('musicSwitch')}
                     />
@@ -53,9 +58,9 @@ export default class Index extends Component {
                         maximumValue={16}
                         minimumValue={0}
                         value={volume}
-                        maximumTrackTintColor="#E5F2E7"
-                        minimumTrackTintColor="#6E8F73"
-                        thumbTintColor='#6E8F73'
+                        maximumTrackTintColor={isWhite ? "#E5F2E7" : '#2E5288'}
+                        minimumTrackTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
+                        thumbTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
                         onSlidingComplete={val => onComplete && onComplete('volume', val)}
                     />
                     <Image source={voice} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
@@ -63,9 +68,20 @@ export default class Index extends Component {
                 <View style={styles.callapsibleStyle}>
                     <Tabs
                         style={styles.tabsStyle}
-                        tabActiveStyle={styles.tabActiveStyle}
-                        tabTextStyle={styles.tabTextStyle}
-                        tabActiveTextStyle={styles.tabTextStyle}
+                        tabActiveStyle={{
+                            borderRadius: convertX(17),
+                            backgroundColor: isWhite ? '#fff' : '#2E5288',
+                            width: convertX(178),
+                            height: convertX(36),
+                        }}
+                        tabTextStyle={{
+                            color: isWhite ? '#2D365F' : '#fff',
+                            fontSize: convertX(15),
+                        }}
+                        tabActiveTextStyle={{
+                            color: isWhite ? '#2D365F' : '#fff',
+                            fontSize: convertX(15),
+                        }}
                         underlineStyle={styles.underlineStyle}
                         wrapperStyle={styles.wrapperStyle}
                         tabContentStyle={styles.tabContentStyle}
@@ -73,7 +89,7 @@ export default class Index extends Component {
                         dataSource={this.state.d1}
                         onChange={this._handleD1Change}
                         maxItem={2}
-                        background={'#CBDDEC'}
+                        background={isWhite ? '#CBDDEC' : '#212B4C'}
                         swipeable={false}
                     // underlineWidth={{ marginTop: convertX(20) }}
                     >
@@ -87,12 +103,12 @@ export default class Index extends Component {
                                                     key={item.code}
                                                     style={styles.musicMap1}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code)
+                                                        onselect && onselect(item.code, item.value)
                                                     }}
                                                 >
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                                         <Text style={{ fontSize: convertX(15) }}>{item.text}</Text>
-                                                        {selectIndex === item.code ? <Image source={music2} style={{ width: convertX(20), height: convertX(20) }} /> : null}
+                                                        {selectIndex === item.code ? <Image source={isWhite ? music2 : music} style={{ width: convertX(20), height: convertX(20) }} /> : null}
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>
@@ -104,7 +120,10 @@ export default class Index extends Component {
                         <Tabs.TabPanel>
                             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
                                 <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
-                                    <Text style={{ color: '#2D365F', fontSize: convertX(15) }}>{Strings.getLang('dsc_Nature')}</Text>
+                                    <Text style={{
+                                        color: isWhite ? '#2D365F' : '#fff',
+                                        fontSize: convertX(14)
+                                    }}>{Strings.getLang('dsc_Nature')}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {NaturemusicMap.map((item, index) => {
@@ -114,18 +133,24 @@ export default class Index extends Component {
                                                     key={item.code}
                                                     style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code)
+                                                        onselect && onselect(item.code, item.value)
                                                     }}
                                                 >
                                                     <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                 </TouchableOpacity>
-                                                <Text style={styles.text}>{item.text}</Text>
+                                                <Text style={{
+                                                    fontSize: convertX(16),
+                                                    color: isWhite ? null : '#fff',
+                                                }}>{item.text}</Text>
                                             </View>
                                         )
                                     })}
                                 </View>
                                 <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
-                                    <Text style={{ color: '#2D365F', fontSize: convertX(15) }}>{Strings.getLang('dsc_Sleep')}</Text>
+                                    <Text style={{
+                                        color: isWhite ? '#2D365F' : '#fff',
+                                        fontSize: convertX(14)
+                                    }}>{Strings.getLang('dsc_Sleep')}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {SleepmusicMap.map((item, index) => {
@@ -135,12 +160,16 @@ export default class Index extends Component {
                                                     key={item.code}
                                                     style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code)
+                                                        onselect && onselect(item.code, item.value)
+
                                                     }}
                                                 >
                                                     <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                 </TouchableOpacity>
-                                                <Text style={styles.text}>{item.text}</Text>
+                                                <Text style={{
+                                                    fontSize: convertX(16),
+                                                    color: isWhite ? null : '#fff',
+                                                }}>{item.text}</Text>
                                             </View>
                                         )
                                     })}
@@ -149,16 +178,11 @@ export default class Index extends Component {
                         </Tabs.TabPanel>
                     </Tabs>
                 </View>
-            </View>
+            </View >
         );
     }
 }
 const styles = StyleSheet.create({
-    soundContainer: {
-        minHeight: convertX(62),
-        borderBottomColor: '#DFEAF4',
-        borderBottomWidth: convertX(1),
-    },
     tabsStyle: {
         height: convertX(38),
         borderRadius: convertX(19),

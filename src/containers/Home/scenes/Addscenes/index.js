@@ -165,6 +165,9 @@ class Addscenes extends Component {
         const { home, onSaveHome } = this.props;
         const { customIndex, customList } = home;
         // const { newlist } = this.state;
+        DorelManager.isInDarkMode(res => {
+            this.setState({ isWhite: !res });
+        });
         const newlist = _.cloneDeep(customList);
         if (newlist[customIndex] === null || newlist[customIndex].State !== '02') {
             newlist[customIndex] = {
@@ -195,36 +198,41 @@ class Addscenes extends Component {
     //     this.onScenes
     // }
 
-    onselect = code => {
+    onselect = (code, value) => {
         const { customIndex, newlist } = this.state;
-        newlist[customIndex].music = code;
+        newlist[customIndex].music = value;
         this.setState({
-            selectIndex: code,
+            selectIndex: value,
             newlist,
         });
         this.onScenes('sound');
     };
 
     onScenes = type => {
-        const { customIndex, newlist, hsb } = this.state;
+        const { customIndex, newlist, hsb, isWhite } = this.state;
         const { LightSwitch, temp_value, bright_value, musicSwitch, volume, pattern, music } = newlist[customIndex];
         switch (type) {
             case 'color':
                 Popup.custom({
                     content: (
-                        <Light
-                            hsb={hsb}
-                            brightness={Math.round(hsb[2])}
-                            switch_led={LightSwitch}
-                            temp_value={temp_value}
-                            bright_value={bright_value}
-                            onComplete={this.onComplete}
-                            onValueChange={this.onValueChange}
-                            onCompleteChange={this.onCompleteChange}
-                            dataSource={this.state.dataSource}
-                            activeKey={pattern}
-                            handleD1Change={this.handleD1Change}
-                        />
+                        <View style={[
+                            { backgroundColor: '#2d385f' },
+                            isWhite ? { backgroundColor: '#fff' } : null,
+                        ]}>
+                            <Light
+                                hsb={hsb}
+                                brightness={Math.round(hsb[2])}
+                                switch_led={LightSwitch}
+                                temp_value={temp_value}
+                                bright_value={bright_value}
+                                onComplete={this.onComplete}
+                                onValueChange={this.onValueChange}
+                                onCompleteChange={this.onCompleteChange}
+                                dataSource={this.state.dataSource}
+                                activeKey={pattern}
+                                handleD1Change={this.handleD1Change}
+                            />
+                        </View>
                     ),
                     title: Strings.getLang('dsc_Scenes_Color'),
                     cancelText: Strings.getLang('dsc_cancel'),
@@ -237,14 +245,19 @@ class Addscenes extends Component {
             case 'sound':
                 Popup.custom({
                     content: (
-                        <CustomSounds
-                            musicSwitch={musicSwitch}
-                            volume={volume}
-                            onValueChange={this.onValueChange}
-                            onComplete={this.onComplete}
-                            onselect={this.onselect}
-                            selectIndex={music}
-                        />
+                        <View style={[
+                            { backgroundColor: '#2d385f' },
+                            isWhite ? { backgroundColor: '#fff' } : null,
+                        ]}>
+                            <CustomSounds
+                                musicSwitch={musicSwitch}
+                                volume={volume}
+                                onValueChange={this.onValueChange}
+                                onComplete={this.onComplete}
+                                onselect={this.onselect}
+                                selectIndex={music}
+                            />
+                        </View>
                     ),
                     title: Strings.getLang('dsc_Scenes_Sound'),
                     cancelText: Strings.getLang('dsc_cancel'),
@@ -283,9 +296,10 @@ class Addscenes extends Component {
         const { hsb, newlist, selectIndex, text, isWhite } = this.state;
         return (
             <View
-                style={{
-                    flex: 1,
-                }}
+                style={[
+                    { flex: 1, backgroundColor: '#2d385f' },
+                    isWhite ? { backgroundColor: '#fff' } : null,
+                ]}
             >
                 {/* <TopBar
                     background="#fff"
@@ -294,6 +308,19 @@ class Addscenes extends Component {
                     onBack={goBack}
                 /> */}
                 <TopBar isWhite={isWhite} />
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                }}>
+                    <Text
+                        style={{
+                            fontSize: convertX(15),
+                            color: isWhite ? '#2D365F' : '#fff',
+                        }}>{Strings.getLang('dsc_Custom_Scenes')}</Text>
+                </View>
                 <View style={{ height: convertX(200), justifyContent: 'center', alignItems: 'center' }}>
                     <View style={{
                         justifyContent: 'center',
@@ -306,7 +333,13 @@ class Addscenes extends Component {
                         <Image source={MusicMap[selectIndex - 1].icon} style={styles.sceneIcon} />
                     </View>
                 </View>
-                <TouchableOpacity style={styles.Container} onPress={this.Textbox}>
+                <TouchableOpacity style={{
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                }}
+                    onPress={this.Textbox}
+                >
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
@@ -314,17 +347,21 @@ class Addscenes extends Component {
                         marginTop: convertX(20),
                     }}>
                         <Text style={{
-                            fontSize: convertX(17),
+                            fontSize: convertX(16),
                             left: convertX(20),
-                            color: '#2D365F',
+                            color: isWhite ? '#2D365F' : '#fff',
                         }}>{Strings.getLang('dsc_Scenes_Name')}</Text>
                         <Text style={{ fontSize: convertX(14), left: convertX(90) }}>{text}</Text>
                         <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.Container} onPress={() => this.onScenes('color')}>
+                <TouchableOpacity style={{
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                }} onPress={() => this.onScenes('color')}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                        <Text style={{ fontSize: convertX(17), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dsc_Scenes_Color')}</Text>
+                        <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Scenes_Color')}</Text>
                         <View style={{
                             width: convertX(30),
                             height: convertX(30),
@@ -336,9 +373,13 @@ class Addscenes extends Component {
                         <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.Container} onPress={() => this.onScenes('sound')}>
+                <TouchableOpacity style={{
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                }} onPress={() => this.onScenes('sound')}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                        <Text style={{ fontSize: convertX(17), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dsc_Scenes_Sound')}</Text>
+                        <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Scenes_Sound')}</Text>
                         <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
                     </View>
                 </TouchableOpacity>
@@ -348,9 +389,9 @@ class Addscenes extends Component {
                         borderColor: '#89898A',
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: '#fff',
+                        backgroundColor: isWhite ? '#fff' : '#2D385F',
                         borderRadius: convertX(24),
-                        marginTop: convertX(24),
+                        marginTop: convertX(50),
                         marginLeft: convertX(16),
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -379,14 +420,13 @@ class Addscenes extends Component {
                 >
                     <Text style={{
                         fontSize: convertX(15),
-                        color: '#fff',
+                        color: isWhite ? '#fff' : '#474747',
                     }}>{Strings.getLang('dsc_save')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: '#fff',
                         marginTop: convertX(24),
                         marginLeft: convertX(16),
                         justifyContent: 'center',
@@ -396,7 +436,7 @@ class Addscenes extends Component {
                 >
                     <Text style={{
                         fontSize: convertX(15),
-                        color: '#2D365F',
+                        color: isWhite ? '#2D365F' : '#fff',
                     }}>{Strings.getLang('dsc_cancel')}</Text>
                 </TouchableOpacity>
             </View >

@@ -20,7 +20,6 @@ class Index extends Component {
     static defaultProps = {};
 
     state = {
-
     };
 
     CancelPreview = () => {
@@ -43,13 +42,13 @@ class Index extends Component {
                 flex: 1,
                 backgroundColor: Color.hsb2hex(...[H, S, V]),
             }}>
-                {/* <TopBar
+                <TopBar
                     background={Color.hsb2hex(...[H, S, V])}
                     title={Strings.getLang('dsc_preview')}
                     color="#fff"
                     onBack={goBack}
-                /> */}
-                <TopBar isWhite={isWhite} />
+                />
+                {/* <TopBar isWhite={isWhite} /> */}
                 <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(50), borderBottomWidth: convertX(1), borderBottomColor: '#fff' }}>
                     <Text style={{ color: '#fff' }}>PREVIEW ON DEVICE</Text>
                 </View>

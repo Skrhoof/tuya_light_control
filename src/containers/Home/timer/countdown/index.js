@@ -55,6 +55,9 @@ export default class Index extends Component {
     componentDidMount() {
         const { dpState } = this.props;
         const { timer } = dpState;
+        DorelManager.isInDarkMode(res => {
+            this.setState({ isWhite: !res });
+        });
         const listValue = convertRadix(timer.substring(0, 2), 16, 10, 2);
         const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
         const min = convertRadix(timer.substring(4, 6), 16, 10, 2);
@@ -124,7 +127,10 @@ export default class Index extends Component {
         const { timer } = dpState;
         const { hour, min, second, listValue, isWhite } = this.state;
         return (
-            <View style={{ flex: 1 }} >
+            <View style={[
+                { flex: 1, backgroundColor: '#2d385f' },
+                isWhite ? { backgroundColor: '#fff' } : null,
+            ]} >
                 {/* <TopBar
                     background="#fff"
                     title={Strings.getLang('dsc_Timer')}
@@ -133,7 +139,11 @@ export default class Index extends Component {
                 /> */}
                 <TopBar isWhite={isWhite} />
                 <View style={styles.Textcontainer}>
-                    <Text style={{ fontSize: convertX(15), color: '#2D365F' }}>SET TIMER</Text>
+                    <Text
+                        style={{
+                            fontSize: convertX(15),
+                            color: isWhite ? '#2D365F' : '#fff',
+                        }}>SET TIMER</Text>
                 </View>
                 {timer === '' ?
                     <View>
@@ -153,8 +163,16 @@ export default class Index extends Component {
                 }
                 <TouchableOpacity style={styles.TimerContainer} onPress={() => this.timerend()}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                        <Text style={{ fontSize: convertX(17), color: '#2D365F' }}>{Strings.getLang('dsc_time_end')}</Text>
-                        <Text style={{ color: '#2D365F', fontSize: convertX(13), right: convertX(12) }}>{this.state.listValue === '00' ? Strings.getLang('dsc_off') : Strings.getLang('dsc_on')}</Text>
+                        <Text
+                            style={{
+                                fontSize: convertX(17),
+                                color: isWhite ? '#2D365F' : '#fff',
+                            }}>{Strings.getLang('dsc_time_end')}</Text>
+                        <Text style={{
+                            color: isWhite ? '#2D365F' : '#fff',
+                            fontSize: convertX(13),
+                            right: convertX(12)
+                        }}>{this.state.listValue === '00' ? Strings.getLang('dsc_off') : Strings.getLang('dsc_on')}</Text>
                     </View>
                 </TouchableOpacity>
                 {timer === '' ?

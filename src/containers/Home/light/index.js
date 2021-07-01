@@ -30,16 +30,20 @@ export default class Index extends Component {
         this.setState({ activeKey1: tab.value });
     };
     render() {
-        const { onValueChange, switch_led, temp_value, bright_value, onComplete, hsb, onCompleteChange, brightness, dataSource, handleD1Change, activeKey } = this.props;
+        const { onValueChange, switch_led, temp_value, bright_value, onComplete, hsb, onCompleteChange, brightness, dataSource, handleD1Change, activeKey, isWhite } = this.props;
         return (
-            <View style={styles.lightContainer}>
+            <View style={{
+                minHeight: convertX(69),
+                borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                borderBottomWidth: convertX(1),
+            }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
-                    <Text style={{ fontSize: convertX(16), left: convertX(20), color: '#2D365F' }}>{Strings.getLang('dsc_light')}</Text>
+                    <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_light')}</Text>
                     <SwitchButton
                         value={switch_led}
                         size={{ width: convertX(48), height: convertX(30), activeSize: convertX(25) }}
                         style={{ right: convertX(20) }}
-                        onTintColor={'#55A074'}
+                        onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
                         tintColor={'#868EAA'}
                         onValueChange={() => onValueChange && onValueChange('switch_led')}
                     />
@@ -51,16 +55,27 @@ export default class Index extends Component {
                     <View style={styles.callapsibleStyle}>
                         <Tabs
                             style={styles.tabsStyle}
-                            tabActiveStyle={styles.tabActiveStyle}
-                            tabTextStyle={styles.tabTextStyle}
-                            tabActiveTextStyle={styles.tabTextStyle}
+                            tabActiveStyle={{
+                                borderRadius: convertX(17),
+                                backgroundColor: isWhite ? '#fff' : '#2E5288',
+                                width: convertX(178),
+                                height: convertX(36),
+                            }}
+                            tabTextStyle={{
+                                color: isWhite ? '#2D365F' : '#fff',
+                                fontSize: convertX(15),
+                            }}
+                            tabActiveTextStyle={{
+                                color: isWhite ? '#2D365F' : '#fff',
+                                fontSize: convertX(15),
+                            }}
                             underlineStyle={styles.underlineStyle}
                             wrapperStyle={styles.wrapperStyle}
                             activeKey={activeKey}
                             dataSource={dataSource}
                             onChange={handleD1Change}
                             maxItem={2}
-                            background={'#CBDDEC'}
+                            background={isWhite ? '#CBDDEC' : '#212B4C'}
                             swipeable={false}
                         // underlineWidth={{ marginTop: convertX(20) }}
                         >
@@ -172,16 +187,6 @@ const styles = StyleSheet.create({
         height: convertX(38),
         borderRadius: convertX(19),
         marginTop: convertX(25),
-    },
-    tabActiveStyle: {
-        borderRadius: convertX(17),
-        backgroundColor: '#fff',
-        width: convertX(178),
-        height: convertX(36),
-    },
-    tabTextStyle: {
-        color: '#2D365F',
-        fontSize: convertX(15),
     },
     underlineStyle: {
         backgroundColor: '#ffffff00',
