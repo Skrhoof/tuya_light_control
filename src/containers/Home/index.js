@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {
   View, Text, Image, ScrollView, TouchableOpacity, NativeModules
 } from 'react-native';
+import { connect } from 'react-redux';
 import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricity, electricityTo } from '../../utils';
 import { SwitchButton } from 'tuya-panel-kit';
 import styles from './styles';
-import lightIcon from '../../assets/img/icon4.png';
 import Switch from '../../assets/img/switch.png';
 import Play from './play';
 import Sounds from './sounds';
@@ -17,10 +17,11 @@ import Strings from '../../i18n';
 import { MusicMap } from '../Home/sounds/utils';
 import BottomBar from '../../components/BottomBar';
 import TopBar from '../../components/TopBar';
+import { parseScene } from '../Home/scenes/utils';
 
 const DorelManager = NativeModules.TYRCTDorelManager;
 
-export default class Index extends Component {
+class Index extends Component {
   static propTypes = {};
 
   static defaultProps = {};
@@ -68,6 +69,7 @@ export default class Index extends Component {
         putDeviceData({
           switch_led: !dpState.switch_led,
         });
+        break;
       default:
         break;
     }
@@ -111,7 +113,7 @@ export default class Index extends Component {
 
   onselect = (code, value) => {
     putDeviceData({
-      song: code,
+      song: value,
     });
     this.setState({
       selectIndex: value,
@@ -166,10 +168,26 @@ export default class Index extends Component {
 
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
-    const { song, colour_data, work_mode } = dpState;
+    const { song, colour_data, work_mode, scene } = dpState;
     DorelManager.isInDarkMode(res => {
       this.setState({ isWhite: !res });
     });
+    if (scene == '') {
+      const arr = parseScene(
+        'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+      );
+      onSaveHome({
+        customList: [...arr],
+      });
+    } else {
+      const arr = parseScene(scene);
+      // const arr = parseScene(
+      //   'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+      // );
+      onSaveHome({
+        customList: [...arr],
+      });
+    }
     const hsvArr = electricityTo(colour_data);
     const H = Number(convertRadix(hsvArr[0], 16, 10));
     const S = Number(convertRadix(hsvArr[1], 16, 10));
@@ -184,35 +202,49 @@ export default class Index extends Component {
         work_mode: work_mode,
       });
     }
-    // if (song) {
-    //   this.setState({
-    //     selectIndex: song,
-    //   });
-    // }
+    if (song) {
+      this.setState({
+        selectIndex: song,
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { dpState: prevdpState } = prevProps;
-    const { dpState } = this.props;
-    const { colour_data = '', song } = dpState;
+    const { dpState: prevDPState } = prevProps;
+    const { dpState, onSaveHome } = this.props;
+    const { colour_data = '', song, scene, work_mode } = dpState;
     const H = Number(convertRadix(colour_data.substring(0, 4), 16, 10));
     const S = Number(convertRadix(colour_data.substring(4, 8), 16, 10));
     const V = Number(convertRadix(colour_data.substring(8, 12), 16, 10));
-    if (colour_data && dpState.colour_data !== prevdpState.colour_data) {
+    if (colour_data && dpState.colour_data !== prevDPState.colour_data) {
       this.setState({
         hsb: [H, S, V],
       });
     }
-    // if (song && dpState.song !== prevdpState.song) {
+    if (dpState.scene !== prevDPState.scene) {
+      const arr = parseScene(scene);
+      // const arr = parseScene(
+      //   'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+      // );
+      onSaveHome({
+        customList: [...arr],
+      });
+    }
+    if (dpState.song !== prevDPState.song) {
+      this.setState({
+        selectIndex: song,
+      });
+    }
+    // if (dpState.work_mode !== prevDPState.work_mode) {
     //   this.setState({
-    //     selectIndex: song,
+    //     work_mode: work_mode,
     //   });
     // }
   }
 
   render() {
     const { dpState, home, devInfo, navigator } = this.props;
-    const { child_lock, switch_led, volume, play_pause, temp_value, bright_value, power_switch, timer } = dpState;
+    const { child_lock, switch_led, volume, play_pause, temp_value, bright_value, power_switch, timer, scene } = dpState;
     const { hsb, selectIndex, isWhite } = this.state;
     const TimerArr = electricity(timer);
     const timerhour = convertRadix(TimerArr[1], 16, 10, 2);
@@ -318,3 +350,26 @@ export default class Index extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    home: state.home,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    onSaveHome: obj => {
+      dispatch({
+        type: 'SAVE_HOME',
+        payload: obj,
+      });
+    },
+    onInitData: (obj = {}) => {
+      dispatch({
+        type: 'INIT_DATA',
+        payload: obj,
+      });
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

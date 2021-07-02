@@ -12,12 +12,12 @@ export default class Index extends Component {
     this.minutes = _.times(60, n => _.padStart(n, 2, '0'));
   }
   render() {
-    const { hour = '00', min = '00', onChangeHour, onChangeMin } = this.props;
+    const { hour = '00', min = '00', onChangeHour, onChangeMin, isWhite } = this.props;
     return (
       <View style={styles.pickerContainer}>
         <Picker
           style={[styles.picker, styles.pickerMiddle]}
-          itemTextColor={'#000000'}
+          itemTextColor={isWhite ? '#000000' : '#fff'}
           itemStyle={styles.pickerItem}
           selectedValue={hour}
           onValueChange={value => {
@@ -33,7 +33,7 @@ export default class Index extends Component {
         <Picker
           style={[styles.picker, styles.pickerRight]}
           itemStyle={styles.pickerItem}
-          itemTextColor={'#000000'}
+          itemTextColor={isWhite ? '#000000' : '#fff'}
           selectedValue={min}
           onValueChange={value => {
             onChangeMin && onChangeMin(value);

@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Slider, Utils, IconFont, Popup } from 'tuya-panel-kit';
+import { Slider, Utils, IconFont, Popup, TopBar } from 'tuya-panel-kit';
 import { convertX, goBack, putDeviceData, convertRadix } from '../../../../utils';
 import Strings from '../../../../i18n';
 import Music from '../../../../components/music-view';
 import Open from './Animated/index';
 import CountDown from './Animated/CountDown';
 import { MusicMap } from '../../sounds/utils';
-import TopBar from '../../../../components/TopBar';
+// import TopBar from '../../../../components/TopBar';
 
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
@@ -36,7 +36,6 @@ class Index extends Component {
         const { home } = this.props;
         const { customIndex, customList } = home;
         const { H, S, V, music, text } = customList[customIndex];
-        console.log(H, S, V)
         return (
             <View style={{
                 flex: 1,
@@ -68,6 +67,7 @@ class Index extends Component {
                     //     borderRadius: convertX(60),
                     // }}
                     />
+                    <Text style={{ fontSize: convertX(44), color: '#fff' }}>10</Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                     <Text style={{ color: '#fff' }}>{Strings.getLang('dsc_Sending_device')}</Text>

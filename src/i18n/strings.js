@@ -53,6 +53,7 @@ module.exports = {
     dsc_routines: 'Routines',
     dsc_setting: 'Setting',
     dsc_child_tishi: 'When child lock is enabled, the power button on the soother will be disabled. Pressing the button 4 times will override the child lock.',
+    dsc_SET_TIMER: 'SET TIMER',
   },
   /**
    * 字段key格式：与DP点相关的用dp开头(dp_key),与dp无关用dsc开头(dsc_key)
@@ -110,5 +111,6 @@ module.exports = {
     dsc_routines: '历程',
     dsc_setting: '设置',
     dsc_child_tishi: '当儿童锁被启用时，抚慰器上的电源按钮将被禁用。按下按钮4次将覆盖儿童锁。',
+    dsc_SET_TIMER: '设置计时器',
   }
 };

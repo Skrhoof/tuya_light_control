@@ -8,6 +8,8 @@ import { Utils, Collapsible, Tabs, Slider, SwitchButton } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
 import mute from '../../../../assets/img/Mute.png';
 import voice from '../../../../assets/img/voice.png';
+import mute2 from '../../../../assets/img/Mute2.png';
+import voice2 from '../../../../assets/img/voice2.png';
 import music from '../../../../assets/img/music.png';
 import music2 from '../../../../assets/img/music2.png';
 import { LullabyMap, NaturemusicMap, SleepmusicMap } from '../utils';
@@ -25,6 +27,7 @@ export default class Index extends Component {
             ],
         }
     }
+
     tapBtn = () => {
         this.setState({ collapsed: !this.state.collapsed });
     };
@@ -52,7 +55,7 @@ export default class Index extends Component {
                     />
                 </View>
                 <View style={{ marginTop: convertX(16), flexDirection: 'row', alignItems: 'center' }}>
-                    <Image source={mute} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
+                    <Image source={isWhite ? mute : mute2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                     <Slider.Horizontal
                         style={{ width: 278 }}
                         maximumValue={16}
@@ -63,7 +66,7 @@ export default class Index extends Component {
                         thumbTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
                         onSlidingComplete={val => onComplete && onComplete('volume', val)}
                     />
-                    <Image source={voice} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
+                    <Image source={isWhite ? voice : voice2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                 </View>
                 <View style={styles.callapsibleStyle}>
                     <Tabs
@@ -107,7 +110,10 @@ export default class Index extends Component {
                                                     }}
                                                 >
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                        <Text style={{ fontSize: convertX(15) }}>{item.text}</Text>
+                                                        <Text style={{
+                                                            fontSize: convertX(16),
+                                                            color: isWhite ? null : '#fff',
+                                                        }}>{item.text}</Text>
                                                         {selectIndex === item.code ? <Image source={isWhite ? music2 : music} style={{ width: convertX(20), height: convertX(20) }} /> : null}
                                                     </View>
                                                 </TouchableOpacity>
@@ -205,7 +211,7 @@ const styles = StyleSheet.create({
     //     marginLeft: convertX(16)
     // },
     callapsibleStyle: {
-        height: convertX(556),
+        height: convertX(400),
     },
     ImageStyles: {
         width: convertX(25),

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import { Dialog, Utils, IconFont, Popup } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
@@ -11,7 +11,7 @@ import CustomSounds from '../../sounds/customSounds';
 import { combineScene } from '../utils';
 import { MusicMap } from '../../sounds/utils';
 import TopBar from '../../../../components/TopBar';
-
+const DorelManager = NativeModules.TYRCTDorelManager;
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
 
@@ -165,9 +165,6 @@ class Addscenes extends Component {
         const { home, onSaveHome } = this.props;
         const { customIndex, customList } = home;
         // const { newlist } = this.state;
-        DorelManager.isInDarkMode(res => {
-            this.setState({ isWhite: !res });
-        });
         const newlist = _.cloneDeep(customList);
         if (newlist[customIndex] === null || newlist[customIndex].State !== '02') {
             newlist[customIndex] = {
@@ -191,9 +188,11 @@ class Addscenes extends Component {
         });
     }
 
-    // componentDidMount() {
-    //     this.onScenes
-    // }
+    componentDidMount() {
+        DorelManager.isInDarkMode(res => {
+            this.setState({ isWhite: !res });
+        });
+    }
     // componentDidUpdate(prevProps) {
     //     this.onScenes
     // }
@@ -216,7 +215,10 @@ class Addscenes extends Component {
                 Popup.custom({
                     content: (
                         <View style={[
-                            { backgroundColor: '#2d385f' },
+                            {
+                                backgroundColor: '#2d385f',
+
+                            },
                             isWhite ? { backgroundColor: '#fff' } : null,
                         ]}>
                             <Light
@@ -231,22 +233,68 @@ class Addscenes extends Component {
                                 dataSource={this.state.dataSource}
                                 activeKey={pattern}
                                 handleD1Change={this.handleD1Change}
+                                isWhite={isWhite}
                             />
+                            <TouchableOpacity
+                                style={{
+                                    width: convertX(343),
+                                    height: convertX(48),
+                                    backgroundColor: '#FDDA24',
+                                    borderRadius: convertX(24),
+                                    marginTop: convertX(24),
+                                    marginLeft: convertX(16),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onPress={Popup.close}
+                            >
+                                <Text style={{
+                                    fontSize: convertX(15),
+                                    color: isWhite ? '#fff' : '#474747',
+                                }}>{Strings.getLang('dsc_save')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    width: convertX(343),
+                                    height: convertX(48),
+                                    marginTop: convertX(24),
+                                    marginLeft: convertX(16),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: convertX(20),
+                                }}
+                                onPress={Popup.close}
+                            >
+                                <Text style={{
+                                    fontSize: convertX(15),
+                                    color: isWhite ? '#2D365F' : '#fff',
+                                }}>{Strings.getLang('dsc_cancel')}</Text>
+                            </TouchableOpacity>
                         </View>
                     ),
                     title: Strings.getLang('dsc_Scenes_Color'),
-                    cancelText: Strings.getLang('dsc_cancel'),
-                    confirmText: Strings.getLang('dsc_confirm'),
-                    onConfirm: (value, { close }) => {
-                        Popup.close();
+                    cancelText: '',
+                    confirmText: '',
+                    titleWrapperStyle: {
+                        color: isWhite ? '#2d385f' : '#fff',
+                        height: convertX(81),
+                        borderBottomWidth: convertX(1),
+                        borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
                     },
+                    titleTextStyle: {
+                        fontSize: convertX(18),
+                        color: isWhite ? '#2D365F' : '#fff',
+                    },
+                    footerWrapperStyle: { display: 'none' },
                 });
                 break;
             case 'sound':
                 Popup.custom({
                     content: (
                         <View style={[
-                            { backgroundColor: '#2d385f' },
+                            {
+                                backgroundColor: '#2d385f',
+                            },
                             isWhite ? { backgroundColor: '#fff' } : null,
                         ]}>
                             <CustomSounds
@@ -256,17 +304,57 @@ class Addscenes extends Component {
                                 onComplete={this.onComplete}
                                 onselect={this.onselect}
                                 selectIndex={music}
+                                isWhite={isWhite}
                             />
+                            <TouchableOpacity
+                                style={{
+                                    width: convertX(343),
+                                    height: convertX(48),
+                                    backgroundColor: '#FDDA24',
+                                    borderRadius: convertX(24),
+                                    marginTop: convertX(24),
+                                    marginLeft: convertX(16),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                                onPress={Popup.close}
+                            >
+                                <Text style={{
+                                    fontSize: convertX(15),
+                                    color: isWhite ? '#fff' : '#474747',
+                                }}>{Strings.getLang('dsc_save')}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    width: convertX(343),
+                                    height: convertX(48),
+                                    marginTop: convertX(24),
+                                    marginLeft: convertX(16),
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginBottom: convertX(20),
+                                }}
+                                onPress={Popup.close}
+                            >
+                                <Text style={{
+                                    fontSize: convertX(15),
+                                    color: isWhite ? '#2D365F' : '#fff',
+                                }}>{Strings.getLang('dsc_cancel')}</Text>
+                            </TouchableOpacity>
                         </View>
                     ),
                     title: Strings.getLang('dsc_Scenes_Sound'),
-                    cancelText: Strings.getLang('dsc_cancel'),
-                    confirmText: Strings.getLang('dsc_confirm'),
-                    onMaskPress: ({ close }) => {
-                        close();
+                    cancelText: '',
+                    confirmText: '',
+                    titleWrapperStyle: {
+                        color: isWhite ? '#2d385f' : '#fff',
+                        height: convertX(81), borderBottomWidth: convertX(1),
+                        borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
                     },
-                    onConfirm: (date, { close }) => {
-                        Popup.close();
+                    footerWrapperStyle: { display: 'none' },
+                    titleTextStyle: {
+                        fontSize: convertX(18),
+                        color: isWhite ? '#2D365F' : '#fff',
                     },
                 });
                 break;

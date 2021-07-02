@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-    View, StyleSheet, Text, TouchableOpacity,
+    View, StyleSheet, Text, TouchableOpacity, NativeModules
 } from 'react-native';
 import { Popup, Utils } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
 import TimeCt from '../TimeCt';
 import { goBack, putDeviceData, convertRadix } from '../../../../utils';
 import TopBar from '../../../../components/TopBar';
+const DorelManager = NativeModules.TYRCTDorelManager;
 
 const { convertX } = Utils.RatioUtils;
 
@@ -21,35 +22,6 @@ export default class Index extends Component {
             second: '00',
             isWhite: true,
         };
-    }
-
-    timerend = () => {
-        Popup.list({
-            type: "radio",
-            dataSource: [
-                {
-                    key: "1",
-                    title: Strings.getLang('dsc_off'),
-                    value: "00",
-                },
-                {
-                    key: "2",
-                    title: Strings.getLang('dsc_on'),
-                    value: "01",
-                },
-            ],
-            title: Strings.getLang('dsc_Timer'),
-            cancelText: Strings.getLang('dsc_cancel'),
-            confirmText: Strings.getLang('dsc_confirm'),
-            value: this.state.listValue,
-            onMaskPress: ({ close }) => {
-                close();
-            },
-            onConfirm: (value, { close }) => {
-                this.setState({ listValue: value });
-                close();
-            },
-        });
     }
 
     componentDidMount() {
@@ -105,6 +77,36 @@ export default class Index extends Component {
         }
     }
 
+    timerend = () => {
+        const { isWhite } = this.state;
+        Popup.list({
+            type: "radio",
+            dataSource: [
+                {
+                    key: "1",
+                    title: Strings.getLang('dsc_off'),
+                    value: "00",
+                },
+                {
+                    key: "2",
+                    title: Strings.getLang('dsc_on'),
+                    value: "01",
+                },
+            ],
+            title: Strings.getLang('dsc_Timer'),
+            cancelText: Strings.getLang('dsc_cancel'),
+            confirmText: Strings.getLang('dsc_confirm'),
+            value: this.state.listValue,
+            onMaskPress: ({ close }) => {
+                close();
+            },
+            onConfirm: (value, { close }) => {
+                this.setState({ listValue: value });
+                close();
+            },
+        });
+    }
+
     handelChangeTime = type => value => {
         switch (type) {
             case 'Hour':
@@ -138,12 +140,18 @@ export default class Index extends Component {
                     onBack={goBack}
                 /> */}
                 <TopBar isWhite={isWhite} />
-                <View style={styles.Textcontainer}>
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                }}>
                     <Text
                         style={{
                             fontSize: convertX(15),
                             color: isWhite ? '#2D365F' : '#fff',
-                        }}>SET TIMER</Text>
+                        }}>{Strings.getLang('dsc_SET_TIMER')}</Text>
                 </View>
                 {timer === '' ?
                     <View>
@@ -152,16 +160,28 @@ export default class Index extends Component {
                             min={min}
                             onChangeHour={this.handelChangeTime('Hour')}
                             onChangeMin={this.handelChangeTime('Min')}
+                            isWhite={isWhite}
                         />
                     </View>
                     :
                     <View style={{ height: convertX(171), justifyContent: 'center', alignItems: 'center' }} >
-                        <Text style={{ fontSize: convertX(30) }}>
+                        <Text style={{
+                            fontSize: convertX(30),
+                            color: isWhite ? '#2D365F' : '#fff',
+                        }}>
                             {hour}:{min}:{second}
                         </Text>
                     </View>
                 }
-                <TouchableOpacity style={styles.TimerContainer} onPress={() => this.timerend()}>
+                <TouchableOpacity style={{
+                    width: convertX(343),
+                    height: convertX(62),
+                    borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
+                    borderBottomWidth: convertX(1),
+                    borderTopColor: '#DFEAF4',
+                    borderTopWidth: convertX(1),
+                    marginLeft: convertX(16),
+                }} onPress={() => this.timerend()}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
                         <Text
                             style={{
@@ -222,23 +242,4 @@ export default class Index extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    TimerContainer: {
-        width: convertX(343),
-        height: convertX(62),
-        borderBottomColor: '#DFEAF4',
-        borderBottomWidth: convertX(1),
-        borderTopColor: '#DFEAF4',
-        borderTopWidth: convertX(1),
-        marginLeft: convertX(16),
-    },
-    Textcontainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: convertX(62),
-        borderBottomColor: '#DFEAF4',
-        borderBottomWidth: convertX(1),
-    },
-});
 

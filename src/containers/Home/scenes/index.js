@@ -27,7 +27,7 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            collapsed: false, //折叠
+            collapsed: true, //折叠
             delete: false,
         }
     }
@@ -56,40 +56,42 @@ class Index extends Component {
         // navigator && navigator.push({ id: 'CustomEdit' });
     }
 
-    componentDidMount() {
-        const { onSaveHome, dpState } = this.props;
-        const { scene } = dpState;
-        if (scene == '') {
-            const arr = parseScene(
-                'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-            );
-            onSaveHome({
-                customList: [...arr],
-            });
-        } else {
-            const arr = parseScene(scene);
-            // const arr = parseScene(
-            //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-            // );
-            onSaveHome({
-                customList: [...arr],
-            });
-        }
-    }
+    // componentDidMount() {
+    //     const { onSaveHome, dpState } = this.props;
+    //     const { scene } = dpState;
+    //     console.log(scene)
+    //     if (scene == '') {
+    //         const arr = parseScene(
+    //             'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    //         );
+    //         onSaveHome({
+    //             customList: [...arr],
+    //         });
+    //     } else {
+    //         const arr = parseScene(scene);
+    //         // const arr = parseScene(
+    //         //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    //         // );
+    //         onSaveHome({
+    //             customList: [...arr],
+    //         });
+    //     }
+    // }
 
-    componentDidUpdate(prevProps) {
-        const { dpState: prevDPState } = prevProps;
-        const { dpState, onSaveHome } = this.props;
-        if (dpState.scene !== prevDPState.scene) {
-            const arr = parseScene(dpState.scene);
-            // const arr = parseScene(
-            //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-            // );
-            onSaveHome({
-                customList: [...arr],
-            });
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     const { dpState: prevDPState } = prevProps;
+    //     const { dpState, onSaveHome } = this.props;
+    //     if (dpState.scene !== prevDPState.scene) {
+    //         const arr = parseScene(dpState.scene);
+    //         // const arr = parseScene(
+    //         //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
+    //         // );
+    //         onSaveHome({
+    //             customList: [...arr],
+    //         });
+    //     }
+    // }
+
     onlistdelete = index => {
         const { home, onSaveHome } = this.props;
         const { customList } = home;
@@ -103,8 +105,9 @@ class Index extends Component {
     };
 
     render() {
-        const { home, isWhite } = this.props;
+        const { home, isWhite, dpState } = this.props;
         const { customList } = home;
+        console.log(customList)
         return (
             <View style={{
                 minHeight: convertX(62),

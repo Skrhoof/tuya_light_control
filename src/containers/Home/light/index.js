@@ -9,6 +9,8 @@ import ColorPicker from '../../../components/color-picker/color-picker';
 import ColorSlider from '../../../components/ColorSlider';
 import light1 from '../../../assets/img/light1.png';
 import light2 from '../../../assets/img/light2.png';
+import light3 from '../../../assets/img/light3.png';
+import light4 from '../../../assets/img/light4.png';
 import color from '../../../assets/img/color-picker2.png';
 import Strings from '../../../i18n';
 
@@ -103,7 +105,7 @@ export default class Index extends Component {
                                         />
                                     </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
-                                        <Image source={light1} style={{ width: convertX(20), height: convertX(20) }} />
+                                        <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
                                         <ColorTempSlider1
                                             value={brightness}
                                             // onChange={this.handleWto}
@@ -114,7 +116,7 @@ export default class Index extends Component {
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
                                         />
-                                        <Image source={light2} style={{ width: convertX(22), height: convertX(22) }} />
+                                        <Image source={isWhite ? light2 : light4} style={{ width: convertX(22), height: convertX(22) }} />
                                     </View>
                                 </View>
                             </Tabs.TabPanel>
@@ -155,7 +157,7 @@ export default class Index extends Component {
                                         </ImageBackground>
                                     </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
-                                        <Image source={light1} style={{ width: convertX(20), height: convertX(20) }} />
+                                        <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
                                         <ColorTempSlider2
                                             value={bright_value}
                                             min={10}
@@ -166,7 +168,7 @@ export default class Index extends Component {
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
                                         />
-                                        <Image source={light2} style={{ width: convertX(23), height: convertX(23) }} />
+                                        <Image source={isWhite ? light2 : light4} style={{ width: convertX(23), height: convertX(23) }} />
                                     </View>
                                 </View>
                             </Tabs.TabPanel>
