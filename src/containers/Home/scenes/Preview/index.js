@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Slider, Utils, IconFont, Popup, TopBar } from 'tuya-panel-kit';
-import { convertX, goBack, putDeviceData, convertRadix } from '../../../../utils';
+import { Slider, Utils, TopBar } from 'tuya-panel-kit';
+import { convertX, goBack } from '../../../../utils';
 import Strings from '../../../../i18n';
-import Music from '../../../../components/music-view';
 import Open from './Animated/index';
-import CountDown from './Animated/CountDown';
 import { MusicMap } from '../../sounds/utils';
 // import TopBar from '../../../../components/TopBar';
 
@@ -24,18 +22,18 @@ class Index extends Component {
 
     CancelPreview = () => {
         const { onSaveHome, home } = this.props;
-        const { customList, customIndex } = home;
-        customList[customIndex].State = '00';
+        const { customList1, customIndex } = home;
+        customList1[customIndex].State = '00';
         onSaveHome({
-            customList: [...customList],
+            customList1: [...customList1],
         });
         goBack();
     }
 
     render() {
         const { home } = this.props;
-        const { customIndex, customList } = home;
-        const { H, S, V, music, text } = customList[customIndex];
+        const { customIndex, customList1 } = home;
+        const { H, S, V, music, text } = customList1[customIndex];
         return (
             <View style={{
                 flex: 1,

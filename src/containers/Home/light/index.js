@@ -13,7 +13,8 @@ import light3 from '../../../assets/img/light3.png';
 import light4 from '../../../assets/img/light4.png';
 import color from '../../../assets/img/color-picker2.png';
 import Strings from '../../../i18n';
-
+const { ColorUtils } = Utils;
+const Color = ColorUtils.color;
 const { convertX } = Utils.RatioUtils;
 const { ColorTempSlider2 } = ColorSlider;
 const { ColorTempSlider1 } = ColorSlider;
@@ -96,7 +97,15 @@ export default class Index extends Component {
                                             height={convertX(239)}
                                             boxStyle={{}}
                                             hasInner={true}
-                                            // innerElement={light2}
+                                            innerElement={
+                                                <View style={{
+                                                    width: convertX(79),
+                                                    height: convertX(79),
+                                                    backgroundColor: Color.hsb2hex(...hsb),
+                                                    borderRadius: convertX(50),
+                                                }}
+                                                ></View>
+                                            }
                                             innerRadius={35}
                                             // colorPickerImage={color}
                                             hsb={hsb}

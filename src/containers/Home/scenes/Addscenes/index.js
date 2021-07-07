@@ -40,7 +40,6 @@ class Addscenes extends Component {
             work_mode: tab.value,
             newlist,
         });
-        console.log(newlist[customIndex].pattern)
         this.onScenes('color')
     };
 
@@ -68,7 +67,8 @@ class Addscenes extends Component {
     //保存
     preservation = () => {
         const { newlist, customIndex } = this.state;
-        const { onSaveHome } = this.props;
+        const { onSaveHome, home } = this.props;
+        const { customList } = home;
         newlist[customIndex].State = '02';
         if (newlist[customIndex].pattern === '1') {
             newlist[customIndex].temp_value = '0';
@@ -81,12 +81,11 @@ class Addscenes extends Component {
         this.setState({
             newlist,
         }),
-            console.log(newlist)
-        onSaveHome({
-            customList: [...newlist],
-        });
+            onSaveHome({
+                customList1: [...newlist],
+            });
         putDeviceData({
-            scene: combineScene(newlist),
+            scene: combineScene(customList) + combineScene(newlist),
         });
         goBack();
     };
@@ -100,7 +99,7 @@ class Addscenes extends Component {
             newlist,
         }),
             onSaveHome({
-                customList: [...newlist],
+                customList1: [...newlist],
             });
         // putDeviceData({
         //     scene: combineScene(newlist),
@@ -163,9 +162,9 @@ class Addscenes extends Component {
 
     componentWillMount() {
         const { home, onSaveHome } = this.props;
-        const { customIndex, customList } = home;
+        const { customIndex, customList1 } = home;
         // const { newlist } = this.state;
-        const newlist = _.cloneDeep(customList);
+        const newlist = _.cloneDeep(customList1);
         if (newlist[customIndex] === null || newlist[customIndex].State !== '02') {
             newlist[customIndex] = {
                 CustomScene: customIndex + 4, // 自定义场景 array || null
@@ -189,9 +188,9 @@ class Addscenes extends Component {
     }
 
     componentDidMount() {
-        DorelManager.isInDarkMode(res => {
-            this.setState({ isWhite: !res });
-        });
+        // DorelManager.isInDarkMode(res => {
+        //     this.setState({ isWhite: !res });
+        // });
     }
     // componentDidUpdate(prevProps) {
     //     this.onScenes

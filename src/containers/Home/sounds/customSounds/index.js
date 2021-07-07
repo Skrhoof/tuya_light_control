@@ -134,7 +134,7 @@ export default class Index extends Component {
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {NaturemusicMap.map((item, index) => {
                                         return (
-                                            <View style={{ width: '25%', flex: 0, alignItems: 'center', justifyContent: 'center' }}>
+                                            <View style={{ width: '25%', flex: 0, alignItems: 'center' }}>
                                                 <TouchableOpacity
                                                     key={item.code}
                                                     style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}
@@ -161,7 +161,7 @@ export default class Index extends Component {
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                     {SleepmusicMap.map((item, index) => {
                                         return (
-                                            <View style={{ width: '25%', flex: 0, alignItems: 'center', justifyContent: 'center' }}>
+                                            <View style={{ width: '25%', flex: 0, alignItems: 'center', }}>
                                                 <TouchableOpacity
                                                     key={item.code}
                                                     style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}

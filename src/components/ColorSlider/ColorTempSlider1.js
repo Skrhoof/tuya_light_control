@@ -4,7 +4,9 @@ import { View, PanResponder, StyleSheet, ViewPropTypes } from 'react-native';
 import { LinearGradient, Utils } from 'tuya-panel-kit';
 import { Rect } from 'react-native-svg';
 
+const { ColorUtils } = Utils;
 const { viewWidth } = Utils.RatioUtils;
+const Color = ColorUtils.color;
 
 export default class ColorTempSlider extends Component {
   static propTypes = {
@@ -16,6 +18,8 @@ export default class ColorTempSlider extends Component {
     value: PropTypes.number, // 当前色温
     min: PropTypes.number, // 色温最小值
     max: PropTypes.number, // 色温最大值
+    hsb: PropTypes.arrayOf(PropTypes.number),
+
   };
 
   static defaultProps = {
@@ -27,6 +31,7 @@ export default class ColorTempSlider extends Component {
     value: 0,
     min: 0,
     max: 1000,
+    hsb: [180, 100, 100],
   };
 
   constructor(props) {
@@ -181,7 +186,7 @@ export default class ColorTempSlider extends Component {
 
   render() {
     const { hsl, left } = this.state;
-    const { containerStyle, trackStyle, thumbStyle } = this.props;
+    const { containerStyle, trackStyle, thumbStyle, hsb } = this.props;
     return (
       <View style={[{ flex: 1, alignItems: 'center', justifyContent: 'center' }, containerStyle]}>
         <View
@@ -206,10 +211,14 @@ export default class ColorTempSlider extends Component {
             y1="0%"
             x2="100%"
             y2="0%"
+            // stops={{
+            //   '0%': 'hsl(0, 0%, 27.8%)',
+            //   '50%': 'hsl(272, 27.8%, 73.9%)',
+            //   '100%': 'hsl(273, 52.9%, 73.3%)',
+            // }}
             stops={{
               '0%': 'hsl(0, 0%, 27.8%)',
-              '50%': 'hsl(272, 27.8%, 73.9%)',
-              '100%': 'hsl(273, 52.9%, 73.3%)',
+              '100%': `rgb(${Color.hsb2rgb(...hsb)})`,
             }}
           >
             <Rect {...this.dimension} />

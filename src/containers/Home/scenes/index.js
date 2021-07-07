@@ -17,7 +17,7 @@ import Delete2 from '../../../assets/img/delete2.png';
 import jt_shang from '../../../assets/img/jt_shang.png';
 import jt_xia from '../../../assets/img/jt_xia.png';
 import Strings from '../../../i18n';
-import { parseScene, combineScene } from './utils';
+import { parseScene, combineScene, electricity } from './utils';
 import { MusicMap } from '../sounds/utils';
 import { putDeviceData } from '../../../utils';
 const { ColorUtils } = Utils;
@@ -56,58 +56,59 @@ class Index extends Component {
         // navigator && navigator.push({ id: 'CustomEdit' });
     }
 
-    // componentDidMount() {
-    //     const { onSaveHome, dpState } = this.props;
-    //     const { scene } = dpState;
-    //     console.log(scene)
-    //     if (scene == '') {
-    //         const arr = parseScene(
-    //             'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-    //         );
-    //         onSaveHome({
-    //             customList: [...arr],
-    //         });
-    //     } else {
-    //         const arr = parseScene(scene);
-    //         // const arr = parseScene(
-    //         //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-    //         // );
-    //         onSaveHome({
-    //             customList: [...arr],
-    //         });
-    //     }
-    // }
+    componentDidMount() {
+        const { onSaveHome, dpState } = this.props;
+        const { scene } = dpState;
+        if (scene == '') {
+            const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+            const arrlist1 = parseScene(arr[0]);
+            const arrlist2 = parseScene(arr[1]);
+            onSaveHome({
+                customList: [...arrlist1],
+                customList1: [...arrlist2],
+            });
+        } else {
+            const arr = electricity(scene);
+            // const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+            const arrlist1 = parseScene(arr[0]);
+            const arrlist2 = parseScene(arr[1]);
+            onSaveHome({
+                customList: [...arrlist1],
+                customList1: [...arrlist2],
+            });
+        }
+    }
 
-    // componentDidUpdate(prevProps) {
-    //     const { dpState: prevDPState } = prevProps;
-    //     const { dpState, onSaveHome } = this.props;
-    //     if (dpState.scene !== prevDPState.scene) {
-    //         const arr = parseScene(dpState.scene);
-    //         // const arr = parseScene(
-    //         //     'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-    //         // );
-    //         onSaveHome({
-    //             customList: [...arr],
-    //         });
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        const { dpState: prevDPState } = prevProps;
+        const { dpState, onSaveHome } = this.props;
+        if (dpState.scene !== prevDPState.scene) {
+            const arr = electricity(dpState.scene);
+            // const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
+            const arrlist1 = parseScene(arr[0]);
+            const arrlist2 = parseScene(arr[1]);
+            onSaveHome({
+                customList: [...arrlist1],
+                customList1: [...arrlist2],
+            });
+        }
+    }
 
     onlistdelete = index => {
         const { home, onSaveHome } = this.props;
-        const { customList } = home;
-        customList[index] = null;
+        const { customList, customList1 } = home;
+        customList1[index] = null;
         onSaveHome({
-            customList: [...customList],
+            customList1: [...customList1],
         });
         putDeviceData({
-            scene: combineScene(customList),
+            scene: combineScene(customList) + combineScene(customList1),
         });
     };
 
     render() {
         const { home, isWhite, dpState } = this.props;
-        const { customList } = home;
-        console.log(customList)
+        const { customList, customList1 } = home;
         return (
             <View style={{
                 minHeight: convertX(62),
@@ -168,7 +169,7 @@ class Index extends Component {
                     </View>
                     {this.state.delete === true ?
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                            {customList.map((item, index) =>
+                            {customList1.map((item, index) =>
                                 item === null || item.State !== '02' ? null
                                     // <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
                                     //     <Image source={scenes} style={{ width: convertX(56), height: convertX(56) }} />
@@ -190,7 +191,7 @@ class Index extends Component {
                                     </TouchableOpacity>
                             )}
                         </View> : <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                            {customList.map((item, index) =>
+                            {customList1.map((item, index) =>
                                 item === null || item.State !== '02' ?
                                     <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
                                         <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />

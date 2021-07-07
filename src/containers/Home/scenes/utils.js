@@ -1,4 +1,15 @@
 import { convertRadix } from '../../../utils';
+
+//分割（136）
+export const electricity = (raw = '') => {
+    const arr = [];
+    const len = raw.length;
+    for (let i = 0; i < len; i += 136) {
+        const item = raw.slice(i, i + 136);
+        arr.push(item);
+    }
+    return arr;
+};
 /**
  * 解析自定义场景
  * @param {*} raw
@@ -9,7 +20,7 @@ export const parseScene = (raw = '') => {
     const len = raw.length;
     for (let i = 0; i < len; i += 34) {
         const item = raw.slice(i, i + 34);
-        if (item === 'ffffffffffffffffffffffffffffffffffff') {
+        if (item === 'ffffffffffffffffffffffffffffffffff') {
             arr.push(null);
         } else {
             const itemLen = item.length;
@@ -92,7 +103,7 @@ export const combineScene = (arr = []) => {
             raw = music ? `${raw}${convertRadix(music, 10, 16).padStart(2, '0')}` : `${raw}ff`;
             raw = volume ? `${raw}${convertRadix(volume, 10, 16).padStart(2, '0')}` : `${raw}ff`;
         } else {
-            raw = `${raw}ffffffffffffffffffffffffffffffff`;
+            raw = `${raw}ffffffffffffffffffffffffffffffffff`;
         }
     });
     return raw;

@@ -169,25 +169,9 @@ class Index extends Component {
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
     const { song, colour_data, work_mode, scene } = dpState;
-    DorelManager.isInDarkMode(res => {
-      this.setState({ isWhite: !res });
-    });
-    if (scene == '') {
-      const arr = parseScene(
-        'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-      );
-      onSaveHome({
-        customList: [...arr],
-      });
-    } else {
-      const arr = parseScene(scene);
-      // const arr = parseScene(
-      //   'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-      // );
-      onSaveHome({
-        customList: [...arr],
-      });
-    }
+    // DorelManager.isInDarkMode(res => {
+    //   this.setState({ isWhite: !res });
+    // });
     const hsvArr = electricityTo(colour_data);
     const H = Number(convertRadix(hsvArr[0], 16, 10));
     const S = Number(convertRadix(hsvArr[1], 16, 10));
@@ -211,23 +195,14 @@ class Index extends Component {
 
   componentDidUpdate(prevProps) {
     const { dpState: prevDPState } = prevProps;
-    const { dpState, onSaveHome } = this.props;
-    const { colour_data = '', song, scene, work_mode } = dpState;
+    const { dpState } = this.props;
+    const { colour_data = '', song, work_mode } = dpState;
     const H = Number(convertRadix(colour_data.substring(0, 4), 16, 10));
     const S = Number(convertRadix(colour_data.substring(4, 8), 16, 10));
     const V = Number(convertRadix(colour_data.substring(8, 12), 16, 10));
     if (colour_data && dpState.colour_data !== prevDPState.colour_data) {
       this.setState({
         hsb: [H, S, V],
-      });
-    }
-    if (dpState.scene !== prevDPState.scene) {
-      const arr = parseScene(scene);
-      // const arr = parseScene(
-      //   'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
-      // );
-      onSaveHome({
-        customList: [...arr],
       });
     }
     if (dpState.song !== prevDPState.song) {
