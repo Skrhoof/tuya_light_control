@@ -15,7 +15,7 @@ module.exports = {
     dsc_Scenes: 'Scenes',
     dsc_Sounds: 'Sounds',
     dsc_Lullabies: 'Lullabies',
-    dsc_Soothing: 'Soothing',
+    dsc_Soothing: 'Soothing Sounds',
     dsc_Nature: 'Nature',
     dsc_Sleep: 'Sleep',
     dsc_Bird_Song: 'Bird Song',
@@ -54,6 +54,10 @@ module.exports = {
     dsc_setting: 'Setting',
     dsc_child_tishi: 'When child lock is enabled, the power button on the soother will be disabled. Pressing the button 4 times will override the child lock.',
     dsc_SET_TIMER: 'SET TIMER',
+    dsc_Relaxing_Time: 'Relaxing Time',
+    dsc_Story_Time: 'Story Time',
+    dsc_Night_Task: 'Night Task',
+    dsc_Meditation: 'Meditation',
   },
   /**
    * 字段key格式：与DP点相关的用dp开头(dp_key),与dp无关用dsc开头(dsc_key)
@@ -112,5 +116,9 @@ module.exports = {
     dsc_setting: '设置',
     dsc_child_tishi: '当儿童锁被启用时，抚慰器上的电源按钮将被禁用。按下按钮4次将覆盖儿童锁。',
     dsc_SET_TIMER: '设置计时器',
+    dsc_Relaxing_Time: '放松时间',
+    dsc_Story_Time: '故事时间',
+    dsc_Night_Task: '夜间任务',
+    dsc_Meditation: '冥想',
   }
 };

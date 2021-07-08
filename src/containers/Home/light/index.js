@@ -124,6 +124,7 @@ export default class Index extends Component {
                                             // containerStyle={styles.containerStyle}
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
+                                            hsb={hsb}
                                         />
                                         <Image source={isWhite ? light2 : light4} style={{ width: convertX(22), height: convertX(22) }} />
                                     </View>

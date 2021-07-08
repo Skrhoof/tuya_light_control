@@ -122,40 +122,72 @@ class Index extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23), marginBottom: convertX(23) }}>
-                    <TouchableOpacity style={styles.sceneView1} onPress={() => putDeviceData({
-                        volume: 8,
-                        colour_data: '00f003e80320',
-                        song: '3',
-                        work_mode: 'colour',
-                    })}>
-                        <Image source={icon1} style={styles.sceneIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sceneView2} onPress={() => putDeviceData({
-                        volume: 8,
-                        colour_data: '000003e80320',
-                        song: '2',
-                        work_mode: 'colour',
-                    })}>
-                        <Image source={icon2} style={styles.sceneIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sceneView3} onPress={() => putDeviceData({
-                        volume: 8,
-                        colour_data: '000000000000',
-                        song: '12',
-                        work_mode: 'white',
-                        bright_value: 800,
-                        temp_value: 500,
-                    })}>
-                        <Image source={icon3} style={styles.sceneIcon} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.sceneView4} onPress={() => putDeviceData({
-                        volume: 8,
-                        colour_data: '007803e80320',
-                        song: '18',
-                        work_mode: 'colour',
-                    })}>
-                        <Image source={icon4} style={styles.sceneIcon} />
-                    </TouchableOpacity>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.sceneView1}
+                            onPress={() => putDeviceData({
+                                volume: 8,
+                                colour_data: '00f003e80320',
+                                song: '3',
+                                work_mode: 'colour',
+                            })}>
+                            <Image source={icon1} style={styles.sceneIcon} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Relaxing_Time')}</Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.sceneView2}
+                            onPress={() => putDeviceData({
+                                volume: 8,
+                                colour_data: '000003e80320',
+                                song: '2',
+                                work_mode: 'colour',
+                            })}>
+                            <Image source={icon2} style={styles.sceneIcon} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Story_Time')}</Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.sceneView3}
+                            onPress={() => putDeviceData({
+                                volume: 8,
+                                colour_data: '000000000000',
+                                song: '12',
+                                work_mode: 'white',
+                                bright_value: 800,
+                                temp_value: 500,
+                            })}>
+                            <Image source={icon3} style={styles.sceneIcon} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Night_Task')}</Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <TouchableOpacity style={styles.sceneView4}
+                            onPress={() => putDeviceData({
+                                volume: 8,
+                                colour_data: '007803e80320',
+                                song: '18',
+                                work_mode: 'colour',
+                            })}>
+                            <Image source={icon4} style={styles.sceneIcon} />
+                        </TouchableOpacity>
+                        <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Meditation')}</Text>
+                    </View>
                 </View>
                 <Collapsible
                     collapsed={this.state.collapsed}
@@ -171,9 +203,6 @@ class Index extends Component {
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
                             {customList1.map((item, index) =>
                                 item === null || item.State !== '02' ? null
-                                    // <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
-                                    //     <Image source={scenes} style={{ width: convertX(56), height: convertX(56) }} />
-                                    // </TouchableOpacity>
                                     :
                                     <TouchableOpacity key={index} style={{
                                         justifyContent: 'center',
@@ -190,29 +219,42 @@ class Index extends Component {
                                         }
                                     </TouchableOpacity>
                             )}
-                        </View> : <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                            {customList1.map((item, index) =>
-                                item === null || item.State !== '02' ?
-                                    <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
-                                        <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
-                                    </TouchableOpacity>
-                                    :
-                                    <TouchableOpacity key={index} style={{
-                                        justifyContent: 'center',
-                                        width: convertX(56),
-                                        height: convertX(56),
-                                        alignItems: 'center',
-                                        borderRadius: convertX(40),
-                                        backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
-                                    }}>
-                                        {item.music &&
-                                            <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
-                                        }
-                                    </TouchableOpacity>
-                            )}
+                        </View> :
+                        <View>
+                            {/* {customList1 === null && <View style={{ alignItems: 'center' }}>
+                                <TouchableOpacity style={{
+                                    width: convertX(343),
+                                    height: convertX(48),
+                                    borderRadius: convertX(244),
+                                    borderWidth: convertX(1.5),
+                                    borderColor: '#1875A8',
+                                }}>
+
+                                </TouchableOpacity>
+                            </View>} */}
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
+                                {customList1.map((item, index) =>
+                                    item === null || item.State !== '02' ?
+                                        <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
+                                            <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
+                                        </TouchableOpacity>
+                                        :
+                                        <TouchableOpacity key={index} style={{
+                                            justifyContent: 'center',
+                                            width: convertX(56),
+                                            height: convertX(56),
+                                            alignItems: 'center',
+                                            borderRadius: convertX(40),
+                                            backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
+                                        }}>
+                                            {item.music &&
+                                                <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
+                                            }
+                                        </TouchableOpacity>
+                                )}
+                            </View>
                         </View>
                     }
-
                 </Collapsible>
             </View >
         );

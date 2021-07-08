@@ -5,7 +5,9 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricity, electricityTo } from '../../utils';
-import { SwitchButton } from 'tuya-panel-kit';
+import { SwitchButton, LinearGradient } from 'tuya-panel-kit';
+import { Rect } from "react-native-svg";
+import { BoxShadow } from 'react-native-shadow'
 import styles from './styles';
 import Switch from '../../assets/img/switch.png';
 import Play from './play';
@@ -17,10 +19,19 @@ import Strings from '../../i18n';
 import { MusicMap } from '../Home/sounds/utils';
 import BottomBar from '../../components/BottomBar';
 import TopBar from '../../components/TopBar';
-import { parseScene } from '../Home/scenes/utils';
-
 const DorelManager = NativeModules.TYRCTDorelManager;
-
+const dimension = { width: convertX(375), height: convertX(150) };
+// const shadowOpt = {
+//   width: 80,
+//   height: 56,
+//   color: "#C79DE8",
+//   border: 80,
+//   radius: 0,
+//   opacity: 1,
+//   x: 32,
+//   y: 25,
+//   style: { marginVertical: 0 },
+// }
 class Index extends Component {
   static propTypes = {};
 
@@ -236,9 +247,24 @@ class Index extends Component {
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }} >Noah's Room</Text>
           </View>
           <View style={styles.switchstyle}>
+            {dpState.power_switch === false ? null :
+              <LinearGradient
+                style={dimension}
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="0%"
+                stops={{
+                  "0%": "#212B4C",
+                  "60%": "#212B4C",
+                  "100%": "#C79DE8",
+                }}
+              >
+                <Rect {...dimension} />
+              </LinearGradient>}
             <View style={styles.switchIcon}>
               {dpState.song && (
-                <View style={{ alignItems: 'center' }}>
+                <View style={{ alignItems: 'center', }}>
                   <Image
                     source={MusicMap[selectIndex - 1].icon}
                     style={{
@@ -255,7 +281,8 @@ class Index extends Component {
                 </Text>
               </View> : null
               }
-              <TouchableOpacity onPress={() => putDeviceData({ power_switch: !power_switch })}>
+              <TouchableOpacity
+                onPress={() => putDeviceData({ power_switch: !power_switch })}>
                 <Image
                   source={Switch}
                   style={{
