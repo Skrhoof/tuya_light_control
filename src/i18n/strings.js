@@ -58,6 +58,9 @@ module.exports = {
     dsc_Story_Time: 'Story Time',
     dsc_Night_Task: 'Night Task',
     dsc_Meditation: 'Meditation',
+    dsc_off_in: 'Off in ',
+    dsc_null_delete: 'There are no scenes to delete',
+
   },
   /**
    * 字段key格式：与DP点相关的用dp开头(dp_key),与dp无关用dsc开头(dsc_key)
@@ -120,5 +123,7 @@ module.exports = {
     dsc_Story_Time: '故事时间',
     dsc_Night_Task: '夜间任务',
     dsc_Meditation: '冥想',
+    dsc_off_in: '关入 ',
+    dsc_null_delete: '没有可删除的场景',
   }
 };

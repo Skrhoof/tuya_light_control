@@ -188,9 +188,9 @@ class Addscenes extends Component {
     }
 
     componentDidMount() {
-        // DorelManager.isInDarkMode(res => {
-        //     this.setState({ isWhite: !res });
-        // });
+        DorelManager.isInDarkMode(res => {
+            this.setState({ isWhite: !res });
+        });
     }
     // componentDidUpdate(prevProps) {
     //     this.onScenes

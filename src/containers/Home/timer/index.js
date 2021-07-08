@@ -5,6 +5,7 @@ import {
     View, Image, Text, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { Slider, Utils, IconFont } from 'tuya-panel-kit';
+import { electricity, convertRadix } from '../../../utils';
 import Strings from '../../../i18n';
 
 const { convertX } = Utils.RatioUtils;
@@ -17,7 +18,10 @@ export default class Index extends Component {
         navigator && navigator.push({ id: 'Countdown' });
     };
     render() {
-        const { isWhite } = this.props;
+        const { isWhite, timer } = this.props;
+        const TimerArr = electricity(timer);
+        const timerhour = convertRadix(TimerArr[1], 16, 10, 2);
+        const timerMin = convertRadix(TimerArr[2], 16, 10, 2);
         return (
             <TouchableOpacity style={{
                 height: convertX(62),
@@ -32,7 +36,15 @@ export default class Index extends Component {
                         left: convertX(20),
                         color: isWhite ? '#2D365F' : '#fff',
                     }}>{Strings.getLang('dsc_Timer')}</Text>
-                    <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={{
+                            fontSize: convertX(13), right: convertX(25),
+                            color: isWhite ? '#2D365F' : '#fff',
+                        }}>{Strings.getLang('dsc_off_in')}
+                            {timerhour}:{timerMin}
+                        </Text>
+                        <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                    </View>
                 </View>
             </TouchableOpacity>
         );

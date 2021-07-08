@@ -4,7 +4,7 @@ import {
   View, Text, Image, ScrollView, TouchableOpacity, NativeModules
 } from 'react-native';
 import { connect } from 'react-redux';
-import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricity, electricityTo } from '../../utils';
+import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricityTo } from '../../utils';
 import { SwitchButton, LinearGradient } from 'tuya-panel-kit';
 import { Rect } from "react-native-svg";
 import { BoxShadow } from 'react-native-shadow'
@@ -21,17 +21,6 @@ import BottomBar from '../../components/BottomBar';
 import TopBar from '../../components/TopBar';
 const DorelManager = NativeModules.TYRCTDorelManager;
 const dimension = { width: convertX(375), height: convertX(150) };
-// const shadowOpt = {
-//   width: 80,
-//   height: 56,
-//   color: "#C79DE8",
-//   border: 80,
-//   radius: 0,
-//   opacity: 1,
-//   x: 32,
-//   y: 25,
-//   style: { marginVertical: 0 },
-// }
 class Index extends Component {
   static propTypes = {};
 
@@ -180,9 +169,9 @@ class Index extends Component {
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
     const { song, colour_data, work_mode, scene } = dpState;
-    // DorelManager.isInDarkMode(res => {
-    //   this.setState({ isWhite: !res });
-    // });
+    DorelManager.isInDarkMode(res => {
+      this.setState({ isWhite: !res });
+    });
     const hsvArr = electricityTo(colour_data);
     const H = Number(convertRadix(hsvArr[0], 16, 10));
     const S = Number(convertRadix(hsvArr[1], 16, 10));
@@ -232,9 +221,6 @@ class Index extends Component {
     const { dpState, home, devInfo, navigator } = this.props;
     const { child_lock, switch_led, volume, play_pause, temp_value, bright_value, power_switch, timer, scene } = dpState;
     const { hsb, selectIndex, isWhite } = this.state;
-    const TimerArr = electricity(timer);
-    const timerhour = convertRadix(TimerArr[1], 16, 10, 2);
-    const timerMin = convertRadix(TimerArr[2], 16, 10, 2);
     return (
       <View style={[
         { flex: 1, backgroundColor: '#2d385f' },
@@ -275,12 +261,12 @@ class Index extends Component {
                   <Text style={{ color: '#fff', top: convertX(16) }}>{MusicMap[selectIndex - 1].text}</Text>
                 </View>
               )}
-              {dpState.timer ? <View style={styles.timerstyle}>
+              {/* {dpState.timer ? <View style={styles.timerstyle}>
                 <Text style={{ fontSize: convertX(13), color: '#212B4C' }}>OFF in
                   {timerhour}:{timerMin}
                 </Text>
               </View> : null
-              }
+              } */}
               <TouchableOpacity
                 onPress={() => putDeviceData({ power_switch: !power_switch })}>
                 <Image
@@ -331,6 +317,7 @@ class Index extends Component {
             {...this.props}
             navigator={navigator}
             isWhite={isWhite}
+            timer={timer}
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
             <View style={{ width: convertX(271) }}>

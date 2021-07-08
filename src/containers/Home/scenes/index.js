@@ -221,38 +221,47 @@ class Index extends Component {
                             )}
                         </View> :
                         <View>
-                            {/* {customList1 === null && <View style={{ alignItems: 'center' }}>
-                                <TouchableOpacity style={{
-                                    width: convertX(343),
-                                    height: convertX(48),
-                                    borderRadius: convertX(244),
-                                    borderWidth: convertX(1.5),
-                                    borderColor: '#1875A8',
-                                }}>
-
-                                </TouchableOpacity>
-                            </View>} */}
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                                {customList1.map((item, index) =>
-                                    item === null || item.State !== '02' ?
-                                        <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
-                                            <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
-                                        </TouchableOpacity>
-                                        :
-                                        <TouchableOpacity key={index} style={{
-                                            justifyContent: 'center',
-                                            width: convertX(56),
-                                            height: convertX(56),
-                                            alignItems: 'center',
-                                            borderRadius: convertX(40),
-                                            backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
-                                        }}>
-                                            {item.music &&
-                                                <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
-                                            }
-                                        </TouchableOpacity>
-                                )}
-                            </View>
+                            {customList1[0] == null && customList1[1] == null && customList1[2] == null && customList1[3] == null ?
+                                < View style={{ alignItems: 'center', marginBottom: convertX(20) }}>
+                                    <TouchableOpacity style={{
+                                        width: convertX(343),
+                                        height: convertX(48),
+                                        borderRadius: convertX(244),
+                                        borderWidth: convertX(1.5),
+                                        borderColor: isWhite ? '#5E7794' : '#fff',
+                                        justifyContent: 'center',
+                                        alignItems: 'center'
+                                    }}
+                                        onPress={() => this.unfoldTo(0)}
+                                    >
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>+ Custom Scenes (0/4)</Text>
+                                    </TouchableOpacity>
+                                </View> :
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
+                                    {customList1.map((item, index) => {
+                                        return (
+                                            item === null || item.State !== '02' ?
+                                                <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
+                                                    <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
+                                                </TouchableOpacity>
+                                                :
+                                                <TouchableOpacity key={index} style={{
+                                                    justifyContent: 'center',
+                                                    width: convertX(56),
+                                                    height: convertX(56),
+                                                    alignItems: 'center',
+                                                    borderRadius: convertX(40),
+                                                    backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
+                                                }}>
+                                                    {item.music &&
+                                                        <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
+                                                    }
+                                                </TouchableOpacity>
+                                        )
+                                    }
+                                    )}
+                                </View>
+                            }
                         </View>
                     }
                 </Collapsible>
