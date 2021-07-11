@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, NativeModules, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Slider, Utils, TopBar } from 'tuya-panel-kit';
+import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, goBack } from '../../../../utils';
 import Strings from '../../../../i18n';
 import Open from './Animated/index';
 import { MusicMap } from '../../sounds/utils';
-// import TopBar from '../../../../components/TopBar';
+import TopBar from '../../../../components/TopBar';
 
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
+const DorelManager = NativeModules.TYRCTDorelManager;
 
 class Index extends Component {
     static propTypes = {};
@@ -18,7 +19,24 @@ class Index extends Component {
     static defaultProps = {};
 
     state = {
+        isbackground: true,
+        isWhite: true,
+        roomName: 'PREVIEW ON DEVICE',
     };
+
+    componentDidMount() {
+        if (DorelManager && DorelManager.isInDarkMode) {
+            DorelManager.isInDarkMode(res => {
+                this.setState({ isWhite: !res });
+            });
+        }
+        // 房间名
+        // DorelManager.getRoomName(TYSdk.devInfo.devId, res => {
+        //     if (typeof res === 'string' && res.length !== 0) {
+        //         this.setState({ roomName: res });
+        //     }
+        // });
+    }
 
     CancelPreview = () => {
         const { onSaveHome, home } = this.props;
@@ -31,6 +49,7 @@ class Index extends Component {
     }
 
     render() {
+        const { isWhite, isbackground, roomName } = this.state;
         const { home } = this.props;
         const { customIndex, customList1 } = home;
         const { H, S, V, music, text } = customList1[customIndex];
@@ -39,15 +58,30 @@ class Index extends Component {
                 flex: 1,
                 backgroundColor: Color.hsb2hex(...[H, S, V]),
             }}>
-                <TopBar
+                {/* <TopBar
                     background={Color.hsb2hex(...[H, S, V])}
                     title={Strings.getLang('dsc_preview')}
                     color="#fff"
                     onBack={goBack}
+                /> */}
+                <TopBar
+                    isWhite={isWhite}
+                    isbackground={isbackground}
+                    H={H}
+                    S={S}
+                    V={V}
                 />
-                {/* <TopBar isWhite={isWhite} /> */}
-                <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(50), borderBottomWidth: convertX(1), borderBottomColor: '#fff' }}>
+                {/* <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(50), borderBottomWidth: convertX(1), borderBottomColor: '#fff' }}>
                     <Text style={{ color: '#fff' }}>PREVIEW ON DEVICE</Text>
+                </View> */}
+                <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(50), borderBottomWidth: convertX(1), borderBottomColor: '#DFEAF4' }}>
+                    <Text
+                        style={[
+                            { color: '#fff', fontSize: convertX(14) },
+                        ]}
+                    >
+                        {roomName.length !== 0 ? roomName : null}
+                    </Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(450), flexDirection: 'column', marginTop: convertX(54) }}>
                     <Text style={{ color: '#fff', fontSize: convertX(18) }}>

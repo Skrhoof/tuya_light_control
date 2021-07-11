@@ -10,6 +10,21 @@ export const electricity = (raw = '') => {
     }
     return arr;
 };
+
+export const isEmpty = (str) => {
+    if (typeof (str) == "undefined" || str == null) {
+        return true;
+    }
+    else {
+        if (typeof str == 'string' && str.trim() == '') {
+            return true;
+        }
+        else if (typeof str == 'number' && isNaN(str)) {
+            return true;
+        }
+        return false;
+    }
+};
 /**
  * 解析自定义场景
  * @param {*} raw

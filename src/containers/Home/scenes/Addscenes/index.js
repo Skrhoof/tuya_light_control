@@ -8,7 +8,7 @@ import { convertX, goBack, putDeviceData, convertRadix } from '../../../../utils
 import icon1 from '../../../../assets/img/icon1.png';
 import Light from '../../light';
 import CustomSounds from '../../sounds/customSounds';
-import { combineScene } from '../utils';
+import { combineScene, isEmpty } from '../utils';
 import { MusicMap } from '../../sounds/utils';
 import TopBar from '../../../../components/TopBar';
 const DorelManager = NativeModules.TYRCTDorelManager;
@@ -165,7 +165,7 @@ class Addscenes extends Component {
         const { customIndex, customList1 } = home;
         // const { newlist } = this.state;
         const newlist = _.cloneDeep(customList1);
-        if (newlist[customIndex] === null || newlist[customIndex].State !== '02') {
+        if (isEmpty(newlist[customIndex]) || newlist[customIndex].State !== '02') {
             newlist[customIndex] = {
                 CustomScene: customIndex + 4, // 自定义场景 array || null
                 State: '00',//状态
@@ -188,9 +188,11 @@ class Addscenes extends Component {
     }
 
     componentDidMount() {
-        DorelManager.isInDarkMode(res => {
-            this.setState({ isWhite: !res });
-        });
+        if (DorelManager && DorelManager.isInDarkMode) {
+            DorelManager.isInDarkMode(res => {
+                this.setState({ isWhite: !res });
+            });
+        }
     }
     // componentDidUpdate(prevProps) {
     //     this.onScenes

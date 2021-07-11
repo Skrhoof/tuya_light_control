@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricityTo } from '../../utils';
 import { SwitchButton, LinearGradient } from 'tuya-panel-kit';
 import { Rect } from "react-native-svg";
-import { BoxShadow } from 'react-native-shadow'
 import styles from './styles';
 import Switch from '../../assets/img/switch.png';
 import Play from './play';
@@ -169,9 +168,11 @@ class Index extends Component {
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
     const { song, colour_data, work_mode, scene } = dpState;
-    DorelManager.isInDarkMode(res => {
-      this.setState({ isWhite: !res });
-    });
+    if (DorelManager && DorelManager.isInDarkMode) {
+      DorelManager.isInDarkMode(res => {
+        this.setState({ isWhite: !res });
+      });
+    }
     const hsvArr = electricityTo(colour_data);
     const H = Number(convertRadix(hsvArr[0], 16, 10));
     const S = Number(convertRadix(hsvArr[1], 16, 10));
@@ -210,11 +211,11 @@ class Index extends Component {
         selectIndex: song,
       });
     }
-    // if (dpState.work_mode !== prevDPState.work_mode) {
-    //   this.setState({
-    //     work_mode: work_mode,
-    //   });
-    // }
+    if (dpState.work_mode !== prevDPState.work_mode) {
+      this.setState({
+        work_mode: work_mode,
+      });
+    }
   }
 
   render() {

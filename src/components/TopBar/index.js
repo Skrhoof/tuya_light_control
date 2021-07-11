@@ -6,10 +6,11 @@ import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, goBack, getLang } from '../../utils';
 import arrowIcon from '../../res/arrow.png';
 import LogoIcon from '../../res/Safety1st_Logo_White.png';
-import LogoLightIcon from '../../res/Safety1st_Logo_yellow.png';
+import LogoLightIcon from '../../res/Maxi-Cosi_White.png';
 import settingIcon from '../../res/Settings.png';
 import subtractIcon from '../../res/Subtract.png';
-
+const { ColorUtils } = Utils;
+const Color = ColorUtils.color;
 const { isIphoneX } = Utils.RatioUtils;
 // iphoneX以上88，iphoneX以下64，安卓56
 const topBarHeight = Platform.OS === 'android' ? 56 : isIphoneX ? 88 : 64;
@@ -35,7 +36,7 @@ class TopBar extends Component {
   };
 
   render() {
-    const { isWhite } = this.props;
+    const { isWhite, isbackground, H, S, V } = this.props;
     return (
       <View>
         {/* topBar */}
@@ -51,6 +52,7 @@ class TopBar extends Component {
               paddingHorizontal: convertX(10),
             },
             isWhite ? { backgroundColor: '#fff' } : null,
+            isbackground ? { backgroundColor: Color.hsb2hex(...[H, S, V]) } : null
           ]}
         >
           <View
@@ -69,7 +71,7 @@ class TopBar extends Component {
             </View>
             <Image
               source={isWhite ? LogoLightIcon : LogoIcon}
-              style={{ width: convertX(110), height: convertX(34) }}
+              style={{ width: convertX(115), height: convertX(25) }}
             />
             <View style={{ flexDirection: 'row', width: convertX(70) }}>
               <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>

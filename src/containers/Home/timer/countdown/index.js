@@ -27,9 +27,11 @@ export default class Index extends Component {
     componentDidMount() {
         const { dpState } = this.props;
         const { timer } = dpState;
-        DorelManager.isInDarkMode(res => {
-            this.setState({ isWhite: !res });
-        });
+        if (DorelManager && DorelManager.isInDarkMode) {
+            DorelManager.isInDarkMode(res => {
+                this.setState({ isWhite: !res });
+            });
+        }
         const listValue = convertRadix(timer.substring(0, 2), 16, 10, 2);
         const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
         const min = convertRadix(timer.substring(4, 6), 16, 10, 2);

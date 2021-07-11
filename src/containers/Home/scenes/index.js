@@ -17,7 +17,7 @@ import Delete2 from '../../../assets/img/delete2.png';
 import jt_shang from '../../../assets/img/jt_shang.png';
 import jt_xia from '../../../assets/img/jt_xia.png';
 import Strings from '../../../i18n';
-import { parseScene, combineScene, electricity } from './utils';
+import { parseScene, combineScene, electricity, isEmpty } from './utils';
 import { MusicMap } from '../sounds/utils';
 import { putDeviceData } from '../../../utils';
 const { ColorUtils } = Utils;
@@ -59,7 +59,7 @@ class Index extends Component {
     componentDidMount() {
         const { onSaveHome, dpState } = this.props;
         const { scene } = dpState;
-        if (scene == '') {
+        if (isEmpty(scene)) {
             const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
             const arrlist1 = parseScene(arr[0]);
             const arrlist2 = parseScene(arr[1]);
