@@ -30,7 +30,7 @@ export default class Index extends Component {
         const { volume, overValueChange, onChangeDp, play_pause, isWhite } = this.props;
         return (
             <View style={{
-                width: convertX(375),
+                width: '100%',
                 height: convertX(139),
                 flexDirection: 'column',
                 borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',

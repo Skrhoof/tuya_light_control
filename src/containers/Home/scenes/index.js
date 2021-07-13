@@ -27,7 +27,7 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            collapsed: true, //折叠
+            collapsed: false, //折叠
             delete: false,
         }
     }
