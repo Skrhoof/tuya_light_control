@@ -5,17 +5,18 @@ import {
     View, Image, Text, TouchableOpacity, StyleSheet, ScrollView
 } from 'react-native';
 import { Utils, Collapsible, Tabs, Slider, SwitchButton } from 'tuya-panel-kit';
+import { connect } from 'react-redux';
 import Strings from '../../../../i18n';
 import mute from '../../../../assets/img/Mute.png';
 import voice from '../../../../assets/img/voice.png';
 import mute2 from '../../../../assets/img/Mute2.png';
 import voice2 from '../../../../assets/img/voice2.png';
-import music from '../../../../assets/img/music.png';
+import music1 from '../../../../assets/img/music.png';
 import music2 from '../../../../assets/img/music2.png';
 import { LullabyMap, NaturemusicMap, SleepmusicMap } from '../utils';
 
 const { convertX } = Utils.RatioUtils;
-export default class Index extends Component {
+class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,6 +26,8 @@ export default class Index extends Component {
                 { value: 'lullabies', label: Strings.getLang('dsc_Lullabies') },
                 { value: 'soothing', label: Strings.getLang('dsc_Soothing') },
             ],
+            music: '1',
+            newlist: [],
         }
     }
 
@@ -34,8 +37,38 @@ export default class Index extends Component {
     _handleD1Change = (tab) => {
         this.setState({ activeKey1: tab.value });
     };
+
+    onValueChange = () => {
+        const { customIndex, newlist, onSaveHome } = this.props;
+        newlist[customIndex].musicSwitch = !newlist[customIndex].musicSwitch;
+        onSaveHome({
+            customList1: [...newlist],
+        });
+    };
+
+    onselect = (value) => {
+        const { customIndex, newlist, onSaveHome } = this.props;
+        newlist[customIndex].music = value;
+        this.setState({
+            music: value,
+        });
+        onSaveHome({
+            customList1: [...newlist],
+        });
+    };
+
+    // 滑动结束松手后(音量)
+    onComplete = (value) => {
+        const { customIndex, newlist, onSaveHome } = this.props;
+        newlist[customIndex].volume = Math.ceil(value);
+        onSaveHome({
+            customList1: [...newlist],
+        });
+    };
+
     render() {
-        const { musicSwitch, volume, onValueChange, onComplete, onselect, selectIndex, isWhite } = this.props;
+        const { isWhite, newlist, customIndex } = this.props;
+        const { musicSwitch, volume, music } = newlist[customIndex];
         return (
             <View style={{
                 minHeight: convertX(62),
@@ -51,7 +84,7 @@ export default class Index extends Component {
                         style={{ right: convertX(20) }}
                         onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
                         tintColor={'#868EAA'}
-                        onValueChange={() => onValueChange && onValueChange('musicSwitch')}
+                        onValueChange={() => this.onValueChange()}
                     />
                 </View>
                 <View style={{ marginTop: convertX(16), flexDirection: 'row', alignItems: 'center' }}>
@@ -64,7 +97,7 @@ export default class Index extends Component {
                         maximumTrackTintColor={isWhite ? "#E5F2E7" : '#2E5288'}
                         minimumTrackTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
                         thumbTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
-                        onSlidingComplete={val => onComplete && onComplete('volume', val)}
+                        onSlidingComplete={val => this.onComplete(val)}
                     />
                     <Image source={isWhite ? voice : voice2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                 </View>
@@ -106,7 +139,7 @@ export default class Index extends Component {
                                                     key={item.code}
                                                     style={styles.musicMap1}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code, item.value)
+                                                        this.onselect(item.value)
                                                     }}
                                                 >
                                                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -114,7 +147,7 @@ export default class Index extends Component {
                                                             fontSize: convertX(16),
                                                             color: isWhite ? null : '#fff',
                                                         }}>{item.text}</Text>
-                                                        {selectIndex === item.code ? <Image source={isWhite ? music2 : music} style={{ width: convertX(20), height: convertX(20) }} /> : null}
+                                                        {music === item.value ? <Image source={isWhite ? music2 : music1} style={{ width: convertX(20), height: convertX(20) }} /> : null}
                                                     </View>
                                                 </TouchableOpacity>
                                             </View>
@@ -137,15 +170,16 @@ export default class Index extends Component {
                                             <View style={{ width: '25%', flex: 0, alignItems: 'center' }}>
                                                 <TouchableOpacity
                                                     key={item.code}
-                                                    style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}
+                                                    style={music === item.value ? styles.musicMap3 : styles.musicMap2}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code, item.value)
+                                                        this.onselect(item.value)
                                                     }}
                                                 >
                                                     <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                 </TouchableOpacity>
                                                 <Text style={{
                                                     fontSize: convertX(16),
+                                                    marginBottom: convertX(16),
                                                     color: isWhite ? null : '#fff',
                                                 }}>{item.text}</Text>
                                             </View>
@@ -164,16 +198,16 @@ export default class Index extends Component {
                                             <View style={{ width: '25%', flex: 0, alignItems: 'center', }}>
                                                 <TouchableOpacity
                                                     key={item.code}
-                                                    style={selectIndex === item.code ? styles.musicMap3 : styles.musicMap2}
+                                                    style={music === item.value ? styles.musicMap3 : styles.musicMap2}
                                                     onPress={() => {
-                                                        onselect && onselect(item.code, item.value)
-
+                                                        this.onselect(item.value)
                                                     }}
                                                 >
                                                     <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                 </TouchableOpacity>
                                                 <Text style={{
                                                     fontSize: convertX(16),
+                                                    marginBottom: convertX(16),
                                                     color: isWhite ? null : '#fff',
                                                 }}>{item.text}</Text>
                                             </View>
@@ -188,6 +222,28 @@ export default class Index extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+    return {
+        home: state.home,
+    };
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onSaveHome: obj => {
+            dispatch({
+                type: 'SAVE_HOME',
+                payload: obj,
+            });
+        },
+        onInitData: (obj = {}) => {
+            dispatch({
+                type: 'INIT_DATA',
+                payload: obj,
+            });
+        },
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
 const styles = StyleSheet.create({
     tabsStyle: {
         height: convertX(38),

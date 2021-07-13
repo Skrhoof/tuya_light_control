@@ -61,7 +61,7 @@ export default class Index extends Component {
                         <Image source={random} style={styles.icon} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ marginTop: convertX(36), flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ marginTop: convertX(36), flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
                     <Image source={isWhite ? mute : mute2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                     <Slider.Horizontal
                         style={{ width: 278 }}

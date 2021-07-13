@@ -2,7 +2,6 @@
 const initState = {
   list: [],
   customIndex: null,
-  colorlist: [],
   customList1: [],
   customList: [],
 };

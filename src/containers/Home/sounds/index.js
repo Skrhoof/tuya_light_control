@@ -27,6 +27,7 @@ export default class Index extends Component {
         const { onselect, selectIndex, dataSource, handleD1Change, activeKey, isWhite } = this.props;
         return (
             <View style={{
+                width: convertX(375),
                 minHeight: convertX(62),
                 borderBottomWidth: convertX(1),
                 borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
@@ -77,7 +78,7 @@ export default class Index extends Component {
                         >
                             <Tabs.TabPanel>
                                 <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
-                                    <View style={{ flex: 1, alignItems: 'center' }}>
+                                    <View style={{ flex: 1, alignItems: 'center', width: convertX(375), }}>
                                         {LullabyMap.map((item, index) => {
                                             return (
                                                 <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
@@ -109,7 +110,9 @@ export default class Index extends Component {
                                             style={{
                                                 color: isWhite ? '#2D365F' : '#fff',
                                                 fontSize: convertX(14)
-                                            }}>{Strings.getLang('dsc_Nature')}</Text>
+                                            }}>
+                                            {Strings.getLang('dsc_Nature')}
+                                        </Text>
                                     </View>
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                                         {NaturemusicMap.map((item, index) => {
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff00',
     },
     callapsibleStyle: {
-        height: convertX(556),
+        height: convertX(621),
     },
     ImageStyles: {
         width: convertX(25),
