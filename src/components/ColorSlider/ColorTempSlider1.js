@@ -123,39 +123,45 @@ export default class ColorTempSlider extends Component {
 
   handlePanResponderRelease = (evt, gestureState) => {
     const { moveX } = gestureState;
-    const halfThumbWidth = this.thumbWidh / 2;
-    let newLeft = moveX - halfThumbWidth;
-    if (newLeft < this.trackX) {
-      newLeft = this.trackX;
-    }
-    if (newLeft + this.thumbWidh > this.trackWidh + this.trackX) {
-      newLeft = this.trackWidh + this.trackX - this.thumbWidh;
-    }
-    const percent = (newLeft - this.trackX) / (this.trackWidh - this.thumbWidh);
-    const newValue = this.min + (this.max - this.min) * percent;
-    const percent100 = percent * 100;
-    let hsl;
-    if (0 <= percent100 && percent100 < 50) {
-      const percent2 = (percent100 - 0) / (50 - 0);
-      hsl = {
-        h: 40 - (40 - 0) * percent2,
-        s: 100 - (100 - 0) * percent2,
-        l: 68 + (100 - 68) * percent2,
-      };
+    if (moveX === 0) {
+      return
     } else {
-      const percent2 = (percent100 - 50) / (100 - 50);
-      hsl = {
-        h: 0 + (203 - 0) * percent2,
-        s: 0 + (100 - 0) * percent2,
-        l: 100 - (100 - 90) * percent2,
-      };
+      const halfThumbWidth = this.thumbWidh / 2;
+      let newLeft = moveX - halfThumbWidth;
+      if (newLeft < this.trackX) {
+        newLeft = this.trackX;
+      }
+      if (newLeft + this.thumbWidh > this.trackWidh + this.trackX) {
+        newLeft = this.trackWidh + this.trackX - this.thumbWidh;
+      }
+      const percent = (newLeft - this.trackX) / (this.trackWidh - this.thumbWidh);
+      const newValue = this.min + (this.max - this.min) * percent;
+      const percent100 = percent * 100;
+      let hsl;
+      if (0 <= percent100 && percent100 < 50) {
+        const percent2 = (percent100 - 0) / (50 - 0);
+        hsl = {
+          h: 40 - (40 - 0) * percent2,
+          s: 100 - (100 - 0) * percent2,
+          l: 68 + (100 - 68) * percent2,
+        };
+      } else {
+        const percent2 = (percent100 - 50) / (100 - 50);
+        hsl = {
+          h: 0 + (203 - 0) * percent2,
+          s: 0 + (100 - 0) * percent2,
+          l: 100 - (100 - 90) * percent2,
+        };
+      }
+      console.log(newLeft, moveX);
+      this.setState({
+        left: newLeft,
+        hsl,
+      });
+      const { onComplete } = this.props;
+      typeof onComplete === 'function' && onComplete(newValue);
     }
-    this.setState({
-      left: newLeft,
-      hsl,
-    });
-    const { onComplete } = this.props;
-    typeof onComplete === 'function' && onComplete(newValue);
+
   };
 
   rgb2Percent = value => {
@@ -218,7 +224,7 @@ export default class ColorTempSlider extends Component {
             // }}
             stops={{
               '0%': 'hsl(0, 0%, 27.8%)',
-              '100%': `rgb(${Color.hsb2rgb(...hsb)})`,
+              '100%': `rgb(${Color.hsb2rgb(...[hsb[0], 1000, 1000])})`,
             }}
           >
             <Rect {...this.dimension} />

@@ -2,8 +2,8 @@
 const initState = {
   list: [],
   customIndex: null,
-  customList1: [],
   customList: [],
+  timer: 0,
 };
 
 export default function reducer(state = initState, action) {
@@ -22,7 +22,6 @@ export default function reducer(state = initState, action) {
         ...payload,
       };
       break;
-
     default:
       break;
   }

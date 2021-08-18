@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, NativeModules } from 'react-native';
 import { TYSdk, NavigatorLayout } from 'tuya-panel-kit';
 import composeLayout from './composeLayout';
 import configureStore from './redux/configureStore';
@@ -11,10 +11,11 @@ import Addscenes from './containers/Home/scenes/Addscenes';
 import Preview from './containers/Home/scenes/Preview';
 
 console.disableYellowBox = true;
-
+const DorelManager = NativeModules.TYRCTDorelManager;
 export const store = configureStore();
 
 class MainLayout extends NavigatorLayout {
+  state = { roomName: '' }
   /**
    *
    * @desc
@@ -88,6 +89,17 @@ class MainLayout extends NavigatorLayout {
       uiConfig = formatUiConfig(devInfo);
     }
 
+    if (this.prevDevId === undefined || this.prevDevId !== devInfo.devId) {
+      if (DorelManager && DorelManager.getRoomName) {
+        DorelManager.getRoomName(devInfo.devId, res => {
+          if (typeof res === 'string' && res.length !== 0 ) {
+            this.setState({ roomName: res })
+          }
+        });
+      }
+    }
+    this.prevDevId = devInfo.devId;
+
     switch (route.id) {
       case 'main':
         component = (
@@ -99,6 +111,7 @@ class MainLayout extends NavigatorLayout {
             uiConfig={uiConfig}
             dispatch={dispatch}
             navigator={navigator}
+            roomName={this.state.roomName}
           />
         );
         break;

@@ -2,16 +2,16 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-    View, Image, Text, TouchableOpacity, StyleSheet, ImageBackground
+    View, Image, Text, TouchableOpacity, StyleSheet
 } from 'react-native';
-import { Slider, Utils, Tabs, SwitchButton, Collapsible, Progress } from 'tuya-panel-kit';
+import { Slider, Utils, SwitchButton, Collapsible } from 'tuya-panel-kit';
 import ColorPicker from '../../../components/color-picker/color-picker';
 import ColorSlider from '../../../components/ColorSlider';
 import light1 from '../../../assets/img/light1.png';
 import light2 from '../../../assets/img/light2.png';
 import light3 from '../../../assets/img/light3.png';
 import light4 from '../../../assets/img/light4.png';
-import color from '../../../assets/img/color-picker2.png';
+import TempPicker from '../../../components/TemperaturePicker';
 import Strings from '../../../i18n';
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
@@ -21,22 +21,25 @@ const { ColorTempSlider1 } = ColorSlider;
 export default class Index extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            activeKey1: 'CLS',
-            d1: [
-                { value: 'CLS', label: Strings.getLang('dsc_colours') },
-                { value: 'WHI', label: Strings.getLang('dsc_white') },
-            ],
-        };
     }
-    _handleD1Change = (tab) => {
-        this.setState({ activeKey1: tab.value });
-    };
     render() {
-        const { onValueChange, switch_led, temp_value, bright_value, onComplete, hsb, onCompleteChange, brightness, dataSource, handleD1Change, activeKey, isWhite } = this.props;
+        const {
+            onValueChange,
+            switch_led,
+            temp_value,
+            bright_value,
+            onComplete,
+            hsb,
+            onCompleteChange,
+            brightness,
+            handleChange,
+            active,
+            isWhite,
+            onStopScroll
+        } = this.props;
         return (
             <View style={{
-                minHeight: convertX(69),
+                minHeight: switch_led ? convertX(441) : convertX(69),
                 borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
                 borderBottomWidth: convertX(1),
             }}>
@@ -55,39 +58,34 @@ export default class Index extends Component {
                     collapsed={!switch_led}
                     align="top"
                 >
-                    <View style={styles.callapsibleStyle}>
-                        <Tabs
-                            style={styles.tabsStyle}
-                            tabActiveStyle={{
-                                borderRadius: convertX(17),
-                                backgroundColor: isWhite ? '#fff' : '#2E5288',
-                                width: convertX(178),
-                                height: convertX(36),
-                            }}
-                            tabTextStyle={{
-                                color: isWhite ? '#2D365F' : '#fff',
-                                fontSize: convertX(15),
-                            }}
-                            tabActiveTextStyle={{
-                                color: isWhite ? '#2D365F' : '#fff',
-                                fontSize: convertX(15),
-                            }}
-                            underlineStyle={styles.underlineStyle}
-                            wrapperStyle={styles.wrapperStyle}
-                            activeKey={activeKey}
-                            dataSource={dataSource}
-                            onChange={handleD1Change}
-                            maxItem={2}
-                            background={isWhite ? '#CBDDEC' : '#212B4C'}
-                            swipeable={false}
-                        // underlineWidth={{ marginTop: convertX(20) }}
-                        >
-                            <Tabs.TabPanel>
+                    <View style={{
+                        marginTop: convertX(18)
+                    }}>
+                        {/* tab */}
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={[{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: convertX(343), height: convertX(40), borderRadius: convertX(20) }, isWhite ? { backgroundColor: '#cbdcec' } : { backgroundColor: '#212b4c' }]}>
+                                <TouchableOpacity onPress={() => handleChange && handleChange('colour')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'colour' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_colours')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleChange && handleChange('white')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'white' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_white')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={{
+                            height: convertX(335),
+                        }}>
+                            {active === 'colour' ?
                                 <View
                                     style={{
                                         flex: 1,
                                         justifyContent: 'center',
                                         alignItems: 'center',
+                                        height: convertX(335),
                                     }}
                                 >
                                     <View style={{ alignItems: 'center', width: convertX(343) }}>
@@ -97,6 +95,8 @@ export default class Index extends Component {
                                             height={convertX(239)}
                                             boxStyle={{}}
                                             hasInner={true}
+                                            offsetAngle={90}
+                                            reversal={true}
                                             innerElement={
                                                 <View style={{
                                                     width: convertX(79),
@@ -109,7 +109,7 @@ export default class Index extends Component {
                                             innerRadius={35}
                                             // colorPickerImage={color}
                                             hsb={hsb}
-                                            // onValueChange={this.handleValueChange}
+                                            onValueChange={onStopScroll && onStopScroll}
                                             onComplete={onCompleteChange && onCompleteChange}
                                         />
                                     </View>
@@ -117,54 +117,56 @@ export default class Index extends Component {
                                         <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
                                         <ColorTempSlider1
                                             value={brightness}
-                                            // onChange={this.handleWto}
+                                            min={1}
+                                            max={100}
                                             onComplete={value => {
                                                 onComplete && onComplete("brightness", value)
                                             }}
-                                            // containerStyle={styles.containerStyle}
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
                                             hsb={hsb}
+                                            containerStyle={{ width: convertX(285) }}
                                         />
                                         <Image source={isWhite ? light2 : light4} style={{ width: convertX(22), height: convertX(22) }} />
                                     </View>
-                                </View>
-                            </Tabs.TabPanel>
-                            <Tabs.TabPanel>
+                                </View> :
                                 <View
                                     style={{
                                         flex: 1,
                                         justifyContent: 'center',
                                         alignItems: 'center',
+                                        height: convertX(335),
                                     }}
                                 >
                                     <View style={{ alignItems: 'center', justifyContent: 'center', width: convertX(343) }}>
-                                        <ImageBackground source={color} style={{ width: convertX(239), height: convertX(239), marginTop: convertX(20), marginBottom: convertX(20) }}>
-                                            <Progress
-                                                style={{ width: convertX(239), height: convertX(239), bottom: convertX(10), right: convertX(5) }}
-                                                foreColor={{
-                                                    "0%": "#fff",
-                                                    "100%": "#fff",
-                                                }}
-                                                scaleHeight={convertX(40)}
-                                                backStrokeOpacity={0}
-                                                foreStrokeOpacity={0}
-                                                thumbStrokeWidth={convertX(2)}
-                                                thumbStroke={'#fff'}
-                                                thumbFill={'#F4D779'}
-                                                startDegree={270}
-                                                andDegree={360}
-                                                min={0}
-                                                max={100}
-                                                needMaxCircle={true}
-                                                needMinCircle={true}
-                                                thumbRadius={15}
-                                                value={temp_value / 10}
-                                                onSlidingComplete={(value) => {
-                                                    onComplete && onComplete("temp_value", value)
-                                                }}
-                                            />
-                                        </ImageBackground>
+                                        <TempPicker
+                                            width={convertX(239)}
+                                            height={convertX(239)}
+                                            hasInner={true}
+                                            offsetAngle={90}
+                                            reversal={true}
+                                            // innerElement={
+                                            //     <TouchableOpacity style={{
+                                            //         width: convertX(79),
+                                            //         height: convertX(79),
+                                            //         backgroundColor: '#3F4C7A',
+                                            //         borderRadius: convertX(50),
+                                            //         justifyContent: 'center',
+                                            //         alignItems: 'center',
+                                            //         zIndex: 99,
+                                            //     }}
+                                            //     >
+                                            //     </TouchableOpacity>
+                                            // }
+                                            innerRadius={convertX(35)}
+                                            temp_value={temp_value / 10}
+                                            min={0}
+                                            max={100}
+                                            onValueChange={onStopScroll && onStopScroll}
+                                            onComplete={(value) => {
+                                                onComplete && onComplete("temp_value", value)
+                                            }}
+                                        />
                                     </View>
                                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
                                         <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
@@ -181,8 +183,8 @@ export default class Index extends Component {
                                         <Image source={isWhite ? light2 : light4} style={{ width: convertX(23), height: convertX(23) }} />
                                     </View>
                                 </View>
-                            </Tabs.TabPanel>
-                        </Tabs>
+                            }
+                        </View>
                     </View>
                 </Collapsible>
             </View >
@@ -223,10 +225,10 @@ const styles = StyleSheet.create({
         height: convertX(16),
     },
     thumbStyle: {
-        width: convertX(20),
-        height: convertX(20),
+        width: convertX(30),
+        height: convertX(30),
         borderWidth: convertX(2),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#eeeeee',
     },
     SliderStyle: {
         flexDirection: 'row',

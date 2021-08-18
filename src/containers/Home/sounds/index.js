@@ -24,7 +24,13 @@ export default class Index extends Component {
         this.setState({ collapsed: !this.state.collapsed });
     };
     render() {
-        const { onselect, selectIndex, dataSource, handleD1Change, activeKey, isWhite } = this.props;
+        const {
+            onselect,
+            selectIndex,
+            handleChange,
+            active,
+            isWhite
+        } = this.props;
         return (
             <View style={{
                 width: convertX(375),
@@ -48,35 +54,29 @@ export default class Index extends Component {
                     collapsed={this.state.collapsed}
                     align="top"
                 >
-                    <View style={styles.callapsibleStyle}>
-                        <Tabs
-                            style={styles.tabsStyle}
-                            tabActiveStyle={{
-                                borderRadius: convertX(17),
-                                backgroundColor: isWhite ? '#fff' : '#2E5288',
-                                width: convertX(178),
-                                height: convertX(36),
-                            }}
-                            tabTextStyle={{
-                                color: isWhite ? '#2D365F' : '#fff',
-                                fontSize: convertX(15),
-                            }}
-                            tabActiveTextStyle={{
-                                color: isWhite ? '#2D365F' : '#fff',
-                                fontSize: convertX(15),
-                            }}
-                            underlineStyle={styles.underlineStyle}
-                            wrapperStyle={styles.wrapperStyle}
-                            tabContentStyle={styles.tabContentStyle}
-                            activeKey={activeKey}
-                            dataSource={dataSource}
-                            onChange={handleD1Change}
-                            maxItem={2}
-                            background={isWhite ? '#CBDDEC' : '#212B4C'}
-                            swipeable={false}
-                        // underlineWidth={{ marginTop: convertX(20) }}
-                        >
-                            <Tabs.TabPanel>
+                    <View style={{
+                        marginTop: convertX(18)
+                    }}>
+                        {/* tab */}
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={[{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: convertX(343), height: convertX(40), borderRadius: convertX(20) }, isWhite ? { backgroundColor: '#cbdcec' } : { backgroundColor: '#212b4c' }]}>
+                                <TouchableOpacity onPress={() => handleChange && handleChange('lullabies')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'lullabies' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Lullabies')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleChange && handleChange('soothing')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'soothing' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Soothing')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={{
+                            height: convertX(526),
+                        }}>
+                            {active === 'lullabies' ?
+
                                 <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
                                     <View style={{ flex: 1, alignItems: 'center', width: convertX(375), }}>
                                         {LullabyMap.map((item, index) => {
@@ -102,8 +102,8 @@ export default class Index extends Component {
                                         })}
                                     </View>
                                 </ScrollView>
-                            </Tabs.TabPanel>
-                            <Tabs.TabPanel>
+                                :
+
                                 <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
                                     <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
                                         <Text
@@ -130,7 +130,7 @@ export default class Index extends Component {
                                                                 alignItems: 'center',
                                                                 marginBottom: convertX(16),
                                                                 borderWidth: convertX(3),
-                                                                borderColor: '#FDDA24',
+                                                                borderColor: isWhite ? '#00699b' : '#FDDA24',
                                                             } : {
                                                                 width: convertX(56),
                                                                 height: convertX(56),
@@ -146,11 +146,18 @@ export default class Index extends Component {
                                                     >
                                                         <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                     </TouchableOpacity>
-                                                    <Text style={{
-                                                        fontSize: convertX(14),
-                                                        marginBottom: convertX(16),
-                                                        color: isWhite ? null : '#fff',
-                                                    }}>{item.text}</Text>
+                                                    <View>
+                                                        <Text style={{
+                                                            fontSize: convertX(14),
+                                                            marginBottom: convertX(2),
+                                                            color: isWhite ? null : '#fff',
+                                                        }}>{item.text}</Text>
+                                                        <Text style={{
+                                                            fontSize: convertX(14),
+                                                            marginBottom: convertX(8),
+                                                            color: isWhite ? null : '#fff',
+                                                        }}>{item.text2}</Text>
+                                                    </View>
                                                 </View>
                                             )
                                         })}
@@ -176,7 +183,7 @@ export default class Index extends Component {
                                                             alignItems: 'center',
                                                             marginBottom: convertX(16),
                                                             borderWidth: convertX(3),
-                                                            borderColor: '#FDDA24',
+                                                            borderColor: isWhite ? '#00699b' : '#FDDA24',
                                                         } :
                                                             {
                                                                 width: convertX(56),
@@ -193,18 +200,25 @@ export default class Index extends Component {
                                                     >
                                                         <Image source={item.icon} style={styles.ImageStyles}></Image>
                                                     </TouchableOpacity>
-                                                    <Text style={{
-                                                        fontSize: convertX(14),
-                                                        marginBottom: convertX(16),
-                                                        color: isWhite ? null : '#fff',
-                                                    }}>{item.text}</Text>
+                                                    <View style={{}}>
+                                                        <Text style={{
+                                                            fontSize: convertX(14),
+                                                            marginBottom: convertX(2),
+                                                            color: isWhite ? null : '#fff',
+                                                        }}>{item.text}</Text>
+                                                        <Text style={{
+                                                            fontSize: convertX(14),
+                                                            marginBottom: convertX(8),
+                                                            color: isWhite ? null : '#fff',
+                                                        }}>{item.text2}</Text>
+                                                    </View>
                                                 </View>
                                             )
                                         })}
                                     </View>
                                 </ScrollView>
-                            </Tabs.TabPanel>
-                        </Tabs>
+                            }
+                        </View>
                     </View>
                 </Collapsible>
             </View>
@@ -243,7 +257,7 @@ const styles = StyleSheet.create({
         marginBottom: convertX(16),
     },
     musicMap1: {
-        height: convertX(62),
+        height: convertX(56),
         width: convertX(343),
         justifyContent: 'center',
     },

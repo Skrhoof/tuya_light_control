@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { sum } from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -17,9 +17,10 @@ import Delete2 from '../../../assets/img/delete2.png';
 import jt_shang from '../../../assets/img/jt_shang.png';
 import jt_xia from '../../../assets/img/jt_xia.png';
 import Strings from '../../../i18n';
-import { parseScene, combineScene, electricity, isEmpty } from './utils';
+import { parseScene, combineScene } from './utils';
 import { MusicMap } from '../sounds/utils';
-import { putDeviceData } from '../../../utils';
+import { putDeviceData, convertRadix } from '../../../utils';
+import strings from '../../../i18n/strings';
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
 const { convertX } = Utils.RatioUtils;
@@ -36,19 +37,32 @@ class Index extends Component {
     };
 
     unfoldTo = index => {
-        const { navigator, onSaveHome } = this.props;
-        // let newSelectedIndex = null;
-        // Timelist.some((item, index) => {
-        //     if (item === null) {
-        //         newSelectedIndex = index;
-        //         return true;
-        //     }
-        // });
+        const { navigator, onSaveHome, home } = this.props;
+        const { customList } = home;
+        let newSelectedIndex = null;
+        customList.some((item, index) => {
+            if (item === null || item.State !== '02') {
+                newSelectedIndex = index;
+                return true;
+            }
+        });
         onSaveHome({
-            customIndex: index,
+            customIndex: newSelectedIndex,
         });
         navigator && navigator.push({ id: 'Addscenes' });
     };
+
+    sceneTo = index => {
+        if (index == null) {
+            putDeviceData({
+                scene_idx: `none`,
+            });
+        } else {
+            putDeviceData({
+                scene_idx: `scene_${index + 5}`,
+            });
+        }
+    }
 
     deleteScene = () => {
         this.setState({ delete: !this.state.delete })
@@ -57,24 +71,19 @@ class Index extends Component {
     }
 
     componentDidMount() {
-        const { onSaveHome, dpState } = this.props;
+        const { onSaveHome, dpState, home } = this.props;
+        const { customList } = home;
         const { scene } = dpState;
-        if (isEmpty(scene)) {
-            const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-            const arrlist1 = parseScene(arr[0]);
-            const arrlist2 = parseScene(arr[1]);
+        if (scene == 0) {
+            const arr = parseScene('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
             onSaveHome({
-                customList: [...arrlist1],
-                customList1: [...arrlist2],
+                customList: [...arr],
             });
         } else {
-            const arr = electricity(scene);
-            // const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-            const arrlist1 = parseScene(arr[0]);
-            const arrlist2 = parseScene(arr[1]);
+            // scene.padEnd(136, '0');
+            const arr = parseScene(scene);
             onSaveHome({
-                customList: [...arrlist1],
-                customList1: [...arrlist2],
+                customList: [...arr],
             });
         }
     }
@@ -82,33 +91,51 @@ class Index extends Component {
     componentDidUpdate(prevProps) {
         const { dpState: prevDPState } = prevProps;
         const { dpState, onSaveHome } = this.props;
+        const { scene } = dpState;
         if (dpState.scene !== prevDPState.scene) {
-            const arr = electricity(dpState.scene);
-            // const arr = electricity('0002010100f003e803200000000001033201020101000003e803200000000001023202020101000000000000032001f4010c3203020101007803e8032000000000011232ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff')
-            const arrlist1 = parseScene(arr[0]);
-            const arrlist2 = parseScene(arr[1]);
+            const arrlist = scene.padEnd(136, 'f');
+            const arr = parseScene(arrlist);
             onSaveHome({
-                customList: [...arrlist1],
-                customList1: [...arrlist2],
+                customList: [...arr],
             });
         }
     }
 
     onlistdelete = index => {
         const { home, onSaveHome } = this.props;
-        const { customList, customList1 } = home;
-        customList1[index] = null;
+        const { customList } = home;
+        customList[index] = null;
+        const arr = customList.filter((v, i) => {
+            return v != null
+        })
+        arr.map((item, index) => {
+            item.CustomScene = `${index + 4}`
+        })
         onSaveHome({
-            customList1: [...customList1],
+            customList: [...customList],
         });
-        putDeviceData({
-            scene: combineScene(customList) + combineScene(customList1),
-        });
+        if (customList[0] == null && customList[1] == null && customList[2] == null && customList[3] == null) {
+            putDeviceData({
+                scene: '00',
+                // del_scene: "aa"
+            });
+        } else {
+            putDeviceData({
+                scene: combineScene(customList),
+            });
+        }
     };
+
+    onAlldelete = () => {
+        putDeviceData({
+            scene: '00',
+            // del_scene: "aa",
+        });
+    }
 
     render() {
         const { home, isWhite, dpState } = this.props;
-        const { customList, customList1 } = home;
+        const { customList } = home;
         return (
             <View style={{
                 minHeight: convertX(62),
@@ -121,107 +148,149 @@ class Index extends Component {
                         <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23), marginBottom: convertX(23) }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23)}}>
                     <View style={{ alignItems: 'center' }}>
                         <TouchableOpacity style={styles.sceneView1}
                             onPress={() => putDeviceData({
-                                volume: 8,
-                                colour_data: '00f003e80320',
-                                song: '3',
-                                work_mode: 'colour',
+                                scene_idx: 'scene_1',
+                                // scene: '0002010100f003e8032000000000010332'
                             })}>
                             <Image source={icon1} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Relaxing_Time')}</Text>
+                        
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <TouchableOpacity style={styles.sceneView2}
                             onPress={() => putDeviceData({
-                                volume: 8,
-                                colour_data: '000003e80320',
-                                song: '2',
-                                work_mode: 'colour',
+                                scene_idx: 'scene_2',
                             })}>
                             <Image source={icon2} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Story_Time')}</Text>
+                        
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <TouchableOpacity style={styles.sceneView3}
                             onPress={() => putDeviceData({
-                                volume: 8,
-                                colour_data: '000000000000',
-                                song: '12',
-                                work_mode: 'white',
-                                bright_value: 800,
-                                temp_value: 500,
+                                scene_idx: 'scene_3',
+
                             })}>
                             <Image source={icon3} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Night_Task')}</Text>
+                        
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <TouchableOpacity style={styles.sceneView4}
                             onPress={() => putDeviceData({
-                                volume: 8,
-                                colour_data: '007803e80320',
-                                song: '18',
-                                work_mode: 'colour',
+                                scene_idx: 'scene_4',
                             })}>
                             <Image source={icon4} style={styles.sceneIcon} />
                         </TouchableOpacity>
+                        
+                    </View>
+                </View>
+                {/* 文字 */}
+                <View style={{
+                    flexDirection: 'row', justifyContent: 'space-around',marginBottom: convertX(23) 
+                }}>
+                    <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Relaxing_Time')}
+                    </Text>
+
+                    <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Story_Time')}</Text>
+
+                    <Text style={{
+                            fontSize: convertX(14),
+                            marginTop: convertX(12),
+                            color: isWhite ? '#2D385F' : '#fff',
+                        }}>{Strings.getLang('dsc_Night_Task')}</Text>
+
                         <Text style={{
                             fontSize: convertX(14),
                             marginTop: convertX(12),
                             color: isWhite ? '#2D385F' : '#fff',
                         }}>{Strings.getLang('dsc_Meditation')}</Text>
-                    </View>
+
                 </View>
                 <Collapsible
                     collapsed={this.state.collapsed}
                     align="top"
                 >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: convertX(20) }}>
-                        <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{Strings.getLang('dsc_Custom_Scenes')}</Text>
-                        <TouchableOpacity onPress={this.deleteScene}>
-                            <Image source={isWhite ? Delete : Delete2} style={{ width: convertX(15), height: convertX(15), left: convertX(120) }} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: convertX(20) }}>
+                        <View style={{ marginLeft: convertX(150) }}>
+                            <Text style={{
+                                color: isWhite ? '#2D365F' : '#fff'
+                            }}>
+                                {Strings.getLang('dsc_Custom_Scenes')}
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                            style={{
+                                width: convertX(20),
+                                height: convertX(20),
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight: convertX(20),
+                            }}
+                            onPress={this.deleteScene}
+                        >
+                            <Image
+                                source={isWhite ? Delete : Delete2}
+                                style={{ width: convertX(15), height: convertX(15) }}
+                            />
                         </TouchableOpacity>
                     </View>
                     {this.state.delete === true ?
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                            {customList1.map((item, index) =>
-                                item === null || item.State !== '02' ? null
-                                    :
-                                    <TouchableOpacity key={index} style={{
-                                        justifyContent: 'center',
-                                        width: convertX(56),
-                                        height: convertX(56),
-                                        alignItems: 'center',
-                                        borderRadius: convertX(40),
-                                        backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
-                                    }}
-                                        onPress={() => this.onlistdelete(index)}
-                                    >
-                                        {item.music &&
-                                            <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
-                                        }
-                                    </TouchableOpacity>
-                            )}
+                        <View style={{ flexDirection: 'column' }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
+                                {customList.map((item, index) =>
+                                    item === null || item.State !== '02' ? null
+                                        :
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text style={{
+                                                fontSize: convertX(14),
+                                                marginBottom: convertX(12),
+                                                color: 'red',
+                                            }}>
+                                                {Strings.getLang('dsc_delete')}
+                                            </Text>
+                                            <TouchableOpacity key={index} style={{
+                                                justifyContent: 'center',
+                                                width: convertX(56),
+                                                height: convertX(56),
+                                                alignItems: 'center',
+                                                borderRadius: convertX(40),
+                                                backgroundColor: item.pattern == '01' ? Color.hsb2hex(...[item.H, item.S, item.V]) : '#FBF1D4',
+                                            }}
+                                                onPress={() => this.onlistdelete(index)}
+                                            >
+                                                {item.music &&
+                                                    <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
+                                                }
+                                            </TouchableOpacity>
+                                            <Text style={{
+                                                fontSize: convertX(14),
+                                                marginTop: convertX(12),
+                                                color: isWhite ? '#2D385F' : '#fff',
+                                            }}>{item.text}
+                                            </Text>
+                                        </View>
+                                )}
+                            </View>
+                            <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: convertX(12) }}>
+                                <TouchableOpacity onPress={() => this.onAlldelete()}>
+                                    <Text>{Strings.getLang('dsc_all_delete')}</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View> :
                         <View>
-                            {customList1[0] == null && customList1[1] == null && customList1[2] == null && customList1[3] == null ?
+                            {customList[0] == null && customList[1] == null && customList[2] == null && customList[3] == null ?
                                 < View style={{ alignItems: 'center', marginBottom: convertX(20) }}>
                                     <TouchableOpacity style={{
                                         width: convertX(343),
@@ -238,25 +307,35 @@ class Index extends Component {
                                     </TouchableOpacity>
                                 </View> :
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(20) }}>
-                                    {customList1.map((item, index) => {
+                                    {customList.map((item, index) => {
                                         return (
                                             item === null || item.State !== '02' ?
                                                 <TouchableOpacity key={index} onPress={() => this.unfoldTo(index)}>
                                                     <Image source={isWhite ? scenes : scenes2} style={{ width: convertX(56), height: convertX(56) }} />
                                                 </TouchableOpacity>
                                                 :
-                                                <TouchableOpacity key={index} style={{
-                                                    justifyContent: 'center',
-                                                    width: convertX(56),
-                                                    height: convertX(56),
-                                                    alignItems: 'center',
-                                                    borderRadius: convertX(40),
-                                                    backgroundColor: Color.hsb2hex(...[item.H, item.S, item.V]),
-                                                }}>
-                                                    {item.music &&
-                                                        <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
-                                                    }
-                                                </TouchableOpacity>
+                                                <View style={{ alignItems: 'center' }}>
+                                                    <TouchableOpacity key={index} style={{
+                                                        justifyContent: 'center',
+                                                        width: convertX(56),
+                                                        height: convertX(56),
+                                                        alignItems: 'center',
+                                                        borderRadius: convertX(40),
+                                                        backgroundColor: item.pattern == '01' ? Color.hsb2hex(...[item.H, item.S, item.V]) : '#FBF1D4',
+                                                    }}
+                                                        onPress={() => this.sceneTo(index)}
+                                                    >
+                                                        {item.music &&
+                                                            <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />
+                                                        }
+                                                    </TouchableOpacity>
+                                                    <Text style={{
+                                                        fontSize: convertX(14),
+                                                        marginTop: convertX(12),
+                                                        color: isWhite ? '#2D385F' : '#fff',
+                                                    }}>{item.text}
+                                                    </Text>
+                                                </View>
                                         )
                                     }
                                     )}

@@ -105,6 +105,46 @@ export const parseFault = (fault = 0, schemaFault = {}) => {
   return [];
 };
 
+// 从云端读取数据
+export const getDeviceCloudData = key => {
+  return new Promise((resolve, reject) => {
+    TYNative.getDevProperty(
+      d => {
+        if (typeof d !== 'undefined') {
+          let data = d;
+          if (key) {
+            data = typeof d[key] !== 'undefined' ? d[key] : {};
+          }
+          if (typeof data === 'string') data = JSON.parse(data);
+          // console.log('===getDevProperty===', key, data);
+          resolve(data);
+        } else reject();
+      },
+      () => reject()
+    );
+  });
+};
+
+// 将数据保存到云端
+export const saveDeviceCloudData = (key, data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const jsonString = typeof data === 'object' ? JSON.stringify(data) : data;
+      TYNative.setDevProperty(
+        key,
+        jsonString,
+        d => {
+          // console.log('===setDevProperty===', key, data);
+          resolve(d);
+        },
+        reject
+      );
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
 
 //分割（2）
 export const electricity = (raw = '') => {

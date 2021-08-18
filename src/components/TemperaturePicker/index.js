@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, PanResponder, Image, ImageBackground, ViewPropTypes, TouchableOpacity } from 'react-native';
-import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
-// import ReactNativeComponentTree from 'react/lib/ReactNativeComponentTree';
+import ReactNativeComponentTree from './reactnativeComponentTree';
 import { isEmpty } from '../../utils/index'
 import { Utils } from 'tuya-panel-kit';
-import colorPicker from './res/color-picker.png';
+import colorPicker from './res/color-picker2.png';
 import thumb from './res/thumb2.png';
 import white from './res/white.png';
 
@@ -24,7 +23,7 @@ export default class ColorPicker extends Component {
     style: ViewPropTypes.style,
     width: PropTypes.number,
     height: PropTypes.number,
-    hsb: PropTypes.arrayOf(PropTypes.number),
+    temp_value: PropTypes.number,
     disabled: PropTypes.bool,
     //h值反转，默认false，反转true，正常的是0-360，反转就是y轴镜像，即原来45度对应h是45，反转后315度才是h45
     reversal: PropTypes.bool,
@@ -50,7 +49,7 @@ export default class ColorPicker extends Component {
     style: null,
     width: convert(239),
     height: convert(239),
-    hsb: [180, 100, 100],
+    temp_value: 10,
     disabled: false,
     reversal: false,
     offsetAngle: 0,
@@ -65,19 +64,6 @@ export default class ColorPicker extends Component {
     onComplete() { },
   };
 
-  static correctionHSB(hsb) {
-    const [h, s, b] = hsb;
-    const isSCorrect = s >= minSaturation && s <= maxSaturation;
-    const isBCorrect = b >= minBrightness && b <= maxBrightness;
-
-    if (isSCorrect && isBCorrect) {
-      return hsb;
-    }
-
-    const _s = s < minSaturation ? minSaturation : s > maxSaturation ? maxSaturation : s;
-    const _b = b < minBrightness ? minBrightness : b > maxBrightness ? maxBrightness : b;
-    return [h, _s, _b];
-  }
 
   static getBrightnessRate(brightness) {
     const range = maxBrightness - minBrightness;
@@ -92,7 +78,7 @@ export default class ColorPicker extends Component {
   constructor(props) {
     super(props);
 
-    const { hsb, reversal, offsetAngle } = props;
+    const { temp_value, reversal, offsetAngle, min, max } = props;
     const { cx, cy, r } = this.getCircleInfo(props);
 
     this.reversal = reversal;
@@ -100,10 +86,15 @@ export default class ColorPicker extends Component {
     this.cx = cx;
     this.cy = cy;
     this.r = r;
+    this.min = min;
+    this.max = max;
+    this.valueRange = max - min;
 
-    this.hsb = hsb;
+    this.offserY = null;
+
+    this.temp_value = temp_value;
     //h值中心点
-    const xyRelativeOrigin = this.mapHsbToXYRelativeOrigin(hsb);
+    const xyRelativeOrigin = this.mapValueToXYRelativeOrigin(temp_value);
     //画触摸的圈圈的左上角坐标
     this.thumbXY = this.getThumbCoord(xyRelativeOrigin.x, xyRelativeOrigin.y);
 
@@ -141,19 +132,10 @@ export default class ColorPicker extends Component {
     this.xRelativeOriginStart = 0;
     this.yRelativeOriginStart = 0;
 
-    ['Hue', 'Saturation', 'Brightness'].forEach((item, i) => {
-      this[`set${item}`] = v => {
-        this.hsb[i] = v;
-        const { x, y } = this.mapHsbToXYRelativeOrigin(this.hsb);
-        this.eventHandle(x, y);
-      };
-
-      this[`get${item}`] = () => this.hsb[i];
-    });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { width: newWidth, height: newHeight, hsb: newHsb } = nextProps;
+    const { width: newWidth, height: newHeight, temp_value: newTemp_value } = nextProps;
     const { width, height } = this.props;
 
     if (this.xRelativeOriginStart || this.yRelativeOriginStart) return;
@@ -168,16 +150,14 @@ export default class ColorPicker extends Component {
       shouldUpdate = true;
     }
 
-    const [h, s, b] = this.hsb;
-    const [_h, _s, _b] = newHsb;
 
-    if (Math.abs(_h - h) > 0.5 || Math.abs(_s - s) > 0.5 || Math.abs(_b - b) > 0.5) {
+    if (Math.abs(newTemp_value - this.temp_value) > 0.5) {
       shouldUpdate = true;
     }
 
     if (shouldUpdate) {
-      this.hsb = newHsb;
-      const xyRelativeOrigin = this.mapHsbToXYRelativeOrigin(newHsb);
+      this.temp_value = newTemp_value
+      const xyRelativeOrigin = this.mapValueToXYRelativeOrigin(newTemp_value);
       this.eventHandle(xyRelativeOrigin.x, xyRelativeOrigin.y);
       this.forceUpdate();
     }
@@ -222,28 +202,6 @@ export default class ColorPicker extends Component {
     return Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
   }
 
-  /**
-   * 根据触摸位置计算出hs值
-   */
-  getColorInfo(xRelativeOrigin, yRelativeOrigin) {
-    const h = this.getHueByCoord(xRelativeOrigin, yRelativeOrigin);
-    const s = this.getSaturationByCoord(xRelativeOrigin, yRelativeOrigin);
-    const b = this.hsb[2];
-    return [h, s, b];
-  }
-
-  getHueByCoord(xRelativeOrigin, yRelativeOrigin) {
-    let hue = this.getDegree(xRelativeOrigin, yRelativeOrigin);
-    if (this.reversal) {
-      hue = 360 - hue;
-      return (hue + this.offsetAngle) % 360
-    }
-    else {
-      hue = hue - this.offsetAngle;
-      return hue >= 0 ? hue : 360 + hue;
-    }
-  }
-
   getSaturationByCoord(x, y) {
     const { innerRadius } = this.props;
     const maxLen = this.r - innerRadius;
@@ -251,10 +209,6 @@ export default class ColorPicker extends Component {
     b = b < 0 ? 0 : b > maxLen ? maxLen : b;
     const range = maxSaturation - minSaturation;
     return minSaturation + (b * range) / maxLen;
-  }
-
-  setThumbStyle(style) {
-    this.thumbRef.setNativeProps({ style });
   }
 
   getRadian(xRelativeOrigin, yRelativeOrigin) {
@@ -356,19 +310,11 @@ export default class ColorPicker extends Component {
       };
       this.thumbWrapRef.setNativeProps({ style });
     }
-    const hsb = this.getColorInfo(xFixedRelativeOrigin, yFixedRelativeOrigin);
-    const rgb = Color.hsb2rgb(...hsb);
-    this.hsb = hsb;
-    const hexColor = Color.hsb2hex(...hsb);
-    this.setThumbStyle({ backgroundColor: hexColor });
-    typeof fn === 'function' && fn(hsb, rgb);
+    const value = this.getValueInfo(xFixedRelativeOrigin, yFixedRelativeOrigin);
+    this.temp_value = value
+    typeof fn === 'function' && fn(value);
   }
 
-  updateThumb(saturation) {
-    const [hue, , brightness] = this.hsb;
-    const { x, y } = this.mapHsbToXYRelativeOrigin([hue, saturation, brightness]);
-    this.eventHandle(x, y);
-  }
 
   shouldSetPanHandle = e => {
     const { disabled, innerRadius } = this.props;
@@ -444,24 +390,42 @@ export default class ColorPicker extends Component {
     };
   }
 
-  mapHsbToXYRelativeOrigin(hsb) {
-    //cos(Math.PI) = -1    sin(Math.PI)=0
-    //cos(2*Math.PI) = 1   sin(2*Math.PI)=0
-    //cos(pi/2)=0        sin(90)=1
-    //cos(270)=0           sin(270)=-1
-
-    //按正常情况计算得到h值对应的角度
-    let hue = hsb[0];
-    if (this.reversal) {
-      hue = 360 - hsb[0];
+  /**
+  * 根据value值计算出显示位置
+  */
+  mapValueToXYRelativeOrigin(value) {
+    const { max, min, innerRadius } = this.props
+    const length = 2 * this.r
+    const x = (value - min) / this.valueRange * length + defaultThumbSize / 2
+    let y = this.cy;
+    //圆环中小一边的色温值
+    const minPlaceValue = this.valueRange / length * (this.r - innerRadius) + this.min;
+    //圆环中大一边的色温值
+    const maxPlaceValue = this.valueRange / length * (this.r + innerRadius) + this.min;
+    //中间色温值
+    const midValue = this.valueRange / 2 + min;
+    if (value >= minPlaceValue && value <= maxPlaceValue) {
+      if (value < midValue) {
+        y = this.cy - Math.abs(value - minPlaceValue) * (innerRadius / (midValue - minPlaceValue));
+      } else {
+        y = this.cy - Math.abs(value - maxPlaceValue) * (innerRadius / (midValue - minPlaceValue));
+      }
+    } else {
+      y = this.cy;
     }
-    const rad = ((360 - (hue + this.offsetAngle) % 360) * Math.PI) / 180;
-    const s = hsb[1];
-    const length = this.mapSaturationToLength(s);
-    const x = length * Math.cos(rad) + this.cx;
-    //根据角度计算显示的位置点
-    const y = length * (Math.sin(rad)) + this.cy;
-    return { x, y };
+    if (this.offserY != null) {
+      y = this.offserY;
+    }
+    return { x, y }
+  }
+
+  /**
+ * 根据触摸位置计算出value值
+ */
+  getValueInfo(xRelativeOrigin, yRelativeOrigin) {
+    const { width } = this.props
+    this.offserY =Math.floor(yRelativeOrigin);
+    return Math.floor((xRelativeOrigin - defaultThumbSize / 2) * this.valueRange / width) + this.min;
   }
 
   mapSaturationToLength(s) {
@@ -541,7 +505,7 @@ export default class ColorPicker extends Component {
               width: defaultThumbInnerSize,
               height: defaultThumbInnerSize,
               borderRadius: defaultThumbInnerSize / 2,
-              backgroundColor: Color.hsb2hex(...this.hsb),
+              backgroundColor: "transparent",
             }}
           />
           <Image

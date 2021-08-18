@@ -11,6 +11,7 @@ export const electricity = (raw = '') => {
     return arr;
 };
 
+
 export const isEmpty = (str) => {
     if (typeof (str) == "undefined" || str == null) {
         return true;
@@ -51,14 +52,14 @@ export const parseScene = (raw = '') => {
             // 为 '' 或 null 表示 不应该显示此项
             const CustomScene = itemArr[0] ? convertRadix(itemArr[0], 16, 10, 2) : null;
             const State = itemArr[1] ? convertRadix(itemArr[1], 16, 10, 2) : null;
-            const LightSwitch = itemArr[2] ? convertRadix(itemArr[2], 16, 10, 2) === '00' : null;
+            const LightSwitch = itemArr[2] ? convertRadix(itemArr[2], 16, 10, 2) === '01' : null;
             const pattern = itemArr[3] ? convertRadix(itemArr[3], 16, 10, 2) : '';
             const H = `${itemArr[4]}${itemArr[5]}` ? convertRadix(`${itemArr[4]}${itemArr[5]}`, 16, 10, 4) : '';
             const S = `${itemArr[6]}${itemArr[7]}` ? convertRadix(`${itemArr[6]}${itemArr[7]}`, 16, 10, 4) : '';
             const V = `${itemArr[8]}${itemArr[9]}` ? convertRadix(`${itemArr[8]}${itemArr[9]}`, 16, 10, 4) : '';
             const temp_value = `${itemArr[10]}${itemArr[11]}` ? convertRadix(`${itemArr[10]}${itemArr[11]}`, 16, 10, 4) : '';
             const bright_value = `${itemArr[12]}${itemArr[13]}` ? convertRadix(`${itemArr[12]}${itemArr[13]}`, 16, 10, 4) : '';
-            const musicSwitch = itemArr[14] ? convertRadix(itemArr[14], 16, 10, 2) === '00' : null;
+            const musicSwitch = itemArr[14] ? convertRadix(itemArr[14], 16, 10, 2) === '01' : null;
             const music = itemArr[15] ? convertRadix(itemArr[15], 16, 10, 2) : '';
             const volume = itemArr[16] ? convertRadix(itemArr[16], 16, 10, 2) : '';
             const text = null;
@@ -107,18 +108,18 @@ export const combineScene = (arr = []) => {
             } = item || {};
             raw = CustomScene ? `${raw}${convertRadix(CustomScene, 10, 16).padStart(2, '0')}` : `${raw}ff`;
             raw = State ? `${raw}${convertRadix(State, 10, 16).padStart(2, '0')}` : `${raw}ff`;
-            raw = typeof LightSwitch === 'boolean' ? (LightSwitch ? `${raw}00` : `${raw}01`) : `${raw}ff`;
+            raw = typeof LightSwitch === 'boolean' ? (LightSwitch ? `${raw}01` : `${raw}00`) : `${raw}ff`;
             raw = pattern ? `${raw}${convertRadix(pattern, 10, 16).padStart(2, '0')}` : `${raw}ff`;
             raw = H ? `${raw}${convertRadix(H, 10, 16).padStart(4, '0')}` : `${raw}ffff`;
             raw = S ? `${raw}${convertRadix(S, 10, 16).padStart(4, '0')}` : `${raw}ffff`;
             raw = V ? `${raw}${convertRadix(V, 10, 16).padStart(4, '0')}` : `${raw}ffff`;
             raw = temp_value ? `${raw}${convertRadix(temp_value, 10, 16).padStart(4, '0')}` : `${raw}ffff`;
             raw = bright_value ? `${raw}${convertRadix(bright_value, 10, 16).padStart(4, '0')}` : `${raw}ffff`;
-            raw = typeof musicSwitch === 'boolean' ? (musicSwitch ? `${raw}00` : `${raw}01`) : `${raw}ff`;
+            raw = typeof musicSwitch === 'boolean' ? (musicSwitch ? `${raw}01` : `${raw}00`) : `${raw}ff`;
             raw = music ? `${raw}${convertRadix(music, 10, 16).padStart(2, '0')}` : `${raw}ff`;
             raw = volume ? `${raw}${convertRadix(volume, 10, 16).padStart(2, '0')}` : `${raw}ff`;
         } else {
-            raw = `${raw}ffffffffffffffffffffffffffffffffff`;
+            raw = `${raw}`;
         }
     });
     return raw;

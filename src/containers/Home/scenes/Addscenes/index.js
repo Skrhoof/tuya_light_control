@@ -2,10 +2,9 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
-import { Dialog, Utils, IconFont, Popup } from 'tuya-panel-kit';
+import { Dialog, Utils, IconFont, Popup, Toast } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
-import { convertX, goBack, putDeviceData, convertRadix } from '../../../../utils';
-import icon1 from '../../../../assets/img/icon1.png';
+import { convertX, goBack, putDeviceData, convertRadix, saveDeviceCloudData } from '../../../../utils';
 import CustomLight from '../../light/customLight';
 import CustomSounds from '../../sounds/customSounds';
 import { combineScene, isEmpty } from '../utils';
@@ -29,61 +28,73 @@ class Addscenes extends Component {
             work_mode: '1',
             text: '',
             isWhite: true,
+            show: false,
+            isSave: false,
         };
     };
 
     //保存
     preservation = () => {
         const { onSaveHome, home } = this.props;
-        const { customIndex, customList1 } = home;
-        const { customList } = home;
-        customList1[customIndex].State = '02';
-        if (customList1[customIndex].pattern === '1') {
-            customList1[customIndex].temp_value = '0';
-            customList1[customIndex].bright_value = '0';
+        const { customIndex, customList } = home;
+        customList[customIndex].State = '02';
+        if (customList[customIndex].pattern === '1') {
+            customList[customIndex].temp_value = '0';
+            customList[customIndex].bright_value = '0';
+            onSaveHome({
+                customList: [...customList],
+            });
         } else {
-            customList1[customIndex].S = '0';
-            customList1[customIndex].V = '0';
-            customList1[customIndex].H = '0';
+            customList[customIndex].S = '0';
+            customList[customIndex].V = '0';
+            customList[customIndex].H = '0';
+            onSaveHome({
+                customList: [...customList],
+            });
         }
-        onSaveHome({
-            customList1: [...customList1],
-        });
-        putDeviceData({
-            scene: combineScene(customList) + combineScene(customList1),
-        });
-        goBack();
+        if (customList[customIndex].musicSwitch == false && customList[customIndex].LightSwitch == false) {
+            this.setState({ show: true });
+        } else {
+            onSaveHome({
+                customList: [...customList],
+            });
+            putDeviceData({
+                scene: combineScene(customList),
+            });
+            goBack();
+        }
     };
 
     //预览
     preview = () => {
         const { navigator, onSaveHome, home } = this.props;
-        const { customIndex, customList1 } = home;
-        customList1[customIndex].State = '01';
+        const { customIndex, customList } = home;
+        customList[customIndex].State = '01';
         onSaveHome({
-            customList1: [...customList1],
+            customList: [...customList],
         });
-        // putDeviceData({
-        //     scene: combineScene(newlist),
-        // });
+        putDeviceData({
+            scene: combineScene(customList),
+        });
+        saveDeviceCloudData('10seconds', { seconds: 10 });
         navigator && navigator.push({ id: 'Preview' });
     };
 
 
     componentWillMount() {
         const { home, onSaveHome } = this.props;
-        const { customIndex, customList1 } = home;
+        const { customIndex, customList } = home;
         // const { newlist } = this.state;
-        // const newlist = _.cloneDeep(customList1);
-        if (isEmpty(customList1[customIndex]) || customList1[customIndex].State !== '02') {
-            customList1[customIndex] = {
+        // const newlist = _.cloneDeep(customList);
+        if (isEmpty(customList[customIndex]) || customList[customIndex].State !== '02') {
+            customList[customIndex] = {
                 CustomScene: customIndex + 4, // 自定义场景 array || null
                 State: '00',//状态
                 LightSwitch: true, // 灯光开光 bool || null
                 pattern: '1', // 灯光模式 string
-                H: '0000', // 
-                S: '0000', // 
-                V: '0000', //
+                H: '225', // 
+                S: '230', // 
+                V: '620', //
                 temp_value: '0010',//白光色温
                 bright_value: '0000',//白光亮度
                 musicSwitch: true,
@@ -96,7 +107,7 @@ class Addscenes extends Component {
         //     customIndex,
         // });
         onSaveHome({
-            customList1: [...customList1]
+            customList: [...customList]
         })
     }
 
@@ -113,25 +124,26 @@ class Addscenes extends Component {
 
     onScenes = type => {
         const { home } = this.props;
-        const { customList1, customIndex } = home;
+        const { customList, customIndex } = home;
         const { isWhite } = this.state;
-        // const { LightSwitch, temp_value, bright_value, pattern } = customList1[customIndex];
+        // const { LightSwitch, temp_value, bright_value, pattern } = customList[customIndex];
         switch (type) {
             case 'color':
+                const { onSaveHome } = this.props;
+                console.log('customList', customList);
+                customList[customIndex].pattern = '01';
+                onSaveHome({
+                    customList: [...customList],
+                });
                 Popup.custom({
                     content: (
-                        <View style={[
-                            {
-                                backgroundColor: '#2d385f',
-
-                            },
-                            isWhite ? { backgroundColor: '#fff' } : null,
-                        ]}>
+                        <View style={
+                            isWhite ? { backgroundColor: '#fff' } : { backgroundColor: '#2d385f' }
+                        }>
                             <CustomLight
-                                newlist={customList1}
+                                newlist={customList}
                                 customIndex={customIndex}
                                 isWhite={isWhite}
-
                             />
                             <TouchableOpacity
                                 style={{
@@ -144,7 +156,7 @@ class Addscenes extends Component {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
-                                onPress={Popup.close}
+                                onPress={() => { Popup.close(); this.setState({ isSave: true }) }}
                             >
                                 <Text style={{
                                     fontSize: convertX(15),
@@ -174,7 +186,7 @@ class Addscenes extends Component {
                     cancelText: '',
                     confirmText: '',
                     titleWrapperStyle: {
-                        color: isWhite ? '#2d385f' : '#fff',
+                        backgroundColor: isWhite ? '#fff' : '#2d385f',
                         height: convertX(81),
                         borderBottomWidth: convertX(1),
                         borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
@@ -196,7 +208,7 @@ class Addscenes extends Component {
                             isWhite ? { backgroundColor: '#fff' } : null,
                         ]}>
                             <CustomSounds
-                                newlist={customList1}
+                                customList={customList}
                                 customIndex={customIndex}
                                 isWhite={isWhite}
                             />
@@ -211,7 +223,7 @@ class Addscenes extends Component {
                                     justifyContent: 'center',
                                     alignItems: 'center',
                                 }}
-                                onPress={Popup.close}
+                                onPress={() => { Popup.close(); this.setState({ isSave: true }) }}
                             >
                                 <Text style={{
                                     fontSize: convertX(15),
@@ -241,7 +253,7 @@ class Addscenes extends Component {
                     cancelText: '',
                     confirmText: '',
                     titleWrapperStyle: {
-                        color: isWhite ? '#2d385f' : '#fff',
+                        backgroundColor: isWhite ? '#fff' : '#2d385f',
                         height: convertX(81), borderBottomWidth: convertX(1),
                         borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
                     },
@@ -257,7 +269,7 @@ class Addscenes extends Component {
 
     Textbox = () => {
         const { onSaveHome, home } = this.props;
-        const { customIndex, customList1 } = home;
+        const { customIndex, customList } = home;
         Dialog.prompt({
             title: Strings.getLang('dsc_Scenes_Name'),
             cancelText: Strings.getLang('dsc_cancel'),
@@ -265,20 +277,24 @@ class Addscenes extends Component {
             defaultValue: this.state.text,
             placeholder: "",
             onConfirm: (text, { close }) => {
-                customList1[customIndex].text = text;
+                customList[customIndex].text = text;
                 onSaveHome({
-                    customList1: [...customList1]
+                    customList: [...customList]
                 })
+                this.setState({ isSave: true });
                 close();
             },
         });
     }
 
+
+
     render() {
         const { home } = this.props;
-        const { customList1, customIndex } = home;
-        const { music, H, S, V, text } = customList1[customIndex];
-        const { isWhite } = this.state;
+        const { customList, customIndex } = home;
+        console.log('render customList customIndex', customList, customIndex);
+        const { music, H, S, V, text, pattern } = customList[customIndex];
+        const { isWhite, isSave } = this.state;
         return (
             <View
                 style={[
@@ -286,12 +302,6 @@ class Addscenes extends Component {
                     isWhite ? { backgroundColor: '#fff' } : null,
                 ]}
             >
-                {/* <TopBar
-                    background="#fff"
-                    title={Strings.getLang('dsc_Custom_Scenes')}
-                    color="#000"
-                    onBack={goBack}
-                /> */}
                 <TopBar isWhite={isWhite} />
                 <View style={{
                     justifyContent: 'center',
@@ -312,7 +322,7 @@ class Addscenes extends Component {
                         width: convertX(100),
                         height: convertX(100),
                         alignItems: 'center',
-                        backgroundColor: Color.hsb2hex(...[H, S, V]),
+                        backgroundColor: pattern == '1' ? Color.hsb2hex(...[H, S / 10, V / 10]) : '#FBF1D4',
                         borderRadius: convertX(60),
                     }}>
                         <Image source={MusicMap[music - 1].icon} style={styles.sceneIcon} />
@@ -336,8 +346,14 @@ class Addscenes extends Component {
                             left: convertX(20),
                             color: isWhite ? '#2D365F' : '#fff',
                         }}>{Strings.getLang('dsc_Scenes_Name')}</Text>
-                        <Text style={{ fontSize: convertX(14), left: convertX(90) }}>{text}</Text>
-                        <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                        <View style={{ flexDirection: "row" }}>
+                            <Text style={{
+                                fontSize: convertX(14),
+                                right: convertX(25),
+                                color: isWhite ? '#2D365F' : '#fff',
+                            }}>{text}</Text>
+                            <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                        </View>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={{
@@ -352,7 +368,7 @@ class Addscenes extends Component {
                                 width: convertX(30),
                                 height: convertX(30),
                                 borderRadius: convertX(15),
-                                backgroundColor: Color.hsb2hex(...[H, S, V]),
+                                backgroundColor: pattern == '1' ? Color.hsb2hex(...[H, S / 10, V / 10]) : '#FBF1D4',
                                 right: convertX(25),
                             }}
                             />
@@ -367,7 +383,14 @@ class Addscenes extends Component {
                 }} onPress={() => this.onScenes('sound')}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
                         <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Scenes_Sound')}</Text>
-                        <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{
+                                fontSize: convertX(14),
+                                right: convertX(25),
+                                color: isWhite ? '#2D365F' : '#fff',
+                            }}>{MusicMap[music - 1].text}</Text>
+                            <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
+                        </View>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -390,13 +413,18 @@ class Addscenes extends Component {
                         color: '#89898A',
                     }}>{Strings.getLang('dsc_preview_device')}</Text>
                 </TouchableOpacity>
+                <Toast
+                    show={this.state.show}
+                    text={Strings.getLang('dsc_baocun_tishi')}
+                    onFinish={() => this.setState({ show: false })}
+                />
                 <TouchableOpacity
                     style={{
                         borderWidth: convertX(1),
-                        borderColor: '#C2C6D4',
+                        borderColor: isSave ? '#00699b' : '#C2C6D4',
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: '#C2C6D4',
+                        backgroundColor: isSave ? '#00699b' : '#C2C6D4',
                         borderRadius: convertX(24),
                         marginTop: convertX(24),
                         marginLeft: convertX(16),

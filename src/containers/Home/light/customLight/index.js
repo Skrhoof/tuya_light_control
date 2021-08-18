@@ -2,9 +2,9 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-    View, Image, Text, TouchableOpacity, StyleSheet, ImageBackground
+    View, Image, Text, TouchableOpacity, StyleSheet
 } from 'react-native';
-import { Slider, Utils, Tabs, SwitchButton, Collapsible, Progress } from 'tuya-panel-kit';
+import { Slider, Utils, Tabs, SwitchButton } from 'tuya-panel-kit';
 import ColorPicker from '../../../../components/color-picker/color-picker';
 import { connect } from 'react-redux';
 import ColorSlider from '../../../../components/ColorSlider';
@@ -12,7 +12,7 @@ import light1 from '../../../../assets/img/light1.png';
 import light2 from '../../../../assets/img/light2.png';
 import light3 from '../../../../assets/img/light3.png';
 import light4 from '../../../../assets/img/light4.png';
-import color from '../../../../assets/img/color-picker2.png';
+import TempPicker from '../../../../components/TemperaturePicker';
 import Strings from '../../../../i18n';
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
@@ -34,14 +34,27 @@ class Index extends Component {
         };
     }
 
-    handleD1Change = (tab) => {
+    // componentDidUpdate(prevProps,prevState){
+    //     if(this.state!==prevState){
+    //         this.setState({
+    //             hsb,
+    //         });
+    //     }
+    // }
+
+    componentDidMount() {
+        const { newlist, customIndex } = this.props;
+        this.setState({ hsb: [newlist[customIndex].H, newlist[customIndex].S / 10, newlist[customIndex].V / 10] });
+    }
+
+    handleChange = (tab) => {
         const { customIndex, newlist, onSaveHome } = this.props;
-        newlist[customIndex].pattern = tab.value;
+        newlist[customIndex].pattern = tab;
         this.setState({
-            work_mode: tab.value,
+            work_mode: tab,
         });
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...newlist],
         });
     };
 
@@ -52,26 +65,26 @@ class Index extends Component {
             case 'temp_value':
                 newlist[customIndex].temp_value = Math.round(value) * 10;
                 onSaveHome({
-                    customList1: [...newlist],
+                    customList: [...newlist],
                 });
                 break;
             case 'bright_value':
                 newlist[customIndex].bright_value = Math.round(value);
                 onSaveHome({
-                    customList1: [...newlist],
+                    customList: [...newlist],
                 });
                 break;
             case 'brightness':
                 const { hsb } = this.state;
-                hsb[2] = value;
+                hsb[2] = Math.ceil(value);
                 this.setState({
                     hsb: [...hsb],
                 });
                 newlist[customIndex].H = hsb[0];
-                newlist[customIndex].S = hsb[1];
-                newlist[customIndex].V = hsb[2];
+                newlist[customIndex].S = hsb[1] * 10;
+                newlist[customIndex].V = hsb[2] * 10;
                 onSaveHome({
-                    customList1: [...newlist],
+                    customList: [...newlist],
                 });
                 break;
             default:
@@ -83,7 +96,7 @@ class Index extends Component {
         const { customIndex, newlist, onSaveHome } = this.props;
         newlist[customIndex].LightSwitch = !newlist[customIndex].LightSwitch;
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...newlist],
         });
     };
 
@@ -93,17 +106,17 @@ class Index extends Component {
         });
         const { customIndex, newlist, onSaveHome } = this.props;
         newlist[customIndex].H = Math.round(hsb[0]);
-        newlist[customIndex].S = Math.round(hsb[1]);
-        newlist[customIndex].V = Math.round(hsb[2]);
+        newlist[customIndex].S = Math.round(hsb[1]) * 10;
+        newlist[customIndex].V = Math.round(hsb[2]) * 10;
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...newlist],
         });
     };
 
     render() {
-        const { hsb, activeKey, dataSource } = this.state;
+        const { hsb, work_mode, dataSource } = this.state;
         const { isWhite, newlist, customIndex } = this.props;
-        const { LightSwitch, temp_value, bright_value, onComplete, H, S, V, brightness } = newlist[customIndex];
+        const { LightSwitch, temp_value, bright_value, H, S, V, brightness } = newlist[customIndex];
         return (
             <View style={{
                 minHeight: convertX(69),
@@ -121,34 +134,28 @@ class Index extends Component {
                         onValueChange={() => this.onValueChange()}
                     />
                 </View>
-                <View style={styles.callapsibleStyle}>
-                    <Tabs
-                        style={styles.tabsStyle}
-                        tabActiveStyle={{
-                            borderRadius: convertX(17),
-                            backgroundColor: isWhite ? '#fff' : '#2E5288',
-                            width: convertX(178),
-                            height: convertX(36),
-                        }}
-                        tabTextStyle={{
-                            color: isWhite ? '#2D365F' : '#fff',
-                            fontSize: convertX(15),
-                        }}
-                        tabActiveTextStyle={{
-                            color: isWhite ? '#2D365F' : '#fff',
-                            fontSize: convertX(15),
-                        }}
-                        underlineStyle={styles.underlineStyle}
-                        wrapperStyle={styles.wrapperStyle}
-                        activeKey={activeKey}
-                        dataSource={dataSource}
-                        onChange={this.handleD1Change}
-                        maxItem={2}
-                        background={isWhite ? '#CBDDEC' : '#212B4C'}
-                        swipeable={false}
-                    // underlineWidth={{ marginTop: convertX(20) }}
-                    >
-                        <Tabs.TabPanel>
+                <View style={{
+                    marginTop: convertX(18)
+                }}>
+                    {/* tab */}
+                    <View style={{ alignItems: 'center' }}>
+                        <View style={[{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: convertX(343), height: convertX(40), borderRadius: convertX(20) }, isWhite ? { backgroundColor: '#cbdcec' } : { backgroundColor: '#212b4c' }]}>
+                            <TouchableOpacity onPress={() => this.handleChange('1')}>
+                                <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, work_mode === '1' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                    <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_colours')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.handleChange('0')}>
+                                <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, work_mode === '0' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                    <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_white')}</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={{
+                        height: convertX(335),
+                    }}>
+                        {this.state.work_mode === '1' ?
                             <View
                                 style={{
                                     flex: 1,
@@ -163,6 +170,8 @@ class Index extends Component {
                                         height={convertX(239)}
                                         boxStyle={{}}
                                         hasInner={true}
+                                        offsetAngle={90}
+                                        reversal={true}
                                         innerElement={
                                             <View style={{
                                                 width: convertX(79),
@@ -182,21 +191,24 @@ class Index extends Component {
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
                                     <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
                                     <ColorTempSlider1
-                                        value={brightness}
+                                        value={V / 10}
                                         // onChange={this.handleWto}
                                         onComplete={value => {
                                             this.onComplete("brightness", value)
                                         }}
+                                        min={1}
+                                        max={100}
                                         // containerStyle={styles.containerStyle}
                                         trackStyle={styles.trackStyle}
                                         thumbStyle={styles.thumbStyle}
                                         hsb={hsb}
+                                        containerStyle={{ width: convertX(301) }}
                                     />
                                     <Image source={isWhite ? light2 : light4} style={{ width: convertX(22), height: convertX(22) }} />
                                 </View>
                             </View>
-                        </Tabs.TabPanel>
-                        <Tabs.TabPanel>
+                            :
+
                             <View
                                 style={{
                                     flex: 1,
@@ -205,32 +217,20 @@ class Index extends Component {
                                 }}
                             >
                                 <View style={{ alignItems: 'center', justifyContent: 'center', width: convertX(343) }}>
-                                    <ImageBackground source={color} style={{ width: convertX(239), height: convertX(239), marginTop: convertX(20), marginBottom: convertX(20) }}>
-                                        <Progress
-                                            style={{ width: convertX(239), height: convertX(239), bottom: convertX(10), right: convertX(5) }}
-                                            foreColor={{
-                                                "0%": "#fff",
-                                                "100%": "#fff",
-                                            }}
-                                            scaleHeight={convertX(40)}
-                                            backStrokeOpacity={0}
-                                            foreStrokeOpacity={0}
-                                            thumbStrokeWidth={convertX(2)}
-                                            thumbStroke={'#fff'}
-                                            thumbFill={'#F4D779'}
-                                            startDegree={270}
-                                            andDegree={360}
-                                            min={0}
-                                            max={100}
-                                            needMaxCircle={true}
-                                            needMinCircle={true}
-                                            thumbRadius={15}
-                                            value={temp_value / 10}
-                                            onSlidingComplete={(value) => {
-                                                this.onComplete("temp_value", value)
-                                            }}
-                                        />
-                                    </ImageBackground>
+                                    <TempPicker
+                                        width={convertX(239)}
+                                        height={convertX(239)}
+                                        hasInner={true}
+                                        offsetAngle={90}
+                                        reversal={true}
+                                        innerRadius={convertX(35)}
+                                        temp_value={temp_value / 10}
+                                        min={0}
+                                        max={100}
+                                        onComplete={(value) => {
+                                            this.onComplete("temp_value", value)
+                                        }}
+                                    />
                                 </View>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
                                     <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
@@ -243,12 +243,13 @@ class Index extends Component {
                                         // containerStyle={styles.containerStyle}
                                         trackStyle={styles.trackStyle}
                                         thumbStyle={styles.thumbStyle}
+                                        containerStyle={{ width: convertX(300) }}
                                     />
                                     <Image source={isWhite ? light2 : light4} style={{ width: convertX(23), height: convertX(23) }} />
                                 </View>
                             </View>
-                        </Tabs.TabPanel>
-                    </Tabs>
+                        }
+                    </View>
                 </View>
             </View >
         );
@@ -310,10 +311,10 @@ const styles = StyleSheet.create({
         height: convertX(16),
     },
     thumbStyle: {
-        width: convertX(20),
-        height: convertX(20),
+        width: convertX(30),
+        height: convertX(30),
         borderWidth: convertX(2),
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#eeeeee',
     },
     SliderStyle: {
         flexDirection: 'row',

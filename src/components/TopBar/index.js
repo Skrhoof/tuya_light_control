@@ -5,8 +5,8 @@ import { connect } from 'react-redux';
 import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, goBack, getLang } from '../../utils';
 import arrowIcon from '../../res/arrow.png';
-import LogoIcon from '../../res/Safety1st_Logo_White.png';
-import LogoLightIcon from '../../res/Maxi-Cosi_White.png';
+import LogoIcon from '../../res/Maxi-Cosi_White.png';
+import LogoLightIcon from '../../res/Maxi-Cosi_Dark.png';
 import settingIcon from '../../res/Settings.png';
 import subtractIcon from '../../res/Subtract.png';
 const { ColorUtils } = Utils;
@@ -36,7 +36,7 @@ class TopBar extends Component {
   };
 
   render() {
-    const { isWhite, isbackground, H, S, V } = this.props;
+    const { isWhite, isbackground, pattern, H, S, V } = this.props;
     return (
       <View>
         {/* topBar */}
@@ -52,7 +52,8 @@ class TopBar extends Component {
               paddingHorizontal: convertX(10),
             },
             isWhite ? { backgroundColor: '#fff' } : null,
-            isbackground ? { backgroundColor: Color.hsb2hex(...[H, S, V]) } : null
+            isbackground ? { backgroundColor: Color.hsb2hex(...[H, S, V]) } : null,
+            pattern == '1' ? { backgroundColor: Color.hsb2hex(...[H, S, V]) } : pattern == null ? null : { backgroundColor: '#FBF1D4' }
           ]}
         >
           <View
@@ -71,7 +72,7 @@ class TopBar extends Component {
             </View>
             <Image
               source={isWhite ? LogoLightIcon : LogoIcon}
-              style={{ width: convertX(115), height: convertX(25) }}
+              style={{ width: convertX(110), height: convertX(34) }}
             />
             <View style={{ flexDirection: 'row', width: convertX(70) }}>
               <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>

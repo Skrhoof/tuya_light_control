@@ -21,56 +21,62 @@ class Index extends Component {
         super(props);
         this.state = {
             collapsed: true,
-            activeKey1: 'lullabies',
-            d1: [
-                { value: 'lullabies', label: Strings.getLang('dsc_Lullabies') },
-                { value: 'soothing', label: Strings.getLang('dsc_Soothing') },
-            ],
+            active: 'lullabies',
             music: '1',
-            newlist: [],
+            customList: [],
         }
     }
 
     tapBtn = () => {
         this.setState({ collapsed: !this.state.collapsed });
     };
-    _handleD1Change = (tab) => {
-        this.setState({ activeKey1: tab.value });
+    handleChange = (tab) => {
+        this.setState({ active: tab });
     };
 
     onValueChange = () => {
-        const { customIndex, newlist, onSaveHome } = this.props;
-        newlist[customIndex].musicSwitch = !newlist[customIndex].musicSwitch;
+        const { customIndex, customList, onSaveHome } = this.props;
+        customList[customIndex].musicSwitch = !customList[customIndex].musicSwitch;
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...customList],
         });
     };
 
     onselect = (value) => {
-        const { customIndex, newlist, onSaveHome } = this.props;
-        newlist[customIndex].music = value;
+        const { customIndex, customList, onSaveHome } = this.props;
+        customList[customIndex].music = value;
         this.setState({
             music: value,
         });
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...customList],
         });
     };
 
+    componentWillMount(){
+        const { customIndex, customList, onSaveHome } = this.props;
+        customList[customIndex].volume = 30;
+        onSaveHome({
+            customList: [...customList],
+        });
+    }
+
     // 滑动结束松手后(音量)
     onComplete = (value) => {
-        const { customIndex, newlist, onSaveHome } = this.props;
-        newlist[customIndex].volume = Math.ceil(value);
+        const { customIndex, customList, onSaveHome } = this.props;
+        customList[customIndex].volume = Math.ceil(value);
         onSaveHome({
-            customList1: [...newlist],
+            customList: [...customList],
         });
     };
 
     render() {
-        const { isWhite, newlist, customIndex } = this.props;
-        const { musicSwitch, volume, music } = newlist[customIndex];
+        const { isWhite, customList, customIndex } = this.props;
+        const { musicSwitch, volume, music } = customList[customIndex];
+        const { active } = this.state;
         return (
             <View style={{
+                width: '100%',
                 minHeight: convertX(62),
                 borderBottomWidth: convertX(1),
                 borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
@@ -87,11 +93,11 @@ class Index extends Component {
                         onValueChange={() => this.onValueChange()}
                     />
                 </View>
-                <View style={{ marginTop: convertX(16), flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ marginTop: convertX(16), flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
                     <Image source={isWhite ? mute : mute2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                     <Slider.Horizontal
                         style={{ width: 278 }}
-                        maximumValue={16}
+                        maximumValue={100}
                         minimumValue={0}
                         value={volume}
                         maximumTrackTintColor={isWhite ? "#E5F2E7" : '#2E5288'}
@@ -102,34 +108,25 @@ class Index extends Component {
                     <Image source={isWhite ? voice : voice2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                 </View>
                 <View style={styles.callapsibleStyle}>
-                    <Tabs
-                        style={styles.tabsStyle}
-                        tabActiveStyle={{
-                            borderRadius: convertX(17),
-                            backgroundColor: isWhite ? '#fff' : '#2E5288',
-                            width: convertX(178),
-                            height: convertX(36),
-                        }}
-                        tabTextStyle={{
-                            color: isWhite ? '#2D365F' : '#fff',
-                            fontSize: convertX(15),
-                        }}
-                        tabActiveTextStyle={{
-                            color: isWhite ? '#2D365F' : '#fff',
-                            fontSize: convertX(15),
-                        }}
-                        underlineStyle={styles.underlineStyle}
-                        wrapperStyle={styles.wrapperStyle}
-                        tabContentStyle={styles.tabContentStyle}
-                        activeKey={this.state.activeKey1}
-                        dataSource={this.state.d1}
-                        onChange={this._handleD1Change}
-                        maxItem={2}
-                        background={isWhite ? '#CBDDEC' : '#212B4C'}
-                        swipeable={false}
-                    // underlineWidth={{ marginTop: convertX(20) }}
-                    >
-                        <Tabs.TabPanel>
+                    <View style={{
+                        marginTop: convertX(18)
+                    }}>
+                        {/* tab */}
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={[{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: convertX(343), height: convertX(40), borderRadius: convertX(20) }, isWhite ? { backgroundColor: '#cbdcec' } : { backgroundColor: '#212b4c' }]}>
+                                <TouchableOpacity onPress={() => this.handleChange('lullabies')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'lullabies' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Lullabies')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.handleChange('soothing')}>
+                                    <View style={[{ width: convertX(168), height: convertX(38), justifyContent: 'center', alignItems: 'center', borderRadius: convertX(20) }, active === 'soothing' ? (!isWhite ? { backgroundColor: '#2e5288' } : { backgroundColor: '#FFF' }) : null]}>
+                                        <Text style={{ fontSize: convertX(16), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dsc_Soothing')}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        {active === 'lullabies' ?
                             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
                                 <View style={{ flex: 1, alignItems: 'center' }}>
                                     {LullabyMap.map((item, index) => {
@@ -155,68 +152,70 @@ class Index extends Component {
                                     })}
                                 </View>
                             </ScrollView>
-                        </Tabs.TabPanel>
-                        <Tabs.TabPanel>
+                            :
                             <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
-                                <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
-                                    <Text style={{
-                                        color: isWhite ? '#2D365F' : '#fff',
-                                        fontSize: convertX(14)
-                                    }}>{Strings.getLang('dsc_Nature')}</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                                    {NaturemusicMap.map((item, index) => {
-                                        return (
-                                            <View style={{ width: '25%', flex: 0, alignItems: 'center' }}>
-                                                <TouchableOpacity
-                                                    key={item.code}
-                                                    style={music === item.value ? styles.musicMap3 : styles.musicMap2}
-                                                    onPress={() => {
-                                                        this.onselect(item.value)
-                                                    }}
-                                                >
-                                                    <Image source={item.icon} style={styles.ImageStyles}></Image>
-                                                </TouchableOpacity>
-                                                <Text style={{
-                                                    fontSize: convertX(16),
-                                                    marginBottom: convertX(16),
-                                                    color: isWhite ? null : '#fff',
-                                                }}>{item.text}</Text>
-                                            </View>
-                                        )
-                                    })}
-                                </View>
-                                <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
-                                    <Text style={{
-                                        color: isWhite ? '#2D365F' : '#fff',
-                                        fontSize: convertX(14)
-                                    }}>{Strings.getLang('dsc_Sleep')}</Text>
-                                </View>
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                                    {SleepmusicMap.map((item, index) => {
-                                        return (
-                                            <View style={{ width: '25%', flex: 0, alignItems: 'center', }}>
-                                                <TouchableOpacity
-                                                    key={item.code}
-                                                    style={music === item.value ? styles.musicMap3 : styles.musicMap2}
-                                                    onPress={() => {
-                                                        this.onselect(item.value)
-                                                    }}
-                                                >
-                                                    <Image source={item.icon} style={styles.ImageStyles}></Image>
-                                                </TouchableOpacity>
-                                                <Text style={{
-                                                    fontSize: convertX(16),
-                                                    marginBottom: convertX(16),
-                                                    color: isWhite ? null : '#fff',
-                                                }}>{item.text}</Text>
-                                            </View>
-                                        )
-                                    })}
+                                <View style={{ height: convertX(490) }}>
+                                    <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
+                                        <Text style={{
+                                            color: isWhite ? '#2D365F' : '#fff',
+                                            fontSize: convertX(14)
+                                        }}>{Strings.getLang('dsc_Nature')}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                        {NaturemusicMap.map((item, index) => {
+                                            return (
+                                                <View style={{ width: '25%', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <TouchableOpacity
+                                                        key={item.code}
+                                                        style={music === item.value ? styles.musicMap3 : styles.musicMap2}
+                                                        onPress={() => {
+                                                            this.onselect(item.value)
+                                                        }}
+                                                    >
+                                                        <Image source={item.icon} style={styles.ImageStyles}></Image>
+                                                    </TouchableOpacity>
+                                                    <Text style={{
+                                                        textAlign: 'center',
+                                                        fontSize: convertX(16),
+                                                        marginBottom: convertX(16),
+                                                        color: isWhite ? null : '#fff',
+                                                    }}>{item.text}</Text>
+                                                </View>
+                                            )
+                                        })}
+                                    </View>
+                                    <View style={{ alignItems: 'center', marginTop: convertX(20), marginBottom: convertX(16) }}>
+                                        <Text style={{
+                                            color: isWhite ? '#2D365F' : '#fff',
+                                            fontSize: convertX(14)
+                                        }}>{Strings.getLang('dsc_Sleep')}</Text>
+                                    </View>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                                        {SleepmusicMap.map((item, index) => {
+                                            return (
+                                                <View style={{ width: '25%', flex: 0, alignItems: 'center', }}>
+                                                    <TouchableOpacity
+                                                        key={item.code}
+                                                        style={music === item.value ? styles.musicMap3 : styles.musicMap2}
+                                                        onPress={() => {
+                                                            this.onselect(item.value)
+                                                        }}
+                                                    >
+                                                        <Image source={item.icon} style={styles.ImageStyles}></Image>
+                                                    </TouchableOpacity>
+                                                    <Text style={{
+                                                        fontSize: convertX(16),
+                                                        marginBottom: convertX(16),
+                                                        color: isWhite ? null : '#fff',
+                                                    }}>{item.text}</Text>
+                                                </View>
+                                            )
+                                        })}
+                                    </View>
                                 </View>
                             </ScrollView>
-                        </Tabs.TabPanel>
-                    </Tabs>
+                        }
+                    </View>
                 </View>
             </View >
         );

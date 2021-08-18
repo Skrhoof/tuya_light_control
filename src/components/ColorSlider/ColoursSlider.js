@@ -20,8 +20,8 @@ export default class ColoursSlider extends Component {
     containerStyle: null,
     trackStyle: null,
     thumbStyle: null,
-    onChange: () => {},
-    onComplete: () => {},
+    onChange: () => { },
+    onComplete: () => { },
     hsl: { h: 0, s: 100, l: 50 },
   };
 
@@ -48,11 +48,11 @@ export default class ColoursSlider extends Component {
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => {},
+      onPanResponderGrant: (evt, gestureState) => { },
       onPanResponderMove: this.handlePanResponderMove,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: this.handlePanResponderRelease,
-      onPanResponderTerminate: (evt, gestureState) => {},
+      onPanResponderTerminate: (evt, gestureState) => { },
       onShouldBlockNativeResponder: (evt, gestureState) => {
         return true;
       },
@@ -101,29 +101,34 @@ export default class ColoursSlider extends Component {
 
   handlePanResponderRelease = (evt, gestureState) => {
     const { moveX } = gestureState;
-    const halfThumbWidth = this.thumbWidh / 2;
-    let newLeft = moveX - halfThumbWidth;
-    if (newLeft < this.trackX) {
-      newLeft = this.trackX;
+    if (moveX === 0) {
+      return
     }
-    if (newLeft + this.thumbWidh > this.trackWidh + this.trackX) {
-      newLeft = this.trackWidh + this.trackX - this.thumbWidh;
+    else {
+      const halfThumbWidth = this.thumbWidh / 2;
+      let newLeft = moveX - halfThumbWidth;
+      if (newLeft < this.trackX) {
+        newLeft = this.trackX;
+      }
+      if (newLeft + this.thumbWidh > this.trackWidh + this.trackX) {
+        newLeft = this.trackWidh + this.trackX - this.thumbWidh;
+      }
+      const percent = (newLeft - this.trackX) / (this.trackWidh - this.thumbWidh);
+      const h = 287 * percent;
+      const s = 100;
+      const l = 50;
+      const hsl = {
+        h,
+        s,
+        l,
+      };
+      this.setState({
+        left: newLeft,
+        hsl,
+      });
+      const { onComplete } = this.props;
+      typeof onComplete === 'function' && onComplete({ ...hsl });
     }
-    const percent = (newLeft - this.trackX) / (this.trackWidh - this.thumbWidh);
-    const h = 287 * percent;
-    const s = 100;
-    const l = 50;
-    const hsl = {
-      h,
-      s,
-      l,
-    };
-    this.setState({
-      left: newLeft,
-      hsl,
-    });
-    const { onComplete } = this.props;
-    typeof onComplete === 'function' && onComplete({ ...hsl });
   };
 
   rgb2Percent = ({ h, s, l }) => {

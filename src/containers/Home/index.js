@@ -1,11 +1,10 @@
 import React, { Component, } from 'react';
-import PropTypes from 'prop-types';
 import {
   View, Text, Image, ScrollView, TouchableOpacity, NativeModules
 } from 'react-native';
 import { connect } from 'react-redux';
 import { convertX, showDeviceMenu, putDeviceData, goBack, convertRadix, electricityTo } from '../../utils';
-import { SwitchButton, LinearGradient } from 'tuya-panel-kit';
+import { SwitchButton, LinearGradient, Toast } from 'tuya-panel-kit';
 import { Rect } from "react-native-svg";
 import styles from './styles';
 import Switch from '../../assets/img/switch.png';
@@ -29,10 +28,7 @@ class Index extends Component {
     super(props);
     this.state = {
       hsb: [180, 100, 100],
-      dataSource: [
-        { value: 'colour', label: Strings.getLang('dsc_colours') },
-        { value: 'white', label: Strings.getLang('dsc_white') },
-      ],
+      temp_value: 300,
       work_mode: 'colour',
       selectIndex: '1',
       type: 'lullabies',
@@ -41,19 +37,23 @@ class Index extends Component {
         { value: 'soothing', label: Strings.getLang('dsc_Soothing') },
       ],
       isWhite: true, // 是否是light
+      show: false,
+      roomName: '',
+      isslide: true,
     };
   }
 
-  handleD1Change = (tab) => {
-    this.setState({ work_mode: tab.value });
+  handleChange = (tab) => {
+    this.setState({ work_mode: tab });
     putDeviceData({
-      work_mode: tab.value,
+      work_mode: tab,
     });
   };
-  handleD1Change2 = (tab) => {
-    this.setState({ type: tab.value });
+
+  handleChange2 = (tab) => {
+    this.setState({ type: tab });
     putDeviceData({
-      type: tab.value,
+      type: tab,
     });
   };
   onValueChange = type => {
@@ -73,12 +73,21 @@ class Index extends Component {
         break;
     }
   };
+
+  stopScroll = () => {
+    this.setState({
+      isslide: false,
+    });
+  }
+
   //滑动条调节亮度
   onComplete = (type, value) => {
     switch (type) {
       case 'temp_value':
+        this.setState({ temp_value: Math.ceil(value) * 10, isslide: true });
         putDeviceData({
           temp_value: Math.ceil(value) * 10,
+          work_mode: 'white',
         });
         break;
       case 'bright_value':
@@ -88,13 +97,14 @@ class Index extends Component {
         break;
       case 'brightness':
         const { hsb } = this.state;
-        hsb[2] = value;
+        hsb[2] = Math.ceil(value);
         this.setState({
           hsb: [...hsb],
+          isslide: true,
         });
         const H = convertRadix(hsb[0], 10, 16, 4);
-        const S = convertRadix(hsb[1], 10, 16, 4);
-        const V = convertRadix(hsb[2], 10, 16, 4);
+        const S = convertRadix(hsb[1] * 10, 10, 16, 4);
+        const V = convertRadix(hsb[2] * 10, 10, 16, 4);
         putDeviceData({
           colour_data: H + S + V,
         });
@@ -113,6 +123,7 @@ class Index extends Component {
   onselect = (code, value) => {
     putDeviceData({
       song: value,
+      type: this.state.type,
     });
     this.setState({
       selectIndex: value,
@@ -129,11 +140,13 @@ class Index extends Component {
         });
         break;
       case 'prev_song':
+        this.setState({ show: true })
         putDeviceData({
           prev_next: 'prev_song',
         });
         break;
       case 'next_song':
+        this.setState({ show: true })
         putDeviceData({
           prev_next: 'next_song',
         });
@@ -156,18 +169,20 @@ class Index extends Component {
   onCompleteChange = (hsb) => {
     this.setState({
       hsb,
+      isslide: true,
     });
     const H = convertRadix(hsb[0], 10, 16, 4);
-    const S = convertRadix(hsb[1], 10, 16, 4);
-    const V = convertRadix(hsb[2], 10, 16, 4);
+    const S = convertRadix(hsb[1] * 10, 10, 16, 4);
+    const V = convertRadix(hsb[2] * 10, 10, 16, 4);
     putDeviceData({
       colour_data: H + S + V,
+      work_mode: 'colour',
     });
   };
 
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
-    const { song, colour_data, work_mode, scene } = dpState;
+    const { song, colour_data, work_mode, scene, temp_value, type } = dpState;
     if (DorelManager && DorelManager.isInDarkMode) {
       DorelManager.isInDarkMode(res => {
         this.setState({ isWhite: !res });
@@ -179,7 +194,7 @@ class Index extends Component {
     const V = Number(convertRadix(hsvArr[2], 16, 10));
     if (colour_data) {
       this.setState({
-        hsb: [H, S, V],
+        hsb: [H, S / 10, V / 10],
       });
     }
     if (work_mode) {
@@ -192,18 +207,28 @@ class Index extends Component {
         selectIndex: song,
       });
     }
+    if (type) {
+      this.setState({
+        type: type,
+      })
+    }
+    if (temp_value) {
+      this.setState({
+        temp_value
+      })
+    }
   }
 
   componentDidUpdate(prevProps) {
     const { dpState: prevDPState } = prevProps;
-    const { dpState } = this.props;
-    const { colour_data = '', song, work_mode } = dpState;
+    const { dpState, roomName } = this.props;
+    const { colour_data = '', song, work_mode, temp_value, type } = dpState;
     const H = Number(convertRadix(colour_data.substring(0, 4), 16, 10));
     const S = Number(convertRadix(colour_data.substring(4, 8), 16, 10));
     const V = Number(convertRadix(colour_data.substring(8, 12), 16, 10));
     if (colour_data && dpState.colour_data !== prevDPState.colour_data) {
       this.setState({
-        hsb: [H, S, V],
+        hsb: [H, S / 10, V / 10],
       });
     }
     if (dpState.song !== prevDPState.song) {
@@ -211,27 +236,40 @@ class Index extends Component {
         selectIndex: song,
       });
     }
+    if (dpState.type !== prevDPState.type) {
+      this.setState({
+        type: type,
+      });
+    }
     if (dpState.work_mode !== prevDPState.work_mode) {
       this.setState({
         work_mode: work_mode,
       });
     }
+    if (roomName !== prevProps.roomName) {
+      this.setState({ roomName });
+    }
+    if (temp_value !== prevDPState.temp_value) {
+      this.setState({ temp_value });
+    }
   }
 
   render() {
     const { dpState, home, devInfo, navigator } = this.props;
-    const { child_lock, switch_led, volume, play_pause, temp_value, bright_value, power_switch, timer, scene } = dpState;
-    const { hsb, selectIndex, isWhite } = this.state;
+    const { child_lock, switch_led, volume, play_pause, bright_value, power_switch, timer, play_way } = dpState;
+    const { hsb, selectIndex, isWhite, roomName, isslide, temp_value } = this.state;
     return (
       <View style={[
         { flex: 1, backgroundColor: '#2d385f' },
         isWhite ? { backgroundColor: '#fff' } : null,
-      ]} >
+        dpState.power_switch ? null : { opacity: 0.5 }
+      ]}
+      >
         <TopBar isWhite={isWhite} />
-        <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false}>
+        <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} scrollEnabled={isslide}>
           <View style={styles.topstyle}>
-            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>SOOTHER</Text>
-            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }} >Noah's Room</Text>
+            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{devInfo.name}</Text>
+            <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{roomName}</Text>
           </View>
           <View style={styles.switchstyle}>
             {dpState.power_switch === false ? null :
@@ -269,7 +307,7 @@ class Index extends Component {
               </View> : null
               } */}
               <TouchableOpacity
-                onPress={() => putDeviceData({ power_switch: !power_switch })}>
+                onPress={() => putDeviceData({ power_switch: !power_switch})}>
                 <Image
                   source={Switch}
                   style={{
@@ -280,59 +318,67 @@ class Index extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <Play
-            volume={volume}
-            play_pause={play_pause}
-            onChangeDp={this.handlePause}
-            overValueChange={this.overValueChange}
-            isWhite={isWhite}
-          />
-          <Sounds
-            onselect={this.onselect}
-            selectIndex={selectIndex}
-            dataSource={this.state.dataSource2}
-            activeKey={this.state.type}
-            handleD1Change={this.handleD1Change2}
-            isWhite={isWhite}
-          />
-          <Light
-            switch_led={switch_led}
-            hsb={hsb}
-            brightness={Math.round(hsb[2])}
-            temp_value={temp_value}
-            bright_value={bright_value}
-            onComplete={this.onComplete}
-            onValueChange={this.onValueChange}
-            onCompleteChange={this.onCompleteChange}
-            dataSource={this.state.dataSource}
-            activeKey={this.state.work_mode}
-            handleD1Change={this.handleD1Change}
-            isWhite={isWhite}
-          />
-          <Scenes
-            {...this.props}
-            navigator={navigator}
-            isWhite={isWhite}
-          />
-          <Timer
-            {...this.props}
-            navigator={navigator}
-            isWhite={isWhite}
-            timer={timer}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
-            <View style={{ width: convertX(271) }}>
-              <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
-              <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
-            </View>
-            <SwitchButton
-              value={child_lock}
-              size={{ width: convertX(48), height: convertX(30), activeSize: convertX(25) }}
-              style={{ right: convertX(20) }}
-              onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
-              tintColor={'#868EAA'}
-              onValueChange={() => this.onValueChange('child_lock')}
+          <View pointerEvents={power_switch ? null : "none"}>
+            <Play
+              volume={volume}
+              play_pause={play_pause}
+              onChangeDp={this.handlePause}
+              overValueChange={this.overValueChange}
+              isWhite={isWhite}
+              play_way={play_way}
+
             />
+            <Toast
+              show={this.state.show}
+              text={dpState.song}
+              onFinish={() => this.setState({ show: false })}
+            />
+            <Sounds
+              onselect={this.onselect}
+              selectIndex={selectIndex}
+              active={this.state.type}
+              handleChange={this.handleChange2}
+              isWhite={isWhite}
+            />
+            <Light
+              switch_led={switch_led}
+              hsb={hsb}
+              brightness={Math.round(hsb[2])}
+              temp_value={temp_value}
+              bright_value={bright_value}
+              onComplete={this.onComplete}
+              onValueChange={this.onValueChange}
+              onCompleteChange={this.onCompleteChange}
+              onStopScroll={this.stopScroll}
+              active={this.state.work_mode}
+              handleChange={this.handleChange}
+              isWhite={isWhite}
+            />
+            <Scenes
+              {...this.props}
+              navigator={navigator}
+              isWhite={isWhite}
+            />
+            <Timer
+              {...this.props}
+              navigator={navigator}
+              isWhite={isWhite}
+              timer={timer}
+            />
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
+              <View style={{ width: convertX(271) }}>
+                <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
+                <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
+              </View>
+              <SwitchButton
+                value={child_lock}
+                size={{ width: convertX(48), height: convertX(30), activeSize: convertX(25) }}
+                style={{ right: convertX(20) }}
+                onTintColor={isWhite ? '#55A074' : '#3E9AB7'}
+                tintColor={'#868EAA'}
+                onValueChange={() => this.onValueChange('child_lock')}
+              />
+            </View>
           </View>
           <BottomBar isWhite={isWhite} />
         </ScrollView>

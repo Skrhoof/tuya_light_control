@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { View, Text, NativeModules, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { TYSdk, Utils } from 'tuya-panel-kit';
-import { convertX, goBack } from '../../../../utils';
+import { convertX, goBack, putDeviceData } from '../../../../utils';
 import Strings from '../../../../i18n';
 import Open from './Animated/index';
 import { MusicMap } from '../../sounds/utils';
 import TopBar from '../../../../components/TopBar';
+import { combineScene } from '../utils';
 
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
@@ -20,8 +21,8 @@ class Index extends Component {
 
     state = {
         isbackground: true,
-        isWhite: true,
-        roomName: 'PREVIEW ON DEVICE',
+        isWhite: false,
+        timer: 10,
     };
 
     componentDidMount() {
@@ -30,33 +31,56 @@ class Index extends Component {
                 this.setState({ isWhite: !res });
             });
         }
-        // 房间名
-        // DorelManager.getRoomName(TYSdk.devInfo.devId, res => {
-        //     if (typeof res === 'string' && res.length !== 0) {
-        //         this.setState({ roomName: res });
-        //     }
-        // });
+        this.interval = setInterval(
+            () => this.setState((prevState) => ({ timer: prevState.timer - 1 })),
+            1000
+        );
     }
+
+    componentDidUpdate() {
+        if (this.state.timer === 0) {
+            clearInterval(this.interval);
+            const { onSaveHome, home } = this.props;
+            const { customIndex, customList } = home;
+            customList[customIndex].State = '00';
+            // onSaveHome({
+            //     customList: [...customList],
+            // });
+            putDeviceData({
+                scene: combineScene(customList),
+            });
+            goBack()
+            this.setState({ timer: 10 });
+        }
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
 
     CancelPreview = () => {
         const { onSaveHome, home } = this.props;
-        const { customList1, customIndex } = home;
-        customList1[customIndex].State = '00';
+        const { customList, customIndex } = home;
+        customList[customIndex].State = '00';
         onSaveHome({
-            customList1: [...customList1],
+            customList: [...customList],
+        });
+        putDeviceData({
+            scene: combineScene(customList),
         });
         goBack();
     }
 
     render() {
-        const { isWhite, isbackground, roomName } = this.state;
+        const { isWhite, isbackground } = this.state;
         const { home } = this.props;
-        const { customIndex, customList1 } = home;
-        const { H, S, V, music, text } = customList1[customIndex];
+        const { customIndex, customList } = home;
+        const { H, S, V, music, text, pattern } = customList[customIndex];
         return (
             <View style={{
                 flex: 1,
-                backgroundColor: Color.hsb2hex(...[H, S, V]),
+                backgroundColor: pattern == '1' ? Color.hsb2hex(...[H, S / 10, V / 10]) : '#FBF1D4',
             }}>
                 {/* <TopBar
                     background={Color.hsb2hex(...[H, S, V])}
@@ -67,9 +91,10 @@ class Index extends Component {
                 <TopBar
                     isWhite={isWhite}
                     isbackground={isbackground}
+                    pattern={pattern}
                     H={H}
-                    S={S}
-                    V={V}
+                    S={S / 10}
+                    V={V / 10}
                 />
                 {/* <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(50), borderBottomWidth: convertX(1), borderBottomColor: '#fff' }}>
                     <Text style={{ color: '#fff' }}>PREVIEW ON DEVICE</Text>
@@ -80,7 +105,7 @@ class Index extends Component {
                             { color: '#fff', fontSize: convertX(14) },
                         ]}
                     >
-                        {roomName.length !== 0 ? roomName : null}
+                        {Strings.getLang('dsc_preview_device')}
                     </Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', height: convertX(450), flexDirection: 'column', marginTop: convertX(54) }}>
@@ -99,7 +124,7 @@ class Index extends Component {
                     //     borderRadius: convertX(60),
                     // }}
                     />
-                    <Text style={{ fontSize: convertX(44), color: '#fff' }}>10</Text>
+                    <Text style={{ fontSize: convertX(44), color: '#fff' }}>{this.state.timer}</Text>
                 </View>
                 <View style={{ justifyContent: 'center', alignItems: 'center', }}>
                     <Text style={{ color: '#fff' }}>{Strings.getLang('dsc_Sending_device')}</Text>
@@ -109,7 +134,7 @@ class Index extends Component {
                             borderColor: '#fff',
                             width: convertX(343),
                             height: convertX(48),
-                            backgroundColor: Color.hsb2hex(...[H, S, V]),
+                            backgroundColor: pattern == '1' ? Color.hsb2hex(...[H, S / 10, V / 10]) : '#FBF1D4',
                             borderRadius: convertX(24),
                             marginTop: convertX(34),
                             justifyContent: 'center',

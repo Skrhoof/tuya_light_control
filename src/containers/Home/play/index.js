@@ -6,7 +6,11 @@ import {
 } from 'react-native';
 import { Slider, Utils } from 'tuya-panel-kit';
 import cycle from '../../../assets/img/cycle.png';
+import cycle2 from '../../../assets/img/cycle2.png';
+import cycle3 from '../../../assets/img/cycle3.png';
 import random from '../../../assets/img/random.png';
+import random2 from '../../../assets/img/random2.png';
+import random3 from '../../../assets/img/random3.png';
 import next_song from '../../../assets/img/next_song.png';
 import prev_song from '../../../assets/img/prev_song.png';
 import playpause from '../../../assets/img/play_pause.png';
@@ -19,15 +23,13 @@ import mute2 from '../../../assets/img/Mute2.png';
 import voice2 from '../../../assets/img/voice2.png';
 import suspendIcon from '../../../assets/img/suspend.png';
 import suspendIcon2 from '../../../assets/img/suspend2.png';
-import Strings from '../../../i18n';
-
 const { convertX } = Utils.RatioUtils;
 export default class Index extends Component {
     constructor(props) {
         super(props);
     }
     render() {
-        const { volume, overValueChange, onChangeDp, play_pause, isWhite } = this.props;
+        const { volume, overValueChange, onChangeDp, play_pause, isWhite, play_way } = this.props;
         return (
             <View style={{
                 width: '100%',
@@ -37,35 +39,57 @@ export default class Index extends Component {
                 borderBottomWidth: convertX(1),
             }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(30) }}>
-                    <TouchableOpacity onPress={() => onChangeDp && onChangeDp('cycle')}>
-                        <Image source={cycle} style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => onChangeDp && onChangeDp('cycle')}>
+                        <View style={styles.iconBox}>
+                            {isWhite ?
+                                <Image source={play_way === 'cycle' ? cycle3 : cycle} style={styles.icon} /> :
+                                <Image source={play_way === 'cycle' ? cycle2 : cycle} style={styles.icon} />
+                            }
+                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onChangeDp && onChangeDp('prev_song')}>
-                        <Image source={isWhite ? prev_song : prev_song2} style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => onChangeDp && onChangeDp('prev_song')}>
+                        <View style={styles.iconBox}>
+                            <Image source={isWhite ? prev_song : prev_song2} style={styles.icon} />
+                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onChangeDp && onChangeDp('play_pause')}>
-                        {play_pause === false ? (
-                            <Image source={isWhite ? suspendIcon : suspendIcon2}
-                                style={styles.icon}
-                            />
-                        ) : (
-                            <Image source={isWhite ? playpause : playpause2}
-                                style={styles.icon} />
-                        )}
+                    <TouchableOpacity
+                        onPress={() => onChangeDp && onChangeDp('play_pause')}>
+                        <View style={styles.iconBox}>
+                            {play_pause === false ? (
+                                <Image source={isWhite ? suspendIcon : suspendIcon2}
+                                    style={styles.icon}
+                                />
+                            ) : (
+                                <Image source={isWhite ? playpause : playpause2}
+                                    style={styles.icon} />
+                            )}
+                        </View>
+
                         {/* <Image source={play_pause} style={styles.icon} /> */}
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onChangeDp && onChangeDp('next_song')}>
-                        <Image source={isWhite ? next_song : next_song2} style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => onChangeDp && onChangeDp('next_song')}>
+                        <View style={styles.iconBox}>
+                            <Image source={isWhite ? next_song : next_song2} style={styles.icon} />
+                        </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onChangeDp && onChangeDp('random')}>
-                        <Image source={random} style={styles.icon} />
+                    <TouchableOpacity
+                        onPress={() => onChangeDp && onChangeDp('random')}>
+                        <View style={styles.iconBox}>
+                            {isWhite ?
+                                <Image source={play_way === 'random' ? random3 : random} style={styles.icon} /> :
+                                <Image source={play_way === 'random' ? random2 : random} style={styles.icon} />
+                            }
+                        </View>
                     </TouchableOpacity>
                 </View>
-                <View style={{ marginTop: convertX(36), flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
+                <View style={{ marginTop: convertX(20), flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
                     <Image source={isWhite ? mute : mute2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />
                     <Slider.Horizontal
                         style={{ width: 278 }}
-                        maximumValue={16}
+                        maximumValue={100}
                         minimumValue={0}
                         value={volume}
                         maximumTrackTintColor={isWhite ? "#E5F2E7" : '#2E5288'}
@@ -83,5 +107,11 @@ const styles = StyleSheet.create({
     icon: {
         width: convertX(14),
         height: convertX(16),
+    },
+    iconBox: {
+        width: convertX(36),
+        height: convertX(36),
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });

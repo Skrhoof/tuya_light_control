@@ -1,77 +1,130 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { Utils, Picker } from 'tuya-panel-kit';
-
-const { convertX } = Utils.RatioUtils;
+const { convertX, viewWidth } = Utils.RatioUtils;
 export default class Index extends Component {
   constructor(props) {
     super(props);
-    this.hours = _.times(24, n => _.padStart(n, 2, '0'));
-    this.minutes = _.times(60, n => _.padStart(n, 2, '0'));
+    this.HourArr = _.times(24, n => `${n}`);
+    this.MinutesArr = _.times(60, n => _.padStart(n, 2, '0'));
   }
   render() {
-    const { hour = '00', min = '00', onChangeHour, onChangeMin, isWhite } = this.props;
+    const { hour = '00', minute = '00', onChangeHour, onChangeMin, isWhite } = this.props;
     return (
       <View style={styles.pickerContainer}>
-        <Picker
-          style={[styles.picker, styles.pickerMiddle]}
-          itemTextColor={isWhite ? '#000000' : '#fff'}
-          itemStyle={styles.pickerItem}
-          selectedValue={hour}
-          onValueChange={value => {
-            onChangeHour && onChangeHour(value);
-          }}
-          visibleItemCount={3}
-          textSize={convertX(30)}
+        <View
+          style={[
+            {
+              position: 'absolute',
+              top: convertX(82),
+              borderTopWidth: convertX(1),
+              borderBottomWidth: convertX(1),
+              borderColor: '#3F4C7A',
+              width: viewWidth,
+              height: convertX(36),
+            },
+            isWhite ? { borderColor: '#e6e4ea' } : null,
+          ]}
         >
-          {this.hours.map(value => (
-            <Picker.Item key={value} value={value} label={value} />
-          ))}
-        </Picker>
-        <Picker
-          style={[styles.picker, styles.pickerRight]}
-          itemStyle={styles.pickerItem}
-          itemTextColor={isWhite ? '#000000' : '#fff'}
-          selectedValue={min}
-          onValueChange={value => {
-            onChangeMin && onChangeMin(value);
-          }}
-          visibleItemCount={3}
-          textSize={convertX(30)}
-        >
-          {this.minutes.map(value => (
-            <Picker.Item key={value} value={value} label={value} />
-          ))}
-        </Picker>
+          <View style={{ flexDirection: 'row', alignItems: 'center', height: convertX(30) }}>
+            <Text
+              style={[
+                {
+                  color: '#fff',
+                  fontSize: convertX(18),
+                  marginLeft: '43%',
+                  marginTop: convertX(2),
+                },
+                isWhite ? { color: '#2d385f' } : null,
+              ]}
+            >
+              h
+            </Text>
+            <Text
+              style={[
+                {
+                  color: '#fff',
+                  fontSize: convertX(18),
+                  marginLeft: '23%',
+                  marginTop: convertX(2),
+                },
+                isWhite ? { color: '#2d385f' } : null,
+              ]}
+            >
+              m
+            </Text>
+          </View>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', width: viewWidth }}>
+          <Picker
+            selectedValue={hour}
+            onValueChange={value => {
+              onChangeHour && onChangeHour(value);
+            }}
+            style={[styles.picker]}
+            itemStyle={styles.pickerItem}
+            visibleItemCount={7}
+            loop={true}
+            textSize={convertX(20)}
+            itemTextColor="#aeadb5"
+            selectedItemTextColor={isWhite ? '#2d385f' : '#fcfefe'}
+            dividerColor="transparent"
+          >
+            {this.HourArr.map(value => (
+              <Picker.Item
+                key={value}
+                value={value}
+                label={value}
+                color={isWhite ? '#2d385f' : '#fff'}
+              />
+            ))}
+          </Picker>
+          <Picker
+            selectedValue={minute}
+            onValueChange={value => {
+              onChangeMin && onChangeMin(value);
+            }}
+            style={[styles.picker]}
+            itemStyle={styles.pickerItem}
+            visibleItemCount={7}
+            loop={true}
+            textSize={convertX(20)}
+            itemTextColor="#aeadb5"
+            selectedItemTextColor={isWhite ? '#2d385f' : '#fcfefe'}
+            dividerColor="transparent"
+          >
+            {this.MinutesArr.map(value => (
+              <Picker.Item
+                key={value}
+                value={value}
+                label={value}
+                color={isWhite ? '#2d385f' : '#fff'}
+              />
+            ))}
+          </Picker>
+        </View>
       </View>
     );
   }
 }
 const styles = StyleSheet.create({
   pickerContainer: {
+    width: viewWidth,
+    height: convertX(200),
+    display: 'flex',
     flexDirection: 'row',
-    height: convertX(189),
     justifyContent: 'center',
-    alignContent: 'center',
-    paddingHorizontal: convertX(70),
-    marginBottom: convertX(20),
+    alignItems: 'center',
   },
-
   picker: {
-    marginVertical: 0,
-    height: convertX(189),
+    width: viewWidth / 4,
+    height: convertX(200),
   },
-  pickerMiddle: {
-    flex: 1,
-  },
-
-  pickerRight: {
-    flex: 1,
-  },
-
   pickerItem: {
-    marginTop: 16,
+    width: viewWidth / 4,
+    height: convertX(200),
+    color: '#fff',
   },
 });
