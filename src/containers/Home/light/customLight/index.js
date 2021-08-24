@@ -101,9 +101,10 @@ class Index extends Component {
     };
 
     onCompleteChange = (hsb) => {
+        const hsv = [...hsb];
         this.setState({
-            hsb,
-        });
+            hsb: hsv,
+        }, () => { console.log(this.state.hsb); });
         const { customIndex, newlist, onSaveHome } = this.props;
         newlist[customIndex].H = Math.round(hsb[0]);
         newlist[customIndex].S = Math.round(hsb[1]) * 10;
@@ -111,12 +112,15 @@ class Index extends Component {
         onSaveHome({
             customList: [...newlist],
         });
+        // this.forceUpdate();
+        //console.log(hsb);
     };
 
     render() {
         const { hsb, work_mode, dataSource } = this.state;
         const { isWhite, newlist, customIndex } = this.props;
         const { LightSwitch, temp_value, bright_value, H, S, V, brightness } = newlist[customIndex];
+        console.log('renderhsv', hsb);
         return (
             <View style={{
                 minHeight: convertX(69),
@@ -174,12 +178,24 @@ class Index extends Component {
                                         reversal={true}
                                         innerElement={
                                             <View style={{
-                                                width: convertX(79),
-                                                height: convertX(79),
-                                                backgroundColor: Color.hsb2hex(...hsb),
+                                                width: convertX(75),
+                                                height: convertX(75),
+                                                backgroundColor: '#fff',
                                                 borderRadius: convertX(50),
-                                            }}
-                                            ></View>
+                                                borderWidth: convertX(2),
+                                                borderColor: '#000',
+                                                justifyContent: "center",
+                                                alignItems: 'center'
+                                            }}>
+                                                <View style={{
+                                                    width: convertX(67),
+                                                    height: convertX(67),
+                                                    backgroundColor: Color.hsb2hex(...hsb),
+                                                    borderRadius: convertX(50),
+
+                                                }}
+                                                ></View>
+                                            </View>
                                         }
                                         innerRadius={35}
                                         // colorPickerImage={color}

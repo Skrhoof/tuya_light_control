@@ -322,7 +322,7 @@ export default class ColorPicker extends Component {
             borderRadius: innerRadius,
             backgroundColor: '#F8F8F8',
             borderWidth: convert(4),
-            borderColor: '#fff',
+            borderColor: '#000',
           }}
         />
         <Image
@@ -360,6 +360,7 @@ export default class ColorPicker extends Component {
     const rgb = Color.hsb2rgb(...hsb);
     this.hsb = hsb;
     const hexColor = Color.hsb2hex(...hsb);
+    this.forceUpdate();
     this.setThumbStyle({ backgroundColor: hexColor });
     typeof fn === 'function' && fn(hsb, rgb);
   }

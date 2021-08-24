@@ -130,8 +130,8 @@ class Addscenes extends Component {
         switch (type) {
             case 'color':
                 const { onSaveHome } = this.props;
-                console.log('customList', customList);
-                customList[customIndex].pattern = '01';
+                //console.log('customList', customList);
+                customList[customIndex].pattern = '1';
                 onSaveHome({
                     customList: [...customList],
                 });
@@ -292,7 +292,7 @@ class Addscenes extends Component {
     render() {
         const { home } = this.props;
         const { customList, customIndex } = home;
-        console.log('render customList customIndex', customList, customIndex);
+        //console.log('render customList customIndex', customList, customIndex);
         const { music, H, S, V, text, pattern } = customList[customIndex];
         const { isWhite, isSave } = this.state;
         return (

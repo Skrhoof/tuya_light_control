@@ -30,6 +30,7 @@ class Index extends Component {
         this.state = {
             collapsed: false, //折叠
             delete: false,
+            selectedScene: 0
         }
     }
     tapBtn = () => {
@@ -136,6 +137,7 @@ class Index extends Component {
     render() {
         const { home, isWhite, dpState } = this.props;
         const { customList } = home;
+        const { selectedScene } = this.state;
         return (
             <View style={{
                 minHeight: convertX(62),
@@ -148,74 +150,87 @@ class Index extends Component {
                         <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23)}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23) }}>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.sceneView1}
-                            onPress={() => putDeviceData({
-                                scene_idx: 'scene_1',
-                                // scene: '0002010100f003e8032000000000010332'
-                            })}>
+                        <TouchableOpacity style={[styles.sceneView1, selectedScene == 1 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                            onPress={() => {
+                                putDeviceData({
+                                    scene_idx: 'scene_1',
+                                    // scene: '0002010100f003e8032000000000010332'
+                                });
+                                this.setState({ selectedScene: 1 })
+                            }}>
                             <Image source={icon1} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        
+
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.sceneView2}
-                            onPress={() => putDeviceData({
-                                scene_idx: 'scene_2',
-                            })}>
+                        <TouchableOpacity style={[styles.sceneView2, selectedScene == 2 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                            onPress={() => {
+                                putDeviceData({
+                                    scene_idx: 'scene_2',
+                                })
+                                this.setState({ selectedScene: 2 })
+                            }}>
                             <Image source={icon2} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        
+
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.sceneView3}
-                            onPress={() => putDeviceData({
-                                scene_idx: 'scene_3',
+                        <TouchableOpacity style={[styles.sceneView3, selectedScene == 3 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                            onPress={() => {
+                                putDeviceData({
+                                    scene_idx: 'scene_3',
 
-                            })}>
+                                })
+                                this.setState({ selectedScene: 3 })
+                            }
+                            }>
                             <Image source={icon3} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        
+
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.sceneView4}
-                            onPress={() => putDeviceData({
-                                scene_idx: 'scene_4',
-                            })}>
+                        <TouchableOpacity style={[styles.sceneView4, selectedScene == 4 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                            onPress={() => {
+                                putDeviceData({
+                                    scene_idx: 'scene_4',
+                                })
+                                this.setState({ selectedScene: 4 })
+                            }}>
                             <Image source={icon4} style={styles.sceneIcon} />
                         </TouchableOpacity>
-                        
+
                     </View>
                 </View>
                 {/* 文字 */}
                 <View style={{
-                    flexDirection: 'row', justifyContent: 'space-around',marginBottom: convertX(23) 
+                    flexDirection: 'row', justifyContent: 'space-around', marginBottom: convertX(23)
                 }}>
                     <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Relaxing_Time')}
+                        fontSize: convertX(14),
+                        marginTop: convertX(12),
+                        color: isWhite ? '#2D385F' : '#fff',
+                    }}>{Strings.getLang('dsc_Relaxing_Time')}
                     </Text>
 
                     <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Story_Time')}</Text>
+                        fontSize: convertX(14),
+                        marginTop: convertX(12),
+                        color: isWhite ? '#2D385F' : '#fff',
+                    }}>{Strings.getLang('dsc_Story_Time')}</Text>
 
                     <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Night_Task')}</Text>
+                        fontSize: convertX(14),
+                        marginTop: convertX(12),
+                        color: isWhite ? '#2D385F' : '#fff',
+                    }}>{Strings.getLang('dsc_Night_Task')}</Text>
 
-                        <Text style={{
-                            fontSize: convertX(14),
-                            marginTop: convertX(12),
-                            color: isWhite ? '#2D385F' : '#fff',
-                        }}>{Strings.getLang('dsc_Meditation')}</Text>
+                    <Text style={{
+                        fontSize: convertX(14),
+                        marginTop: convertX(12),
+                        color: isWhite ? '#2D385F' : '#fff',
+                    }}>{Strings.getLang('dsc_Meditation')}</Text>
 
                 </View>
                 <Collapsible
@@ -315,15 +330,18 @@ class Index extends Component {
                                                 </TouchableOpacity>
                                                 :
                                                 <View style={{ alignItems: 'center' }}>
-                                                    <TouchableOpacity key={index} style={{
+                                                    <TouchableOpacity key={index} style={[{
                                                         justifyContent: 'center',
                                                         width: convertX(56),
                                                         height: convertX(56),
                                                         alignItems: 'center',
                                                         borderRadius: convertX(40),
                                                         backgroundColor: item.pattern == '01' ? Color.hsb2hex(...[item.H, item.S, item.V]) : '#FBF1D4',
-                                                    }}
-                                                        onPress={() => this.sceneTo(index)}
+                                                    }, selectedScene == index + 5 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                                                        onPress={() => {
+                                                            this.sceneTo(index)
+                                                            this.setState({ selectedScene: index + 5 })
+                                                        }}
                                                     >
                                                         {item.music &&
                                                             <Image source={MusicMap[item.music - 1].icon} style={styles.sceneIcon} />

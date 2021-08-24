@@ -99,12 +99,24 @@ export default class Index extends Component {
                                             reversal={true}
                                             innerElement={
                                                 <View style={{
-                                                    width: convertX(79),
-                                                    height: convertX(79),
+                                                width: convertX(75),
+                                                height: convertX(75),
+                                                backgroundColor: '#fff',
+                                                borderRadius: convertX(50),
+                                                borderWidth: convertX(2),
+                                                borderColor: '#000',
+                                                justifyContent: "center",
+                                                alignItems: 'center'
+                                            }}>
+                                                <View style={{
+                                                    width: convertX(67),
+                                                    height: convertX(67),
                                                     backgroundColor: Color.hsb2hex(...hsb),
                                                     borderRadius: convertX(50),
+
                                                 }}
                                                 ></View>
+                                            </View>
                                             }
                                             innerRadius={35}
                                             // colorPickerImage={color}

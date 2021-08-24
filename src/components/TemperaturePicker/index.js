@@ -45,6 +45,8 @@ export default class ColorPicker extends Component {
     onComplete: PropTypes.func,
   };
 
+ 
+
   static defaultProps = {
     style: null,
     width: convert(239),
@@ -253,10 +255,72 @@ export default class ColorPicker extends Component {
     return inst._currentElement;
   }
 
+  valueToRGB = (value) => {
+    const tmpKelvin = value * 3.9 + 10;
+    let rgb = [];
+    //求red
+    if (tmpKelvin <= 66) {
+      rgb[0] = 255;
+    } else {
+      let tmpCalc = tmpKelvin - 60;
+      tmpCalc = 329.698727446 * Math.pow(tmpCalc, -0.1332047592);
+      rgb[0] = tmpCalc;
+      if (rgb[0] < 0) {
+        rgb[0] = 0
+      }
+      if (rgb[0] > 255) {
+        rgb[0] = 255
+      }
+    }
+    //求green
+    if (tmpKelvin <= 66) {
+      let tmpCalc = tmpKelvin - 60;
+      tmpCalc = 99.4708025861 * Math.log(tmpCalc) - 161.1195681661;
+      rgb[1] = tmpCalc;
+      if (rgb[1] < 0) {
+        rgb[1] = 0
+      }
+      if (rgb[1] > 255) {
+        rgb[1] = 255
+      }
+    } else {
+      let tmpCalc = tmpKelvin - 60;
+      tmpCalc = 288.1221695283 * Math.pow(tmpCalc, -0.0755148492);
+      rgb[1] = tmpCalc;
+      if (rgb[1] < 0) {
+        rgb[1] = 0
+      }
+      if (rgb[1] > 255) {
+        rgb[1] = 255
+      }
+    }
+    //求blue
+    if (tmpKelvin >= 66) {
+      rgb[2] = 255;
+    } else if (tmpKelvin <= 19) {
+      rgb[2] = 0;
+    } else {
+      let tmpCalc = tmpKelvin - 10;
+      tmpCalc = 138.5177312231 * Math.log(tmpCalc) - 305.0447927307;
+      rgb[2] = tmpCalc;
+      if (rgb[2] < 0) {
+        rgb[2] = 0
+      }
+      if (rgb[2] > 255) {
+        rgb[2] = 255
+      }
+    }
+
+    return rgb;
+
+  }
+
   getMiddleView = () => {
-    const { innerElement, innerRadius, mode, hasInner } = this.props;
+    const { innerElement, innerRadius, mode, hasInner, temp_value } = this.props;
     const Res = { white };
     const isColorMode = mode === 'colour';
+    const rgb = this.valueToRGB(temp_value);
+    console.log(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`);
     if (!hasInner) return null;
     if (innerElement) return innerElement;
     return (
@@ -274,7 +338,7 @@ export default class ColorPicker extends Component {
             width: convert(56),
             height: convert(56),
             borderRadius: innerRadius,
-            backgroundColor: '#F8F8F8',
+            backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
             borderWidth: convert(4),
             borderColor: '#fff',
           }}
@@ -311,7 +375,8 @@ export default class ColorPicker extends Component {
       this.thumbWrapRef.setNativeProps({ style });
     }
     const value = this.getValueInfo(xFixedRelativeOrigin, yFixedRelativeOrigin);
-    this.temp_value = value
+    this.temp_value = value;
+    this.forceUpdate();
     typeof fn === 'function' && fn(value);
   }
 
@@ -424,7 +489,7 @@ export default class ColorPicker extends Component {
  */
   getValueInfo(xRelativeOrigin, yRelativeOrigin) {
     const { width } = this.props
-    this.offserY =Math.floor(yRelativeOrigin);
+    this.offserY = Math.floor(yRelativeOrigin);
     return Math.floor((xRelativeOrigin - defaultThumbSize / 2) * this.valueRange / width) + this.min;
   }
 
