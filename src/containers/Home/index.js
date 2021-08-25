@@ -293,7 +293,7 @@ class Index extends Component {
                   <Image
                     source={MusicMap[selectIndex - 1].icon}
                     style={{
-                      width: convertX(40),
+                      width: convertX(45),
                       height: convertX(45)
                     }}
                   />
@@ -307,7 +307,7 @@ class Index extends Component {
               </View> : null
               } */}
               <TouchableOpacity
-                onPress={() => putDeviceData({ power_switch: !power_switch})}>
+                onPress={() => putDeviceData({ power_switch: !power_switch })}>
                 <Image
                   source={Switch}
                   style={{
