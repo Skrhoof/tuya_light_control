@@ -158,7 +158,7 @@ class Index extends Component {
                                     scene_idx: 'scene_1',
                                     // scene: '0002010100f003e8032000000000010332'
                                 });
-                                this.setState({ selectedScene: 1 })
+                                //this.setState({ selectedScene: 1 })
                             }}>
                             <Image source={icon1} style={styles.sceneIcon} />
                         </TouchableOpacity>
@@ -170,7 +170,7 @@ class Index extends Component {
                                 putDeviceData({
                                     scene_idx: 'scene_2',
                                 })
-                                this.setState({ selectedScene: 2 })
+                               // this.setState({ selectedScene: 2 })
                             }}>
                             <Image source={icon2} style={styles.sceneIcon} />
                         </TouchableOpacity>
@@ -183,7 +183,7 @@ class Index extends Component {
                                     scene_idx: 'scene_3',
 
                                 })
-                                this.setState({ selectedScene: 3 })
+                                //this.setState({ selectedScene: 3 })
                             }
                             }>
                             <Image source={icon3} style={styles.sceneIcon} />
@@ -196,7 +196,7 @@ class Index extends Component {
                                 putDeviceData({
                                     scene_idx: 'scene_4',
                                 })
-                                this.setState({ selectedScene: 4 })
+                                //this.setState({ selectedScene: 4 })
                             }}>
                             <Image source={icon4} style={styles.sceneIcon} />
                         </TouchableOpacity>
@@ -337,10 +337,12 @@ class Index extends Component {
                                                         alignItems: 'center',
                                                         borderRadius: convertX(40),
                                                         backgroundColor: item.pattern == '01' ? Color.hsb2hex(...[item.H, item.S, item.V]) : '#FBF1D4',
-                                                    }, selectedScene == index + 5 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                                                    },
+                                                    selectedScene == index + 5 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null
+                                                    ]}
                                                         onPress={() => {
                                                             this.sceneTo(index)
-                                                            this.setState({ selectedScene: index + 5 })
+                                                            // this.setState({ selectedScene: index + 5 })
                                                         }}
                                                     >
                                                         {item.music &&

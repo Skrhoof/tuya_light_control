@@ -320,7 +320,7 @@ export default class ColorPicker extends Component {
     const Res = { white };
     const isColorMode = mode === 'colour';
     const rgb = this.valueToRGB(temp_value);
-    console.log(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`);
+    // console.log(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`);
     if (!hasInner) return null;
     if (innerElement) return innerElement;
     return (

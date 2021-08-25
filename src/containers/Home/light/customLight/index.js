@@ -120,7 +120,7 @@ class Index extends Component {
         const { hsb, work_mode, dataSource } = this.state;
         const { isWhite, newlist, customIndex } = this.props;
         const { LightSwitch, temp_value, bright_value, H, S, V, brightness } = newlist[customIndex];
-        console.log('renderhsv', hsb);
+        // console.log('renderhsv', hsb);
         return (
             <View style={{
                 minHeight: convertX(69),

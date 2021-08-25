@@ -86,7 +86,7 @@ export default class BottomBar extends Component {
   handleBtn = index => {
     this.setState({ activeIndex: index });
     DorelManager.switchTab(index, res => {
-      console.log(res);
+      // console.log(res);
     });
   };
 

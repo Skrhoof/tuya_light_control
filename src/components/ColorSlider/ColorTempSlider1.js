@@ -153,7 +153,7 @@ export default class ColorTempSlider extends Component {
           l: 100 - (100 - 90) * percent2,
         };
       }
-      console.log(newLeft, moveX);
+      // console.log(newLeft, moveX);
       this.setState({
         left: newLeft,
         hsl,
