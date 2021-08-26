@@ -4,9 +4,11 @@ import { View, PanResponder, Image, ImageBackground, ViewPropTypes, TouchableOpa
 import ReactNativeComponentTree from './reactnativeComponentTree';
 import { isEmpty } from '../../utils/index'
 import { Utils } from 'tuya-panel-kit';
+import { TemperaturePicker } from '@tuya/tuya-panel-lamp-sdk'
 import colorPicker from './res/color-picker2.png';
 import thumb from './res/thumb2.png';
 import white from './res/white.png';
+
 
 const { ColorUtils, RatioUtils } = Utils;
 const { convert } = RatioUtils;
@@ -45,7 +47,7 @@ export default class ColorPicker extends Component {
     onComplete: PropTypes.func,
   };
 
- 
+
 
   static defaultProps = {
     style: null,
@@ -320,11 +322,18 @@ export default class ColorPicker extends Component {
     const Res = { white };
     const isColorMode = mode === 'colour';
     const rgb = this.valueToRGB(temp_value);
+    console.log(temp_value);
+    const newrgb = ColorUtils.color.brightKelvin2rgb(1000, temp_value*10);
+    //console.log(newrgb);
+    const r = Number(newrgb.slice(4, 7));
+    const g = Number(newrgb.slice(9, 12));
+    const b = Number(newrgb.slice(14, 17));
+    console.log('rgb', r, g, b);
     // console.log(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`);
     if (!hasInner) return null;
     if (innerElement) return innerElement;
     return (
-      <TouchableOpacity
+      <TouchableOpacity 
         style={{
           width: innerRadius * 2,
           height: innerRadius * 2,
@@ -338,7 +347,7 @@ export default class ColorPicker extends Component {
             width: convert(56),
             height: convert(56),
             borderRadius: innerRadius,
-            backgroundColor: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
+            backgroundColor: `rgb(${r},${g},${b})`,
             borderWidth: convert(4),
             borderColor: '#fff',
           }}

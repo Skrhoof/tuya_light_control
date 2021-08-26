@@ -113,10 +113,35 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@tuya/tuya-panel-lamp-sdk@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@tuya/tuya-panel-lamp-sdk/-/tuya-panel-lamp-sdk-1.2.0.tgz#2b2b68ab3fe9c898316fd29e1254b64be9b77a9d"
+  integrity sha512-AYFx3MKwQzi+OIERx724m/DTx7TEZjNxVFGtF8NDUePhqwjAlb1tvdzS91ittLvCz51iRTQA0gkveuUwuYqbRw==
+  dependencies:
+    "@types/color" "0.12.1"
+    "@types/lodash" "^4.14.149"
+    "@types/react" "^16.9.17"
+    "@types/react-native" "^0.60.26"
+    color "0.11.4"
+    lodash "^4.17.11"
+    prop-types "^15.6.2"
+    react-addons-shallow-compare "^15.6.2"
+    style-equal "^1.0.0"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.npm.taobao.org/@types/color-name/download/@types/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha1-HBJhu+qhCoBVu8XYq4S3sq/IRqA=
+
+"@types/color@0.12.1":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@types/color/-/color-0.12.1.tgz#00b7c2e468dffcbc6eeeb7d1412eb5e5d454f229"
+  integrity sha1-ALfC5Gjf/Lxu7rfRQS615dRU8ik=
+
+"@types/lodash@^4.14.149":
+  version "4.14.172"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.172.tgz#aad774c28e7bfd7a67de25408e03ee5a8c3d028a"
+  integrity sha512-/BHF5HAx3em7/KkzVKm3LrsD6HZAXuXO1AJZQ3cRRBZj4oHZDviWPYu0aEplAqDFNHZPW6d3G7KN+ONcCCC7pw==
 
 "@types/minimist@^1.2.0":
   version "1.2.0"
@@ -127,6 +152,42 @@
   version "2.4.0"
   resolved "https://registry.npm.taobao.org/@types/normalize-package-data/download/@types/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha1-5IbQ2XOW15vu3QpuM/RTT/a0lz4=
+
+"@types/prop-types@*":
+  version "15.7.4"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
+  integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
+
+"@types/react-native@^0.60.26":
+  version "0.60.31"
+  resolved "https://registry.yarnpkg.com/@types/react-native/-/react-native-0.60.31.tgz#a7af12197f884ad8dd22cda2df9862ed72973ded"
+  integrity sha512-Y0Q+nv50KHnLL+jM0UH68gQQv7Wt6v2KuNepiHKwK1DoWGVd1oYun/GJCnvUje+/V8pMQQWW6QuBvHZz1pV7tQ==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/react" "*"
+
+"@types/react@*":
+  version "17.0.19"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.19.tgz#8f2a85e8180a43b57966b237d26a29481dacc991"
+  integrity sha512-sX1HisdB1/ZESixMTGnMxH9TDe8Sk709734fEQZzCV/4lSu9kJCPbo2PbTRoZM+53Pp0P10hYVyReUueGwUi4A==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^16.9.17":
+  version "16.14.14"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.14.tgz#853de95a32a6a0e719192e222eacad024add2b8e"
+  integrity sha512-uwIWDYW8LznHzEMJl7ag9St1RsK0gw/xaFZ5+uI1ZM1HndwUgmPH3/wQkSb87GkOVg7shUxnpNW8DcN0AzvG5Q==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/scheduler@*":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
+  integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
 JSONStream@^1.0.4:
   version "1.3.5"
@@ -1547,7 +1608,7 @@ color-support@^1.1.3:
   version "1.1.3"
   resolved "http://registry.npm.taobao.org/color-support/download/color-support-1.1.3.tgz#93834379a1cc9a0c61f82f52f0d04322251bd5a2"
 
-color@^0.11.1:
+color@0.11.4, color@^0.11.1:
   version "0.11.4"
   resolved "http://registry.npm.taobao.org/color/download/color-0.11.4.tgz#6d7b5c74fb65e841cd48792ad1ed5e07b904d764"
   dependencies:
@@ -1960,6 +2021,11 @@ cssstyle@^1.0.0:
   resolved "http://registry.npm.taobao.org/cssstyle/download/cssstyle-1.1.1.tgz#18b038a9c44d65f7a8e428a653b9f6fe42faf5fb"
   dependencies:
     cssom "0.3.x"
+
+csstype@^3.0.2:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.8.tgz#d2266a792729fb227cd216fb572f43728e1ad340"
+  integrity sha512-jXKhWqXPmlUeoQnF/EhTtTl4C9SnrxSH/jZUih3jmO6lBKr99rP3/+FmrMj4EFpOXzMtXHAZkd3x0E6h6Fgflw==
 
 csurf@~1.8.3:
   version "1.8.3"
@@ -4219,6 +4285,11 @@ lodash@^3.5.0:
 lodash@^4.13.1, lodash@^4.16.6, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.10"
   resolved "http://registry.npm.taobao.org/lodash/download/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
+
+lodash@^4.17.11:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 lodash@^4.17.15:
   version "4.17.15"
