@@ -22,6 +22,8 @@ const { ColorTempSlider1 } = ColorSlider;
 class Index extends Component {
     constructor(props) {
         super(props);
+        const { newlist, customIndex } = this.props;
+        const { bright_value } = newlist[customIndex];
         this.state = {
             value: true,
             hsb: [180, 100, 100],
@@ -31,6 +33,7 @@ class Index extends Component {
             ],
             work_mode: '1',
             isWhite: true,
+            brightValue: bright_value
         };
     }
 
@@ -117,7 +120,7 @@ class Index extends Component {
     };
 
     render() {
-        const { hsb, work_mode, dataSource } = this.state;
+        const { hsb, work_mode, dataSource, brightValue } = this.state;
         const { isWhite, newlist, customIndex } = this.props;
         const { LightSwitch, temp_value, bright_value, H, S, V, brightness } = newlist[customIndex];
         // console.log('renderhsv', hsb);
@@ -243,6 +246,7 @@ class Index extends Component {
                                         temp_value={temp_value / 10}
                                         min={0}
                                         max={100}
+                                        brightValue={brightValue}
                                         onComplete={(value) => {
                                             this.onComplete("temp_value", value)
                                         }}
@@ -255,7 +259,10 @@ class Index extends Component {
                                         min={10}
                                         max={1000}
                                         // onChange={this.handleWto}
-                                        onComplete={(value) => this.onComplete("bright_value", value)}
+                                        onComplete={(value) => {
+                                            this.onComplete("bright_value", value);
+                                            this.setState({ brightValue: value });
+                                        }}
                                         // containerStyle={styles.containerStyle}
                                         trackStyle={styles.trackStyle}
                                         thumbStyle={styles.thumbStyle}

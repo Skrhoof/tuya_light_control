@@ -174,6 +174,9 @@ export default class ColorPicker extends Component {
     if (this.props.mode !== nextProps.mode) {
       return true;
     }
+    if (this.props.brightValue !== nextProps.brightValue) {
+      return true;
+    }
     return this.isTouching ? false : shouldUpdate;
   }
 
@@ -257,83 +260,83 @@ export default class ColorPicker extends Component {
     return inst._currentElement;
   }
 
-  valueToRGB = (value) => {
-    const tmpKelvin = value * 3.9 + 10;
-    let rgb = [];
-    //求red
-    if (tmpKelvin <= 66) {
-      rgb[0] = 255;
-    } else {
-      let tmpCalc = tmpKelvin - 60;
-      tmpCalc = 329.698727446 * Math.pow(tmpCalc, -0.1332047592);
-      rgb[0] = tmpCalc;
-      if (rgb[0] < 0) {
-        rgb[0] = 0
-      }
-      if (rgb[0] > 255) {
-        rgb[0] = 255
-      }
-    }
-    //求green
-    if (tmpKelvin <= 66) {
-      let tmpCalc = tmpKelvin - 60;
-      tmpCalc = 99.4708025861 * Math.log(tmpCalc) - 161.1195681661;
-      rgb[1] = tmpCalc;
-      if (rgb[1] < 0) {
-        rgb[1] = 0
-      }
-      if (rgb[1] > 255) {
-        rgb[1] = 255
-      }
-    } else {
-      let tmpCalc = tmpKelvin - 60;
-      tmpCalc = 288.1221695283 * Math.pow(tmpCalc, -0.0755148492);
-      rgb[1] = tmpCalc;
-      if (rgb[1] < 0) {
-        rgb[1] = 0
-      }
-      if (rgb[1] > 255) {
-        rgb[1] = 255
-      }
-    }
-    //求blue
-    if (tmpKelvin >= 66) {
-      rgb[2] = 255;
-    } else if (tmpKelvin <= 19) {
-      rgb[2] = 0;
-    } else {
-      let tmpCalc = tmpKelvin - 10;
-      tmpCalc = 138.5177312231 * Math.log(tmpCalc) - 305.0447927307;
-      rgb[2] = tmpCalc;
-      if (rgb[2] < 0) {
-        rgb[2] = 0
-      }
-      if (rgb[2] > 255) {
-        rgb[2] = 255
-      }
-    }
+  // valueToRGB = (value) => {
+  //   const tmpKelvin = value * 3.9 + 10;
+  //   let rgb = [];
+  //   //求red
+  //   if (tmpKelvin <= 66) {
+  //     rgb[0] = 255;
+  //   } else {
+  //     let tmpCalc = tmpKelvin - 60;
+  //     tmpCalc = 329.698727446 * Math.pow(tmpCalc, -0.1332047592);
+  //     rgb[0] = tmpCalc;
+  //     if (rgb[0] < 0) {
+  //       rgb[0] = 0
+  //     }
+  //     if (rgb[0] > 255) {
+  //       rgb[0] = 255
+  //     }
+  //   }
+  //   //求green
+  //   if (tmpKelvin <= 66) {
+  //     let tmpCalc = tmpKelvin - 60;
+  //     tmpCalc = 99.4708025861 * Math.log(tmpCalc) - 161.1195681661;
+  //     rgb[1] = tmpCalc;
+  //     if (rgb[1] < 0) {
+  //       rgb[1] = 0
+  //     }
+  //     if (rgb[1] > 255) {
+  //       rgb[1] = 255
+  //     }
+  //   } else {
+  //     let tmpCalc = tmpKelvin - 60;
+  //     tmpCalc = 288.1221695283 * Math.pow(tmpCalc, -0.0755148492);
+  //     rgb[1] = tmpCalc;
+  //     if (rgb[1] < 0) {
+  //       rgb[1] = 0
+  //     }
+  //     if (rgb[1] > 255) {
+  //       rgb[1] = 255
+  //     }
+  //   }
+  //   //求blue
+  //   if (tmpKelvin >= 66) {
+  //     rgb[2] = 255;
+  //   } else if (tmpKelvin <= 19) {
+  //     rgb[2] = 0;
+  //   } else {
+  //     let tmpCalc = tmpKelvin - 10;
+  //     tmpCalc = 138.5177312231 * Math.log(tmpCalc) - 305.0447927307;
+  //     rgb[2] = tmpCalc;
+  //     if (rgb[2] < 0) {
+  //       rgb[2] = 0
+  //     }
+  //     if (rgb[2] > 255) {
+  //       rgb[2] = 255
+  //     }
+  //   }
 
-    return rgb;
+  //   return rgb;
 
-  }
+  // }
 
   getMiddleView = () => {
-    const { innerElement, innerRadius, mode, hasInner, temp_value } = this.props;
+    const { innerElement, innerRadius, mode, hasInner, temp_value, brightValue } = this.props;
     const Res = { white };
     const isColorMode = mode === 'colour';
-    const rgb = this.valueToRGB(temp_value);
-    console.log(temp_value);
-    const newrgb = ColorUtils.color.brightKelvin2rgb(1000, temp_value*10);
-    //console.log(newrgb);
-    const r = Number(newrgb.slice(4, 7));
-    const g = Number(newrgb.slice(9, 12));
-    const b = Number(newrgb.slice(14, 17));
-    console.log('rgb', r, g, b);
+    //console.log(brightValue);
+    const newrgb = ColorUtils.color.brightKelvin2rgb(brightValue, temp_value * 10);
+    const rgb = newrgb.split(',');
+    //console.log(rgb);
+    const r = Number.parseInt(rgb[0].replace(/[^0-9]/ig, ""));
+    const g = Number.parseInt(rgb[1].replace(/[^0-9]/ig, ""));
+    const b = Number.parseInt(rgb[2].replace(/[^0-9]/ig, ""));
+    //console.log('rgb', r, g, b);
     // console.log(`rgb(${rgb[0]},${rgb[1]},${rgb[2]})`);
     if (!hasInner) return null;
     if (innerElement) return innerElement;
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={{
           width: innerRadius * 2,
           height: innerRadius * 2,

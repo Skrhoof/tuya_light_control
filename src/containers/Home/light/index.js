@@ -19,9 +19,10 @@ const { convertX } = Utils.RatioUtils;
 const { ColorTempSlider2 } = ColorSlider;
 const { ColorTempSlider1 } = ColorSlider;
 export default class Index extends Component {
-    constructor(props) {
-        super(props);
+    state = {
+        brightValue: this.props.bright_value
     }
+
     render() {
         const {
             onValueChange,
@@ -37,6 +38,7 @@ export default class Index extends Component {
             isWhite,
             onStopScroll
         } = this.props;
+        const { brightValue } = this.state;
         return (
             <View style={{
                 minHeight: switch_led ? convertX(441) : convertX(69),
@@ -99,24 +101,24 @@ export default class Index extends Component {
                                             reversal={true}
                                             innerElement={
                                                 <View style={{
-                                                width: convertX(75),
-                                                height: convertX(75),
-                                                backgroundColor: '#fff',
-                                                borderRadius: convertX(50),
-                                                borderWidth: convertX(2),
-                                                borderColor: '#000',
-                                                justifyContent: "center",
-                                                alignItems: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: convertX(67),
-                                                    height: convertX(67),
-                                                    backgroundColor: Color.hsb2hex(...hsb),
+                                                    width: convertX(75),
+                                                    height: convertX(75),
+                                                    backgroundColor: '#fff',
                                                     borderRadius: convertX(50),
+                                                    borderWidth: convertX(2),
+                                                    borderColor: '#000',
+                                                    justifyContent: "center",
+                                                    alignItems: 'center'
+                                                }}>
+                                                    <View style={{
+                                                        width: convertX(67),
+                                                        height: convertX(67),
+                                                        backgroundColor: Color.hsb2hex(...hsb),
+                                                        borderRadius: convertX(50),
 
-                                                }}
-                                                ></View>
-                                            </View>
+                                                    }}
+                                                    ></View>
+                                                </View>
                                             }
                                             innerRadius={35}
                                             // colorPickerImage={color}
@@ -132,7 +134,8 @@ export default class Index extends Component {
                                             min={1}
                                             max={100}
                                             onComplete={value => {
-                                                onComplete && onComplete("brightness", value)
+                                                onComplete && onComplete("brightness", value);
+
                                             }}
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
@@ -174,9 +177,10 @@ export default class Index extends Component {
                                             temp_value={temp_value / 10}
                                             min={0}
                                             max={100}
+                                            brightValue={brightValue}
                                             onValueChange={onStopScroll && onStopScroll}
                                             onComplete={(value) => {
-                                                onComplete && onComplete("temp_value", value)
+                                                onComplete && onComplete("temp_value", value);
                                             }}
                                         />
                                     </View>
@@ -187,7 +191,10 @@ export default class Index extends Component {
                                             min={10}
                                             max={1000}
                                             // onChange={this.handleWto}
-                                            onComplete={(value) => onComplete && onComplete("bright_value", value)}
+                                            onComplete={(value) => {
+                                                onComplete && onComplete("bright_value", value);
+                                                this.setState({ brightValue: value });
+                                            }}
                                             // containerStyle={styles.containerStyle}
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
