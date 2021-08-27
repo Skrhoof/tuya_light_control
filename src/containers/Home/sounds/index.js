@@ -11,6 +11,7 @@ import jt_xia from '../../../assets/img/jt_xia.png';
 import music from '../../../assets/img/music.png';
 import music2 from '../../../assets/img/music2.png';
 import { LullabyMap, NaturemusicMap, SleepmusicMap } from './utils';
+import { getLang } from '../../../utils';
 
 const { convertX } = Utils.RatioUtils;
 export default class Index extends Component {
@@ -130,7 +131,7 @@ export default class Index extends Component {
                                                                 alignItems: 'center',
                                                                 marginBottom: convertX(16),
                                                                 borderWidth: convertX(3),
-                                                                borderColor: isWhite ? '#00699b' : '#FDDA24',
+                                                                borderColor: getLang('dsc_version') == 'maxi' ? isWhite ? '#00699b' : '#FDDA24' : '#FDDA24',
                                                             } : {
                                                                 width: convertX(56),
                                                                 height: convertX(56),
@@ -183,7 +184,7 @@ export default class Index extends Component {
                                                             alignItems: 'center',
                                                             marginBottom: convertX(16),
                                                             borderWidth: convertX(3),
-                                                            borderColor: isWhite ? '#00699b' : '#FDDA24',
+                                                            borderColor: getLang('dsc_version') == 'maxi' ? isWhite ? '#00699b' : '#FDDA24' : '#FDDA24',
                                                         } :
                                                             {
                                                                 width: convertX(56),

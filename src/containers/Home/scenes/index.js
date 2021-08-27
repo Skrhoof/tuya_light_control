@@ -170,7 +170,7 @@ class Index extends Component {
                                 putDeviceData({
                                     scene_idx: 'scene_2',
                                 })
-                               // this.setState({ selectedScene: 2 })
+                                // this.setState({ selectedScene: 2 })
                             }}>
                             <Image source={icon2} style={styles.sceneIcon} />
                         </TouchableOpacity>

@@ -180,6 +180,8 @@ class Index extends Component {
     });
   };
 
+  // componentWillMount(){}
+
   componentDidMount() {
     const { onSaveHome, dpState } = this.props;
     const { song, colour_data, work_mode, scene, temp_value, type } = dpState;

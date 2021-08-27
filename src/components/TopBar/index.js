@@ -7,6 +7,9 @@ import { convertX, goBack, getLang } from '../../utils';
 import arrowIcon from '../../res/arrow.png';
 import LogoIcon from '../../res/Maxi-Cosi_White.png';
 import LogoLightIcon from '../../res/Maxi-Cosi_Dark.png';
+
+import LogoIconsf1 from '../../res/Safety1st_Logo_White.png';
+import LogoLightIconsf1 from '../../res/Safety1st_Logo_yellow.png';
 import settingIcon from '../../res/Settings.png';
 import subtractIcon from '../../res/Subtract.png';
 const { ColorUtils } = Utils;
@@ -71,7 +74,7 @@ class TopBar extends Component {
               </TouchableOpacity>
             </View>
             <Image
-              source={isWhite ? LogoLightIcon : LogoIcon}
+              source={getLang('dsc_version') == 'maxi' ? isWhite ? LogoLightIcon : LogoIcon : isWhite ? LogoLightIconsf1 : LogoIconsf1}
               style={{ width: convertX(110), height: convertX(34) }}
             />
             <View style={{ flexDirection: 'row', width: convertX(70) }}>

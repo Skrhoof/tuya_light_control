@@ -33,7 +33,7 @@ class Index extends Component {
             ],
             work_mode: '1',
             isWhite: true,
-            brightValue: bright_value
+            brightValue: 800
         };
     }
 
@@ -255,7 +255,7 @@ class Index extends Component {
                                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', width: convertX(343) }}>
                                     <Image source={isWhite ? light1 : light3} style={{ width: convertX(20), height: convertX(20) }} />
                                     <ColorTempSlider2
-                                        value={bright_value}
+                                        value={brightValue}
                                         min={10}
                                         max={1000}
                                         // onChange={this.handleWto}
