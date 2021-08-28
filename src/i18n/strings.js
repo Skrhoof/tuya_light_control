@@ -76,7 +76,7 @@ module.exports = {
     dsc_delete: 'delete',
     dsc_all_delete: 'Delete all',
     dsc_baocun_tishi: 'Custom scenes cannot be added when lights and music are turned off',
-    dsc_version:'maxi'
+    dsc_version:'sf1'
   },
   /**
    * 字段key格式：与DP点相关的用dp开头(dp_key),与dp无关用dsc开头(dsc_key)

@@ -284,7 +284,7 @@ class Index extends Component {
                     style={{
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: Strings.getLang('dsc_version') == 'maxi' ? '#1875A8' : '#DFEAF4',
+                        backgroundColor: Strings.getLang('dsc_version') == 'maxi' ? '#1875A8' : '#FDDA24',
                         borderRadius: convertX(24),
                         marginTop: convertX(24),
                         marginLeft: convertX(16),
