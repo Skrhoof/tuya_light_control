@@ -42,6 +42,7 @@ export default class ColorTempSlider extends Component {
     this.dimension = { width: trackWidh, height: trackHeight };
     this.min = min;
     this.max = max;
+    this.lastLeft = 0;
     this.state = {
       left: 0,
       value,
@@ -80,9 +81,9 @@ export default class ColorTempSlider extends Component {
   }
 
   handlePanResponderMove = (evt, gestureState) => {
-    const { moveX } = gestureState;
+    const { moveX, dx } = gestureState;
     const halfThumbWidth = this.thumbWidh / 2;
-    let newLeft = moveX - halfThumbWidth;
+    let newLeft = this.lastLeft + dx;
     if (newLeft < this.trackX) {
       newLeft = this.trackX;
     }
@@ -117,12 +118,12 @@ export default class ColorTempSlider extends Component {
   };
 
   handlePanResponderRelease = (evt, gestureState) => {
-    const { moveX } = gestureState;
-    if (moveX === 0) {
+    const { moveX, dx } = gestureState;
+    if (dx === 0) {
       return
     } else {
       const halfThumbWidth = this.thumbWidh / 2;
-      let newLeft = moveX - halfThumbWidth;
+      let newLeft = this.lastLeft + dx;
       if (newLeft < this.trackX) {
         newLeft = this.trackX;
       }
@@ -177,6 +178,7 @@ export default class ColorTempSlider extends Component {
         l: 100 - (100 - 90) * percent2,
       };
     }
+    this.lastLeft = newLeft;
     this.setState({
       left: newLeft,
       hsl,

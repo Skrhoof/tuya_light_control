@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, NativeModules } from '
 import { connect } from 'react-redux';
 import { Dialog, Utils, IconFont, Popup, Toast } from 'tuya-panel-kit';
 import Strings from '../../../../i18n';
-import { convertX, goBack, putDeviceData, convertRadix, saveDeviceCloudData } from '../../../../utils';
+import { convertX, goBack, putDeviceData, convertRadix, saveDeviceCloudData, getLang } from '../../../../utils';
 import CustomLight from '../../light/customLight';
 import CustomSounds from '../../sounds/customSounds';
 import { combineScene, isEmpty } from '../utils';
@@ -421,10 +421,10 @@ class Addscenes extends Component {
                 <TouchableOpacity
                     style={{
                         borderWidth: convertX(1),
-                        borderColor: isSave ? '#00699b' : '#C2C6D4',
+                        borderColor: Strings.getLang('dsc_version')=='maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: isSave ? '#00699b' : '#C2C6D4',
+                        backgroundColor: Strings.getLang('dsc_version')=='maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
                         borderRadius: convertX(24),
                         marginTop: convertX(24),
                         marginLeft: convertX(16),

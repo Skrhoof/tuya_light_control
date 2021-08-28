@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-    View, StyleSheet, Text, TouchableOpacity, NativeModules,DeviceEventEmitter
+    View, StyleSheet, Text, TouchableOpacity, NativeModules, DeviceEventEmitter
 } from 'react-native';
 import { Popup, Utils } from 'tuya-panel-kit';
 import { connect } from 'react-redux';
@@ -78,7 +78,7 @@ class Index extends Component {
         const second = convertRadix(timer.substring(6, 8), 16, 10, 2);
         // console.log("内部倒计时",timer,prevProps.dpState.timer);
         if (timer !== prevProps.dpState.timer) {
-           
+
             if (timer == '00000000') {
                 this.setState({
                     listValue: '00',
@@ -205,7 +205,7 @@ class Index extends Component {
             saveDeviceCloudData('countDown', { countDown: resTime });
             putDeviceData({ timer: `${listValue}${convertRadix(hour, 10, 16, 2)}${convertRadix(min, 10, 16, 2)}${second}`, });
             // console.log("Onstart DeviceEventEmitter");
-            DeviceEventEmitter.emit("newTimer",`${listValue}${convertRadix(hour, 10, 16, 2)}${convertRadix(min, 10, 16, 2)}${second}`);
+            DeviceEventEmitter.emit("newTimer", `${listValue}${convertRadix(hour, 10, 16, 2)}${convertRadix(min, 10, 16, 2)}${second}`);
             goBack();
         } else {
             putDeviceData({
@@ -284,7 +284,7 @@ class Index extends Component {
                     style={{
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: '#FDDA24',
+                        backgroundColor: Strings.getLang('dsc_version') == 'maxi' ? '#1875A8' : '#DFEAF4',
                         borderRadius: convertX(24),
                         marginTop: convertX(24),
                         marginLeft: convertX(16),
@@ -295,7 +295,7 @@ class Index extends Component {
                 >
                     <Text style={{
                         fontSize: convertX(16),
-                        color: '#2D385F',
+                        color: Strings.getLang('dsc_version') == 'maxi' ? '#FFFFFF' : '#2D385F',
                     }}>
                         {timer === '00000000' || resCloud === 0 ? Strings.getLang('dsc_start') : Strings.getLang('dsc_cancel')}
                     </Text>
