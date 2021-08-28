@@ -149,7 +149,7 @@ class Addscenes extends Component {
                                 style={{
                                     width: convertX(343),
                                     height: convertX(48),
-                                    backgroundColor: '#FDDA24',
+                                    backgroundColor: Strings.getLang('dsc_version') == 'maxi' ? '#00699b' : '#FDDA24',
                                     borderRadius: convertX(24),
                                     marginTop: convertX(24),
                                     marginLeft: convertX(16),
@@ -421,10 +421,10 @@ class Addscenes extends Component {
                 <TouchableOpacity
                     style={{
                         borderWidth: convertX(1),
-                        borderColor: Strings.getLang('dsc_version')=='maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
+                        borderColor: Strings.getLang('dsc_version') == 'maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
                         width: convertX(343),
                         height: convertX(48),
-                        backgroundColor: Strings.getLang('dsc_version')=='maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
+                        backgroundColor: Strings.getLang('dsc_version') == 'maxi' ? isSave ? '#00699b' : '#C2C6D4' : isSave ? '#FDDA24' : '#C2C6D4',
                         borderRadius: convertX(24),
                         marginTop: convertX(24),
                         marginLeft: convertX(16),

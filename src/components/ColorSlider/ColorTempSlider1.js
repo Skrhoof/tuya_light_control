@@ -166,7 +166,7 @@ export default class ColorTempSlider extends Component {
   };
 
   rgb2Percent = value => {
-    const percent = value / (this.max - this.min);
+    const percent = (value-this.min) / (this.max - this.min);
     const newLeft = this.trackX + percent * (this.trackWidh - this.thumbWidh);
     const percent100 = percent * 100;
     let hsl;
