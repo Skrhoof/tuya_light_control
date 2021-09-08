@@ -27,6 +27,7 @@ class Index extends Component {
         DeviceEventEmitter.addListener("newTimer", (param) => {
             const timer = param;
             if (timer !== undefined) {
+                //console.log(timer);
                 const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
                 const min = convertRadix(timer.substring(4, 6), 16, 10, 2);
                 const setTime = (parseInt(hour) * 3600 + parseInt(min) * 60) * 1000;
@@ -116,7 +117,10 @@ class Index extends Component {
             }
         }
     }
-    componentWillUnmount() { DeviceEventEmitter.removeAllListeners() }
+    componentWillUnmount() {
+        DeviceEventEmitter.removeAllListeners();
+        clearInterval(this.timer1);
+    }
     // 将剩余时间的时间戳转成 时：分：秒
     handleCloudTime = countDown => {
         if (typeof countDown === 'number' && countDown >= 0 && !isNaN(countDown)) {

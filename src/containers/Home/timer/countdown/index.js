@@ -206,7 +206,7 @@ class Index extends Component {
             putDeviceData({ timer: `${listValue}${convertRadix(hour, 10, 16, 2)}${convertRadix(min, 10, 16, 2)}${second}`, });
             // console.log("Onstart DeviceEventEmitter");
             DeviceEventEmitter.emit("newTimer", `${listValue}${convertRadix(hour, 10, 16, 2)}${convertRadix(min, 10, 16, 2)}${second}`);
-            goBack();
+            setTimeout(goBack, 800);
         } else {
             putDeviceData({
                 timer: '00000000',
@@ -258,7 +258,7 @@ class Index extends Component {
                         </Text>
                     </View>
                 }
-                <TouchableOpacity style={{
+                <View style={{
                     width: convertX(343),
                     height: convertX(62),
                     borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
@@ -266,7 +266,7 @@ class Index extends Component {
                     borderTopColor: '#DFEAF4',
                     borderTopWidth: convertX(1),
                     marginLeft: convertX(16),
-                }} onPress={() => this.timerend()}>
+                }} >
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: convertX(20) }}>
                         <Text
                             style={{
@@ -279,7 +279,7 @@ class Index extends Component {
                             right: convertX(12)
                         }}>{this.state.listValue === '00' ? Strings.getLang('dsc_off') : Strings.getLang('dsc_on')}</Text>
                     </View>
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity
                     style={{
                         width: convertX(343),
