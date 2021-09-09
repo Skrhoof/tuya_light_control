@@ -119,35 +119,35 @@ class Index extends Component {
         clearInterval(this.timer2);
     }
 
-    timerend = () => {
-        const { isWhite } = this.state;
-        Popup.list({
-            type: "radio",
-            dataSource: [
-                {
-                    key: "1",
-                    title: Strings.getLang('dsc_off'),
-                    value: "00",
-                },
-                {
-                    key: "2",
-                    title: Strings.getLang('dsc_on'),
-                    value: "01",
-                },
-            ],
-            title: Strings.getLang('dsc_Timer'),
-            cancelText: Strings.getLang('dsc_cancel'),
-            confirmText: Strings.getLang('dsc_confirm'),
-            value: this.state.listValue,
-            onMaskPress: ({ close }) => {
-                close();
-            },
-            onConfirm: (value, { close }) => {
-                this.setState({ listValue: value });
-                close();
-            },
-        });
-    }
+    // timerend = () => {
+    //     const { isWhite } = this.state;
+    //     Popup.list({
+    //         type: "radio",
+    //         dataSource: [
+    //             {
+    //                 key: "1",
+    //                 title: Strings.getLang('dsc_off'),
+    //                 value: "00",
+    //             },
+    //             {
+    //                 key: "2",
+    //                 title: Strings.getLang('dsc_on'),
+    //                 value: "01",
+    //             },
+    //         ],
+    //         title: Strings.getLang('dsc_Timer'),
+    //         cancelText: Strings.getLang('dsc_cancel'),
+    //         confirmText: Strings.getLang('dsc_confirm'),
+    //         value: this.state.listValue,
+    //         onMaskPress: ({ close }) => {
+    //             close();
+    //         },
+    //         onConfirm: (value, { close }) => {
+    //             this.setState({ listValue: value });
+    //             close();
+    //         },
+    //     });
+    // }
 
     _handleChange = type => value => {
         switch (type) {
@@ -219,7 +219,7 @@ class Index extends Component {
 
     render() {
         const { dpState } = this.props;
-        const { timer } = dpState;
+        const { timer, power_switch } = dpState;
         const { hour, min, second, listValue, isWhite, finalTime, resCloud } = this.state;
         return (
             <View style={[
@@ -277,7 +277,7 @@ class Index extends Component {
                             color: isWhite ? '#2D365F' : '#fff',
                             fontSize: convertX(13),
                             right: convertX(12)
-                        }}>{this.state.listValue === '00' ? Strings.getLang('dsc_off') : Strings.getLang('dsc_on')}</Text>
+                        }}>{power_switch ? Strings.getLang('dsc_off') : Strings.getLang('dsc_on')}</Text>
                     </View>
                 </View>
                 <TouchableOpacity
