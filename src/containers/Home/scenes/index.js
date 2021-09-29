@@ -19,7 +19,7 @@ import jt_xia from '../../../assets/img/jt_xia.png';
 import Strings from '../../../i18n';
 import { parseScene, combineScene } from './utils';
 import { MusicMap } from '../sounds/utils';
-import { putDeviceData, convertRadix } from '../../../utils';
+import { putDeviceData, convertRadix, getDeviceCloudData } from '../../../utils';
 import strings from '../../../i18n/strings';
 const { ColorUtils } = Utils;
 const Color = ColorUtils.color;
@@ -30,7 +30,11 @@ class Index extends Component {
         this.state = {
             collapsed: false, //折叠
             delete: false,
-            selectedScene: 0
+            selectedScene: 0,
+            text4: '',
+            text5: '',
+            text6: '',
+            text7: '',
         }
     }
     tapBtn = () => {
@@ -91,7 +95,8 @@ class Index extends Component {
 
     componentDidUpdate(prevProps) {
         const { dpState: prevDPState } = prevProps;
-        const { dpState, onSaveHome } = this.props;
+        const { dpState, onSaveHome, home } = this.props;
+        const { customList } = home;
         const { scene } = dpState;
         if (dpState.scene !== prevDPState.scene) {
             const arrlist = scene.padEnd(136, 'f');
@@ -99,6 +104,34 @@ class Index extends Component {
             onSaveHome({
                 customList: [...arr],
             });
+
+        }
+        if (customList !== [] && customList !== prevProps.home.customList) {
+            // console.log(customList);
+            getDeviceCloudData('a4').then(res => {
+                console.log(res.name)
+                if (typeof res.name !== 'undefined') {
+                    this.setState({ text4: res.name })
+                }
+            })
+            getDeviceCloudData('a5').then(res => {
+                 console.log(res.name)
+                if (typeof res.name !== 'undefined') {
+                    this.setState({ text5: res.name })
+                }
+            })
+            getDeviceCloudData('a6').then(res => {
+                console.log(res.name)
+                if (typeof res.name !== 'undefined') {
+                    this.setState({ text6: res.name })
+                }
+            })
+            getDeviceCloudData('a7').then(res => {
+                console.log(res.name)
+                if (typeof res.name !== 'undefined') {
+                    this.setState({ text7: res.name })
+                }
+            })
         }
     }
 
@@ -137,7 +170,9 @@ class Index extends Component {
     render() {
         const { home, isWhite, dpState } = this.props;
         const { customList } = home;
-        const { selectedScene } = this.state;
+        //customList[0].text = text;
+        console.log(customList);
+        const { selectedScene, text7, text4, text5, text6 } = this.state;
         return (
             <View style={{
                 minHeight: convertX(62),
@@ -353,7 +388,7 @@ class Index extends Component {
                                                         fontSize: convertX(14),
                                                         marginTop: convertX(12),
                                                         color: isWhite ? '#2D385F' : '#fff',
-                                                    }}>{item.text}
+                                                    }}>{item.CustomScene === '04' ? text4 : item.CustomScene === '05' ? text5 : item.CustomScene === '06' ? text6 : text7}
                                                     </Text>
                                                 </View>
                                         )
