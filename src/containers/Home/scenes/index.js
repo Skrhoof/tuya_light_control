@@ -115,7 +115,7 @@ class Index extends Component {
                 }
             })
             getDeviceCloudData('a5').then(res => {
-                 console.log(res.name)
+                console.log(res.name)
                 if (typeof res.name !== 'undefined') {
                     this.setState({ text5: res.name })
                 }
@@ -187,38 +187,38 @@ class Index extends Component {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(23) }}>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={[styles.sceneView1, selectedScene == 1 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                        <TouchableOpacity style={[styles.sceneView1, selectedScene == 1 ? { borderWidth: convertX(2.5), borderColor: Strings.getLang('dsc_version') == 'sf1' ? '#FDDA24' : '#1875A8' } : null]}
                             onPress={() => {
                                 putDeviceData({
                                     scene_idx: 'scene_1',
                                     // scene: '0002010100f003e8032000000000010332'
                                 });
-                                //this.setState({ selectedScene: 1 })
+                                this.setState({ selectedScene: 1 })
                             }}>
                             <Image source={icon1} style={styles.sceneIcon} />
                         </TouchableOpacity>
 
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={[styles.sceneView2, selectedScene == 2 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                        <TouchableOpacity style={[styles.sceneView2, selectedScene == 2 ? { borderWidth: convertX(2.5), borderColor: Strings.getLang('dsc_version') == 'sf1' ? '#FDDA24' : '#1875A8' } : null]}
                             onPress={() => {
                                 putDeviceData({
                                     scene_idx: 'scene_2',
                                 })
-                                // this.setState({ selectedScene: 2 })
+                                this.setState({ selectedScene: 2 })
                             }}>
                             <Image source={icon2} style={styles.sceneIcon} />
                         </TouchableOpacity>
 
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={[styles.sceneView3, selectedScene == 3 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                        <TouchableOpacity style={[styles.sceneView3, selectedScene == 3 ? { borderWidth: convertX(2.5), borderColor: Strings.getLang('dsc_version') == 'sf1' ? '#FDDA24' : '#1875A8' } : null]}
                             onPress={() => {
                                 putDeviceData({
                                     scene_idx: 'scene_3',
 
                                 })
-                                //this.setState({ selectedScene: 3 })
+                                this.setState({ selectedScene: 3 })
                             }
                             }>
                             <Image source={icon3} style={styles.sceneIcon} />
@@ -226,12 +226,12 @@ class Index extends Component {
 
                     </View>
                     <View style={{ alignItems: 'center' }}>
-                        <TouchableOpacity style={[styles.sceneView4, selectedScene == 4 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null]}
+                        <TouchableOpacity style={[styles.sceneView4, selectedScene == 4 ? { borderWidth: convertX(2.5), borderColor: Strings.getLang('dsc_version') == 'sf1' ? '#FDDA24' : '#1875A8' } : null]}
                             onPress={() => {
                                 putDeviceData({
                                     scene_idx: 'scene_4',
                                 })
-                                //this.setState({ selectedScene: 4 })
+                                this.setState({ selectedScene: 4 })
                             }}>
                             <Image source={icon4} style={styles.sceneIcon} />
                         </TouchableOpacity>
@@ -373,11 +373,11 @@ class Index extends Component {
                                                         borderRadius: convertX(40),
                                                         backgroundColor: item.pattern == '01' ? Color.hsb2hex(...[item.H, item.S, item.V]) : '#FBF1D4',
                                                     },
-                                                    selectedScene == index + 5 ? { borderWidth: convertX(2.5), borderColor: '#1875A8' } : null
+                                                    selectedScene == index + 5 ? { borderWidth: convertX(2.5), borderColor: Strings.getLang('dsc_version') == 'sf1' ? '#FDDA24' : '#1875A8' } : null
                                                     ]}
                                                         onPress={() => {
                                                             this.sceneTo(index)
-                                                            // this.setState({ selectedScene: index + 5 })
+                                                            this.setState({ selectedScene: index + 5 })
                                                         }}
                                                     >
                                                         {item.music &&

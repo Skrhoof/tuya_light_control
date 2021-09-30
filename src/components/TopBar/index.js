@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Platform,NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, goBack, getLang } from '../../utils';
@@ -35,8 +35,15 @@ class TopBar extends Component {
   };
 
   handleBtn = () => {
-    TYNative.jumpTo(getLang('dsc_webUrl'));
+    // TYNative.jumpTo(getLang('dsc_webUrl'));
+    const { devInfo } = this.props;
+    const { devId, name } = devInfo;
+    this.gotoDeviceFaqPage(devId, name);
   };
+
+  gotoDeviceFaqPage(devId, name) {
+    return NativeModules.TYRCTDorelManager.gotoDeviceFaqPage(devId, name);
+  }
 
   render() {
     const { isWhite, isbackground, pattern, H, S, V } = this.props;
