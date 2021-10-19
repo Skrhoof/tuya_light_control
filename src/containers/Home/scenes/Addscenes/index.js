@@ -278,7 +278,7 @@ class Addscenes extends Component {
             placeholder: "",
             onConfirm: (text, { close }) => {
                 saveDeviceCloudData(`a${customList[customIndex].CustomScene}`,  {name:text} );
-                console.log('text',text);
+                // console.log('text',text);
                 customList[customIndex].text = text;
                 onSaveHome({
                     customList: [...customList]

@@ -94,7 +94,7 @@ export default class BottomBar extends Component {
     const { activeIndex, isWhite } = this.state;
     const arr = isWhite ? lightBar : darkBar;
     return (
-      <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+      <View style={{ }}>
         <View style={styles.Container}>
           {arr.map((item, index) => {
             return (

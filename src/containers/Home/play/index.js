@@ -38,8 +38,8 @@ export default class Index extends Component {
                 borderBottomColor: isWhite ? '#DFEAF4' : '#3F4C7A',
                 borderBottomWidth: convertX(1),
             }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(30) }}>
-                    <TouchableOpacity
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginTop: convertX(30),marginHorizontal:convertX(30) }}>
+                    {/* <TouchableOpacity
                         onPress={() => onChangeDp && onChangeDp('cycle')}>
                         <View style={styles.iconBox}>
                             {isWhite ?
@@ -47,7 +47,7 @@ export default class Index extends Component {
                                 <Image source={play_way === 'cycle' ? cycle2 : cycle} style={styles.icon} />
                             }
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     <TouchableOpacity
                         onPress={() => onChangeDp && onChangeDp('prev_song')}>
                         <View style={styles.iconBox}>
@@ -75,7 +75,7 @@ export default class Index extends Component {
                             <Image source={isWhite ? next_song : next_song2} style={styles.icon} />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => onChangeDp && onChangeDp('random')}>
                         <View style={styles.iconBox}>
                             {isWhite ?
@@ -83,7 +83,7 @@ export default class Index extends Component {
                                 <Image source={play_way === 'random' ? random2 : random} style={styles.icon} />
                             }
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
                 <View style={{ marginTop: convertX(20), flexDirection: 'row', alignItems: 'center', justifyContent: "center" }}>
                     <Image source={isWhite ? mute : mute2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />

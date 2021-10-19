@@ -41,6 +41,10 @@ class Index extends Component {
         this.setState({ collapsed: !this.state.collapsed });
     };
 
+    closeCollapsible = () => {
+        this.setState({ collapsed: true });
+    }
+
     unfoldTo = index => {
         const { navigator, onSaveHome, home } = this.props;
         const { customList } = home;
@@ -76,9 +80,10 @@ class Index extends Component {
     }
 
     componentDidMount() {
-        const { onSaveHome, dpState, home } = this.props;
+        const { onSaveHome, dpState, home,onRef } = this.props;
         const { customList } = home;
         const { scene } = dpState;
+        onRef(this);
         if (scene == 0) {
             const arr = parseScene('ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
             onSaveHome({
@@ -109,25 +114,25 @@ class Index extends Component {
         if (customList !== [] && customList !== prevProps.home.customList) {
             // console.log(customList);
             getDeviceCloudData('a4').then(res => {
-                console.log(res.name)
+                // console.log(res.name)
                 if (typeof res.name !== 'undefined') {
                     this.setState({ text4: res.name })
                 }
             })
             getDeviceCloudData('a5').then(res => {
-                console.log(res.name)
+                // console.log(res.name)
                 if (typeof res.name !== 'undefined') {
                     this.setState({ text5: res.name })
                 }
             })
             getDeviceCloudData('a6').then(res => {
-                console.log(res.name)
+                // console.log(res.name)
                 if (typeof res.name !== 'undefined') {
                     this.setState({ text6: res.name })
                 }
             })
             getDeviceCloudData('a7').then(res => {
-                console.log(res.name)
+                // console.log(res.name)
                 if (typeof res.name !== 'undefined') {
                     this.setState({ text7: res.name })
                 }
@@ -171,7 +176,7 @@ class Index extends Component {
         const { home, isWhite, dpState } = this.props;
         const { customList } = home;
         //customList[0].text = text;
-        console.log(customList);
+        // console.log(customList);
         const { selectedScene, text7, text4, text5, text6 } = this.state;
         return (
             <View style={{

@@ -10,7 +10,7 @@ import jt_shang from '../../../assets/img/jt_shang.png';
 import jt_xia from '../../../assets/img/jt_xia.png';
 import music from '../../../assets/img/music.png';
 import music2 from '../../../assets/img/music2.png';
-import { LullabyMap, NaturemusicMap, SleepmusicMap } from './utils';
+import { LullabyMap, NaturemusicMap, SleepmusicMap, MusicMap } from './utils';
 import { getLang } from '../../../utils';
 
 const { convertX } = Utils.RatioUtils;
@@ -24,6 +24,11 @@ export default class Index extends Component {
     tapBtn = () => {
         this.setState({ collapsed: !this.state.collapsed });
     };
+
+    closeCollapsible = () => {
+        this.setState({ collapsed: true });
+    }
+
     render() {
         const {
             onselect,
@@ -47,9 +52,17 @@ export default class Index extends Component {
                             color: isWhite ? '#2D365F' : '#fff',
                         }}>{Strings.getLang('dsc_Sounds')}</Text>
                     {/* <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} /> */}
-                    <TouchableOpacity style={{ marginRight: convertX(20) }} onPress={this.tapBtn}>
-                        <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
-                    </TouchableOpacity>
+                    <View style={{ marginRight: convertX(20), flexDirection: 'row' }}>
+                        <Text style={{
+                            fontSize: convertX(16),
+                            color: isWhite ? '#2D365F' : '#fff',
+                            marginRight: convertX(10),
+                            marginTop: convertX(3)
+                        }}>{MusicMap[selectIndex - 1].text}</Text>
+                        <TouchableOpacity onPress={this.tapBtn}>
+                            <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <Collapsible
                     collapsed={this.state.collapsed}

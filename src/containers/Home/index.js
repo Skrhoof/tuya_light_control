@@ -41,6 +41,15 @@ class Index extends Component {
       roomName: '',
       isslide: true,
     };
+    this.soundRef = null;
+    this.scenesRef = null;
+  }
+
+  setSoundRef = (element) => {
+    this.soundRef = element;
+  }
+  setScenesRef = (element) => {
+    this.scenesRef = element;
   }
 
   handleChange = (tab) => {
@@ -256,6 +265,8 @@ class Index extends Component {
     }
   }
 
+
+
   render() {
     const { dpState, home, devInfo, navigator } = this.props;
     const { child_lock, switch_led, volume, play_pause, bright_value, power_switch, timer, play_way } = dpState;
@@ -309,7 +320,15 @@ class Index extends Component {
               </View> : null
               } */}
               <TouchableOpacity
-                onPress={() => putDeviceData({ power_switch: !power_switch })}>
+                onPress={() => {
+                  putDeviceData({ power_switch: !power_switch });
+                  // console.log(this.scenesRef);
+                  if (!power_switch === false) {
+                    this.soundRef.closeCollapsible();
+                    this.scenesRef.closeCollapsible();
+                    putDeviceData({ switch_led: false });
+                  }
+                }}>
                 <Image
                   source={Switch}
                   style={{
@@ -335,11 +354,19 @@ class Index extends Component {
               text={dpState.song}
               onFinish={() => this.setState({ show: false })}
             />
+            <Timer
+              {...this.props}
+              navigator={navigator}
+              isWhite={isWhite}
+              timer={timer}
+            />
             <Sounds
+              ref={this.setSoundRef}
               onselect={this.onselect}
               selectIndex={selectIndex}
               active={this.state.type}
               handleChange={this.handleChange2}
+              // closeCollapsible={}
               isWhite={isWhite}
             />
             <Light
@@ -357,20 +384,16 @@ class Index extends Component {
               isWhite={isWhite}
             />
             <Scenes
+              onRef={this.setScenesRef}
               {...this.props}
               navigator={navigator}
               isWhite={isWhite}
             />
-            <Timer
-              {...this.props}
-              navigator={navigator}
-              isWhite={isWhite}
-              timer={timer}
-            />
+            
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
               <View style={{ width: convertX(271) }}>
-                <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
-                <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? '#2D365F' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
+                <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? child_lock ? '#2D365F' : '#acafbf' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
+                <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? child_lock ? '#2D365F' : '#acafbf' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
               </View>
               <SwitchButton
                 value={child_lock}
@@ -382,8 +405,8 @@ class Index extends Component {
               />
             </View>
           </View>
-          <BottomBar isWhite={isWhite} />
         </ScrollView>
+        <BottomBar isWhite={isWhite} />
       </View>
     );
   }

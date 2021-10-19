@@ -24,8 +24,11 @@ class Index extends Component {
     }
 
     componentDidMount() {
+        //可能因为初次进入时，未读入timer，事件监听失效
+
         DeviceEventEmitter.addListener("newTimer", (param) => {
             const timer = param;
+            // console.log('timer',timer);
             if (timer !== undefined) {
                 //console.log(timer);
                 const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
@@ -180,7 +183,7 @@ class Index extends Component {
                             fontSize: convertX(13), right: convertX(25),
                             color: isWhite ? '#2D365F' : '#fff',
                         }}>
-                            {(resCloud > 0 && timer !== '00000000') ? `${status}${finalTime}` : null}
+                            {(resCloud > 0 && timer !== '00000000') ? `${status} ${finalTime}` : null}
                         </Text>
                         <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
                     </View>
