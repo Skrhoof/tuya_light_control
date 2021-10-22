@@ -24,8 +24,21 @@ class Index extends Component {
     }
 
     componentDidMount() {
-        //可能因为初次进入时，未读入timer，事件监听失效
-
+        //可能因为初次进入时，读入timer
+        getDeviceCloudData('countDown').then(res => {
+            console.log('初始化云端res', res);
+            const setTime = res.countDown;
+            // 剩余时间
+            const resCloud = setTime - new Date().getTime();
+            if (resCloud <= 0 || isNaN(resCloud)) {
+                this.setState({ resCloud: 0 });
+                clearInterval(this.timer1);
+            } else {
+                this.setState({ resCloud }, () => {
+                    this.handleCloudTime(resCloud);
+                });
+            }
+        })
         DeviceEventEmitter.addListener("newTimer", (param) => {
             const timer = param;
             // console.log('timer',timer);
@@ -54,7 +67,7 @@ class Index extends Component {
                         })
                     }
                 );
-            }
+            }  
         });
     }
 
@@ -81,7 +94,8 @@ class Index extends Component {
         }
         if (timer !== prevProps.dpState.timer) {
             // console.log(timer, prevProps.dpState.timer);
-            if (timer !== undefined) {
+            //初始化的timer为undefined,若不屏蔽会使重启后倒计时重置。
+            if (timer !== undefined && prevProps.dpState.timer !== undefined) {
                 const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
                 const min = convertRadix(timer.substring(4, 6), 16, 10, 2);
                 const setTime = (parseInt(hour) * 3600 + parseInt(min) * 60) * 1000;
@@ -90,6 +104,7 @@ class Index extends Component {
                 saveDeviceCloudData('countDown', { countDown: resTime }).then(
                     () => {
                         // 获取云端存的定时
+                        console.log('更新了云端res222');
                         getDeviceCloudData('countDown').then(res => {
                             const setTime = res.countDown;
                             // 剩余时间
