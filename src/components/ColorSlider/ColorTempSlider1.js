@@ -61,7 +61,10 @@ export default class ColorTempSlider extends Component {
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => { },
+      onPanResponderGrant: (evt, gestureState) => {
+        const { onStopScroll } = this.props;
+        onStopScroll && onStopScroll();
+      },
       onPanResponderMove: this.handlePanResponderMove,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: this.handlePanResponderRelease,
@@ -166,7 +169,7 @@ export default class ColorTempSlider extends Component {
   };
 
   rgb2Percent = value => {
-    const percent = (value-this.min) / (this.max - this.min);
+    const percent = (value - this.min) / (this.max - this.min);
     const newLeft = this.trackX + percent * (this.trackWidh - this.thumbWidh);
     const percent100 = percent * 100;
     let hsl;

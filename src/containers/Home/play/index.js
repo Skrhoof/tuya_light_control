@@ -13,11 +13,11 @@ import random2 from '../../../assets/img/random2.png';
 import random3 from '../../../assets/img/random3.png';
 import next_song from '../../../assets/img/next_song.png';
 import prev_song from '../../../assets/img/prev_song.png';
-import playpause from '../../../assets/img/play_pause.png';
 import mute from '../../../assets/img/Mute.png';
 import voice from '../../../assets/img/voice.png';
 import next_song2 from '../../../assets/img/next_song2.png';
 import prev_song2 from '../../../assets/img/prev_song2.png';
+import playpause from '../../../assets/img/play_pause.png';
 import playpause2 from '../../../assets/img/play_pause2.png';
 import mute2 from '../../../assets/img/Mute2.png';
 import voice2 from '../../../assets/img/voice2.png';
@@ -92,9 +92,9 @@ export default class Index extends Component {
                         maximumValue={100}
                         minimumValue={0}
                         value={volume}
-                        maximumTrackTintColor={isWhite ? "#E5F2E7" : '#2E5288'}
-                        minimumTrackTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
-                        thumbTintColor={isWhite ? "#6E8F73" : '#FFAE9D'}
+                        maximumTrackTintColor={isWhite ? "#FCE5E0" : '#2E5288'}
+                        minimumTrackTintColor={isWhite ? "#E46B52" : '#FFAE9D'}
+                        thumbTintColor={isWhite ? "#E46B52" : '#FFAE9D'}
                         onSlidingComplete={val => overValueChange && overValueChange(val)}
                     />
                     <Image source={isWhite ? voice : voice2} style={{ width: convertX(20), height: convertX(14), marginLeft: convertX(20), marginRight: convertX(9) }} />

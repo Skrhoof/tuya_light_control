@@ -8,6 +8,8 @@ import { SwitchButton, LinearGradient, Toast } from 'tuya-panel-kit';
 import { Rect } from "react-native-svg";
 import styles from './styles';
 import Switch from '../../assets/img/switch.png';
+import Power1 from '../../assets/img/Power_1.png'
+import Power2 from '../../assets/img/Power_2.png'
 import Play from './play';
 import Sounds from './sounds';
 import Light from './light';
@@ -284,7 +286,7 @@ class Index extends Component {
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{devInfo.name}</Text>
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{roomName}</Text>
           </View>
-          <View style={styles.switchstyle}>
+          <View style={[styles.switchstyle, { backgroundColor: isWhite ? '#9F9F9F' : '#212B4C', }]}>
             {dpState.power_switch === false ? null :
               <LinearGradient
                 style={dimension}
@@ -330,7 +332,7 @@ class Index extends Component {
                   }
                 }}>
                 <Image
-                  source={Switch}
+                  source={power_switch ? Power1 : Power2}
                   style={{
                     width: convertX(70),
                     height: convertX(70),
@@ -389,7 +391,7 @@ class Index extends Component {
               navigator={navigator}
               isWhite={isWhite}
             />
-            
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
               <View style={{ width: convertX(271) }}>
                 <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? child_lock ? '#2D365F' : '#acafbf' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>

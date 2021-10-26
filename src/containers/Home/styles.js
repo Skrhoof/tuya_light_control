@@ -12,7 +12,6 @@ export default StyleSheet.create({
     switchstyle: {
         width: convertX(375),
         height: convertX(150),
-        backgroundColor: '#212B4C',
     },
     switchIcon: {
         flexDirection: 'row',

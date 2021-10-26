@@ -140,6 +140,7 @@ export default class Index extends Component {
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
                                             hsb={hsb}
+                                            onStopScroll={onStopScroll && onStopScroll}
                                             containerStyle={{ width: convertX(285) }}
                                         />
                                         <Image source={isWhite ? light2 : light4} style={{ width: convertX(22), height: convertX(22) }} />
@@ -198,6 +199,7 @@ export default class Index extends Component {
                                             // containerStyle={styles.containerStyle}
                                             trackStyle={styles.trackStyle}
                                             thumbStyle={styles.thumbStyle}
+                                            onStopScroll={onStopScroll && onStopScroll}
                                             containerStyle={{ width: convertX(300) }}
                                         />
                                         <Image source={isWhite ? light2 : light4} style={{ width: convertX(23), height: convertX(23) }} />

@@ -56,7 +56,10 @@ export default class ColorTempSlider extends Component {
       onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderGrant: (evt, gestureState) => { },
+      onPanResponderGrant: (evt, gestureState) => {
+        const { onStopScroll } = this.props;
+        onStopScroll && onStopScroll();
+      },
       onPanResponderMove: this.handlePanResponderMove,
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: this.handlePanResponderRelease,
