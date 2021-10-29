@@ -277,11 +277,15 @@ class Index extends Component {
       <View style={[
         { flex: 1, backgroundColor: '#2d385f' },
         isWhite ? { backgroundColor: '#fff' } : null,
-        dpState.power_switch ? null : { opacity: 0.5 }
       ]}
       >
         <TopBar isWhite={isWhite} />
-        <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} scrollEnabled={isslide}>
+        <ScrollView nestedScrollEnabled={true} showsVerticalScrollIndicator={false} scrollEnabled={isslide}
+          style={[
+            { flex: 1, backgroundColor: '#2d385f' },
+            isWhite ? { backgroundColor: '#fff' } : null,
+            power_switch ? null : { opacity: 0.5 }]}
+        >
           <View style={styles.topstyle}>
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{devInfo.name}</Text>
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{roomName}</Text>
@@ -394,8 +398,8 @@ class Index extends Component {
 
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: convertX(20), marginBottom: convertX(50) }}>
               <View style={{ width: convertX(271) }}>
-                <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? child_lock ? '#2D365F' : '#acafbf' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
-                <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? child_lock ? '#2D365F' : '#acafbf' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
+                <Text style={{ fontSize: convertX(16), left: convertX(20), color: isWhite ? power_switch ? child_lock ? '#2D365F' : '#acafbf' : '#2D365F' : '#fff', }}>{Strings.getLang('dp_child_lock')}</Text>
+                <Text style={{ fontSize: convertX(14), left: convertX(20), color: isWhite ? power_switch ? child_lock ? '#2D365F' : '#acafbf' : '#2D365F' : '#fff', marginTop: convertX(4) }}>{Strings.getLang('dsc_child_tishi')}</Text>
               </View>
               <SwitchButton
                 value={child_lock}
