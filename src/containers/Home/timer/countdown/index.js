@@ -29,7 +29,7 @@ class Index extends Component {
 
     componentDidMount() {
         const { dpState } = this.props;
-        const { timer } = dpState;
+        let { timer } = dpState;
         // 获取云端存的定时
         getDeviceCloudData('countDown').then(res => {
             const setTime = res.countDown;
@@ -52,6 +52,11 @@ class Index extends Component {
         const hour = convertRadix(timer.substring(2, 4), 16, 10, 2);
         const min = convertRadix(timer.substring(4, 6), 16, 10, 2);
         const second = convertRadix(timer.substring(6, 8), 16, 10, 2);
+        //初始化timer
+        if (timer == '') {
+            timer = '00000000'
+        }
+        // console.log(timer);
         if (timer == '00000000') {
             this.setState({
                 listValue: '00',
