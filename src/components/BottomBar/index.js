@@ -1,6 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, StyleSheet, NativeModules } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, NativeModules, Platform } from 'react-native';
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, getLang } from '../../utils';
@@ -90,7 +90,8 @@ export default class BottomBar extends Component {
       if (typeof value === 'undefined') {
         this.queryStatus();
       } else {
-        this.setState({ redStatus: value });
+        const status = Platform.OS === 'ios' ? value : value === true ? 1 : 0;
+        this.setState({ redStatus: status });
       }
     });
   }
@@ -140,7 +141,8 @@ export default class BottomBar extends Component {
       queryStateValue(params, value => {
         // console.log(value);
         if (value !== undefined) {
-          this.setState({ redStatus: Object.values(value)[0] });
+          const status = Platform.OS === 'ios' ? Object.values(value)[0] : Object.values(value)[0] === true ? 1 : 0;
+          this.setState({ redStatus: status });
         }
       });
     });
@@ -173,19 +175,19 @@ export default class BottomBar extends Component {
                       : [styles.itemBox, activeIndex === index ? styles.selectedBox : null]
                   }
                 >
-                  {index === 3 && redStatus === 1 ? 
-                    <View 
-                      style={{
-                        width: 6,
-                        height: 6,
-                        borderRadius: 3,
-                        backgroundColor: 'red',
-                        position: 'absolute',
-                        right: (viewWidth / 8 - convertX(14)),
-                        top: convertX(10),
-                      }}
-                    /> : 
-                    null}
+                  {index === 3 && redStatus === 1 ?
+                    <View
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: 3,
+                        backgroundColor: 'red',
+                        position: 'absolute',
+                        right: (viewWidth / 8 - convertX(14)),
+                        top: convertX(10),
+                      }}
+                    /> :
+                    null}
                   <Image
                     source={activeIndex === index ? item.onIcon : item.offIcon}
                     style={{ width: convertX(24), height: convertX(24) }}
