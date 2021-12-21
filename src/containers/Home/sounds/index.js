@@ -58,7 +58,7 @@ export default class Index extends Component {
                             color: isWhite ? '#2D365F' : '#fff',
                             marginRight: convertX(10),
                             marginTop: convertX(3)
-                        }}>{MusicMap[selectIndex - 1].text}</Text>
+                        }}>{MusicMap[selectIndex - 1].text + ' ' + MusicMap[selectIndex - 1].text2}</Text>
                         <TouchableOpacity onPress={this.tapBtn}>
                             <Image source={this.state.collapsed ? jt_xia : jt_shang} style={{ height: convertX(25), width: convertX(18) }} />
                         </TouchableOpacity>

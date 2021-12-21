@@ -85,15 +85,20 @@ export default class BottomBar extends Component {
   componentDidMount() {
     const { isWhite } = this.props;
     this.setState({ isWhite: !isWhite });
-    this.queryStatus();
-    this.listener = RCTDeviceEventEmitter.addListener('stateSharingValueChanged', value => {
-      if (typeof value === 'undefined') {
-        this.queryStatus();
-      } else {
-        const status = Platform.OS === 'ios' ? value : value === true ? 1 : 0;
-        this.setState({ redStatus: status });
-      }
-    });
+    if (queryStateValue && RCTDeviceEventEmitter){
+      console.log('11111112345');
+    }
+    if (queryStateValue && RCTDeviceEventEmitter) {
+      this.queryStatus();
+      this.listener = RCTDeviceEventEmitter.addListener('stateSharingValueChanged', value => {
+        if (typeof value === 'undefined') {
+          this.queryStatus();
+        } else {
+          const status = Platform.OS === 'ios' ? value : value === true ? 1 : 0;
+          this.setState({ redStatus: status });
+        }
+      });
+    }
   }
 
   componentWillUnmount() {

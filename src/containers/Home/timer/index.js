@@ -67,7 +67,7 @@ class Index extends Component {
                         })
                     }
                 );
-            }  
+            }
         });
     }
 
@@ -178,7 +178,7 @@ class Index extends Component {
     render() {
         const { finalTime, resCloud, switch_led, timer } = this.state;
         const { isWhite } = this.props;
-        const status = switch_led ? Strings.getLang('dsc_off_in') : Strings.getLang('dsc_on_in');
+        // const status = switch_led ? Strings.getLang('dsc_off_in') : Strings.getLang('dsc_on_in');
         return (
             <TouchableOpacity style={{
                 height: convertX(62),
@@ -198,7 +198,7 @@ class Index extends Component {
                             fontSize: convertX(13), right: convertX(25),
                             color: isWhite ? '#2D365F' : '#fff',
                         }}>
-                            {(resCloud > 0 && timer !== '00000000') ? `${status} ${finalTime}` : null}
+                            {(resCloud > 0 && timer !== '00000000') ? `${Strings.getLang('dsc_off_in')} ${finalTime}` : null}
                         </Text>
                         <IconFont name="arrow" size={convertX(14)} color="#CDCDCD" style={{ right: convertX(20) }} />
                     </View>

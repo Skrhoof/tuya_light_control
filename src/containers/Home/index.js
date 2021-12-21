@@ -316,7 +316,7 @@ class Index extends Component {
                       height: convertX(45)
                     }}
                   />
-                  <Text style={{ color: '#fff', top: convertX(16) }}>{MusicMap[selectIndex - 1].text}</Text>
+                  <Text style={{ color: '#fff', top: convertX(16) }}>{MusicMap[selectIndex - 1].text + ' ' + MusicMap[selectIndex - 1].text2}</Text>
                 </View>
               )}
               {/* {dpState.timer ? <View style={styles.timerstyle}>
