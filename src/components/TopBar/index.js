@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, Platform,NativeModules } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Platform, NativeModules } from 'react-native';
 import { connect } from 'react-redux';
 import { TYSdk, Utils } from 'tuya-panel-kit';
 import { convertX, goBack, getLang } from '../../utils';
@@ -38,7 +38,7 @@ class TopBar extends Component {
     // TYNative.jumpTo(getLang('dsc_webUrl'));
     const { devInfo } = this.props;
     const { devId, name } = devInfo;
-    this.gotoDeviceFaqPage(devId, name);
+    // this.gotoDeviceFaqPage(devId, name);
   };
 
   gotoDeviceFaqPage(devId, name) {
@@ -80,10 +80,11 @@ class TopBar extends Component {
                 <Image source={arrowIcon} style={{ width: convertX(20), height: convertX(20) }} />
               </TouchableOpacity>
             </View>
-            <Image
+            {/* <Image
               source={getLang('dsc_version') == 'maxi' ? isWhite ? LogoLightIcon : LogoIcon : isWhite ? LogoLightIconsf1 : LogoIconsf1}
               style={{ width: convertX(110), height: convertX(34) }}
-            />
+            /> */}
+            <Text style={{ height: convertX(34), fontSize: 20 }}>智能灯控系统</Text>
             <View style={{ flexDirection: 'row', width: convertX(70) }}>
               <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>
                 <Image

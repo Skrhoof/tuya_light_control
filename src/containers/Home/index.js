@@ -17,7 +17,7 @@ import Scenes from './scenes';
 import Timer from './timer';
 import Strings from '../../i18n';
 import { MusicMap } from '../Home/sounds/utils';
-import BottomBar from '../../components/BottomBar';
+// import BottomBar from '../../components/BottomBar';
 import TopBar from '../../components/TopBar';
 const DorelManager = NativeModules.TYRCTDorelManager;
 const dimension = { width: convertX(375), height: convertX(150) };
@@ -286,10 +286,10 @@ class Index extends Component {
             isWhite ? { backgroundColor: '#fff' } : null,
             power_switch ? null : { opacity: 0.5 }]}
         >
-          <View style={styles.topstyle}>
+          {/* <View style={styles.topstyle}>
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{devInfo.name}</Text>
             <Text style={{ color: isWhite ? '#2D365F' : '#fff' }}>{roomName}</Text>
-          </View>
+          </View> */}
           <View style={[styles.switchstyle, { backgroundColor: isWhite ? '#9F9F9F' : '#212B4C', }]}>
             {dpState.power_switch === false ? null :
               <LinearGradient
@@ -412,7 +412,7 @@ class Index extends Component {
             </View>
           </View>
         </ScrollView>
-        <BottomBar isWhite={isWhite} />
+        {/* <BottomBar isWhite={isWhite} /> */}
       </View>
     );
   }
