@@ -84,7 +84,7 @@ class TopBar extends Component {
               source={getLang('dsc_version') == 'maxi' ? isWhite ? LogoLightIcon : LogoIcon : isWhite ? LogoLightIconsf1 : LogoIconsf1}
               style={{ width: convertX(110), height: convertX(34) }}
             /> */}
-            <Text style={{ height: convertX(34), fontSize: 20 }}>智能灯控系统</Text>
+            <Text style={{ height: convertX(34), fontSize: 20, color: isWhite ? 'rgb(30,60,100)' : 'white' }}>智能灯控系统</Text>
             <View style={{ flexDirection: 'row', width: convertX(70) }}>
               <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>
                 <Image

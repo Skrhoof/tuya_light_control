@@ -9,6 +9,7 @@ import Home from './containers/Home';
 import Countdown from './containers/Home/timer/countdown';
 import Addscenes from './containers/Home/scenes/Addscenes';
 import Preview from './containers/Home/scenes/Preview';
+import Around from './containers/Home/around'
 
 console.disableYellowBox = true;
 const DorelManager = NativeModules.TYRCTDorelManager;
@@ -60,7 +61,11 @@ class MainLayout extends NavigatorLayout {
           hideTopbar: true,
         };
         break;
-
+      case 'Around':
+        params = {
+          hideTopbar: true,
+        };
+        break;
       default:
         break;
     }
@@ -92,7 +97,7 @@ class MainLayout extends NavigatorLayout {
     if (this.prevDevId === undefined || this.prevDevId !== devInfo.devId) {
       if (DorelManager && DorelManager.getRoomName) {
         DorelManager.getRoomName(devInfo.devId, res => {
-          if (typeof res === 'string' && res.length !== 0 ) {
+          if (typeof res === 'string' && res.length !== 0) {
             this.setState({ roomName: res })
           }
         });
@@ -144,6 +149,19 @@ class MainLayout extends NavigatorLayout {
       case 'Preview':
         component = (
           <Preview
+            devInfo={devInfo}
+            // dpData={{ state: dpState, schema, uiConfig }}
+            dpState={dpState}
+            schema={schema}
+            uiConfig={uiConfig}
+            dispatch={dispatch}
+            navigator={navigator}
+          />
+        );
+        break;
+      case 'Around':
+        component = (
+          <Around
             devInfo={devInfo}
             // dpData={{ state: dpState, schema, uiConfig }}
             dpState={dpState}

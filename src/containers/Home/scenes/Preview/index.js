@@ -115,14 +115,6 @@ class Index extends Component {
                         iconTintColor={'#464646'}
                         ringBorderColor={'#FFF'}
                         musicSmImg={MusicMap[music - 1].icon}
-                    // musicBgImgStyle={{
-                    //     justifyContent: 'center',
-                    //     width: convertX(100),
-                    //     height: convertX(100),
-                    //     alignItems: 'center',
-                    //     backgroundColor: '#FFFFFF',
-                    //     borderRadius: convertX(60),
-                    // }}
                     />
                     <Text style={{ fontSize: convertX(44), color: '#fff' }}>{this.state.timer}</Text>
                 </View>

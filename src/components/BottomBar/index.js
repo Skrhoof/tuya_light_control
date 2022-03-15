@@ -23,8 +23,8 @@ import settings_off_light from '../../res/settings_off_light.png';
 
 const { viewWidth } = Utils.RatioUtils;
 // const DorelManager = NativeModules.TYRCTDorelManager;
-const { TYRCTStateSharingManager, TYRCTDorelManager: DorelManager } = NativeModules;
-const { queryStateValue } = TYRCTStateSharingManager;
+// const { TYRCTStateSharingManager, TYRCTDorelManager: DorelManager } = NativeModules;
+// const { queryStateValue } = TYRCTStateSharingManager;
 
 const darkBar = [
   {
@@ -33,7 +33,7 @@ const darkBar = [
     offIcon: home_off_dark,
   },
   {
-    text: getLang('dsc_monitor'),
+    text: '周边',
     onIcon: monitor_on_dark,
     offIcon: monitor_off_dark,
   },
@@ -56,7 +56,7 @@ const lightBar = [
     offIcon: home_off_light,
   },
   {
-    text: getLang('dsc_monitor'),
+    text: '周边',
     onIcon: monitor_on_light,
     offIcon: monitor_off_light,
   },
@@ -83,82 +83,35 @@ export default class BottomBar extends Component {
   }
 
   componentDidMount() {
-    const { isWhite } = this.props;
+    const { isWhite, navigator } = this.props;
     this.setState({ isWhite: !isWhite });
-    if (queryStateValue && RCTDeviceEventEmitter){
-      console.log('11111112345');
+    const routes = navigator.getCurrentRoutes();
+    const currentRoute = routes.pop();
+    const { index } = currentRoute;
+    console.log(index);
+    if (index) {
+      this.setState({ activeIndex: index })
     }
-    if (queryStateValue && RCTDeviceEventEmitter) {
-      this.queryStatus();
-      this.listener = RCTDeviceEventEmitter.addListener('stateSharingValueChanged', value => {
-        if (typeof value === 'undefined') {
-          this.queryStatus();
-        } else {
-          const status = Platform.OS === 'ios' ? value : value === true ? 1 : 0;
-          this.setState({ redStatus: status });
-        }
-      });
-    }
+
   }
 
-  componentWillUnmount() {
-    this.listener.remove();
-  }
-
-  queryStatus = () => {
-    const ApiUtils = {};
-    const api = function (a, postData, v = '1.0', isJson = true) {
-      return new Promise((resolve, reject) => {
-        TYSdk.native.apiRNRequest(
-          {
-            a,
-            postData,
-            v,
-          },
-          d => {
-            // console.log(`API Success: %c${a}%o`, d, postData);
-            // console.log('ddd:', d)
-            const data = typeof d === 'string' && isJson ? JSON.parse(d) : d;
-            // console.log(`API Success: %c${a}%o`, postData, v, data);
-            resolve(data);
-          },
-          err => {
-            const e = typeof err === 'string' ? JSON.parse(err) : err;
-            // console.log(`API Failed: %c${a}%o`, errStyle, e.message || e.errorMsg || e, postData, v);
-            reject(err);
-          }
-        );
-      });
-    };
-
-    // 获取用户信息
-    ApiUtils.getUserList = (data = {}) => {
-      const apiLink = 'tuya.m.user.info.get';
-      const apiData = data;
-      const apiVersion = '1.0';
-      return api(apiLink, apiData, apiVersion);
-    };
-
-    ApiUtils.getUserList().then(res => {
-      const { id: uid } = res;
-      const key = 'kDefaultMessageTips';
-      const params = `${key}${uid}`;
-      queryStateValue(params, value => {
-        // console.log(value);
-        if (value !== undefined) {
-          const status = Platform.OS === 'ios' ? Object.values(value)[0] : Object.values(value)[0] === true ? 1 : 0;
-          this.setState({ redStatus: status });
-        }
-      });
-    });
-
-  };
 
   handleBtn = index => {
     this.setState({ activeIndex: index });
-    DorelManager.switchTab(index, res => {
-      // console.log(res);
-    });
+    const { navigator } = this.props;
+    console.log(index);
+    switch (index) {
+      case 0:
+        navigator && navigator.push({ id: 'main', index: index });
+        break;
+      case 1:
+        navigator && navigator.push({ id: 'Around', index: index });
+        break;
+
+      default:
+        break;
+    }
+
   };
 
   render() {

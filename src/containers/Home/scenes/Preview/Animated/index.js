@@ -103,7 +103,7 @@ export default class MusicOpen extends Component {
     };
 
     render() {
-        const { iconTintColor, ringBorderColor, musicBgImg, musicBgImgStyle, musicSmImg } = this.props;
+        const {  ringBorderColor, musicSmImg } = this.props;
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <View style={styles.box}>
@@ -131,13 +131,7 @@ export default class MusicOpen extends Component {
                             />
                         );
                     })}
-                    <ImageBackground source={musicBgImg} style={[styles.music, musicBgImgStyle]}>
-                        {/* <IconFont
-                            d={icons[`mic_${this.state.openMike}`]}
-                            size={cx(84)}
-                            color={iconTintColor}
-                            useART={true}
-                        /> */}
+                    <ImageBackground style={styles.music}>
                         <Image source={musicSmImg} style={{ width: cx(99), height: cx(99) }} />
                     </ImageBackground>
                 </View>

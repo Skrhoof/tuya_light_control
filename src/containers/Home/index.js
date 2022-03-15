@@ -17,7 +17,7 @@ import Scenes from './scenes';
 import Timer from './timer';
 import Strings from '../../i18n';
 import { MusicMap } from '../Home/sounds/utils';
-// import BottomBar from '../../components/BottomBar';
+import BottomBar from '../../components/BottomBar';
 import TopBar from '../../components/TopBar';
 const DorelManager = NativeModules.TYRCTDorelManager;
 const dimension = { width: convertX(375), height: convertX(150) };
@@ -412,7 +412,7 @@ class Index extends Component {
             </View>
           </View>
         </ScrollView>
-        {/* <BottomBar isWhite={isWhite} /> */}
+        <BottomBar isWhite={isWhite} navigator={this.props.navigator}/>
       </View>
     );
   }
