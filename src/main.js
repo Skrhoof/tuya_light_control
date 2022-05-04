@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { StatusBar, NativeModules } from 'react-native';
-import { TYSdk, NavigatorLayout } from 'tuya-panel-kit';
+import { TYSdk, NavigatorLayout, GlobalToast } from 'tuya-panel-kit';
 import composeLayout from './composeLayout';
 import configureStore from './redux/configureStore';
 import { formatUiConfig } from './utils';
@@ -9,11 +9,18 @@ import Home from './containers/Home';
 import Countdown from './containers/Home/timer/countdown';
 import Addscenes from './containers/Home/scenes/Addscenes';
 import Preview from './containers/Home/scenes/Preview';
-import Around from './containers/Home/around'
+import Around from './containers/Home/around';
+import Statistics from './containers/Home/statistics'
 
 console.disableYellowBox = true;
 const DorelManager = NativeModules.TYRCTDorelManager;
 export const store = configureStore();
+
+const countConfig = {
+  powerSwitch: -1,
+  lightSwitch: -1,
+  volunmArr: new Array(101).fill(0)
+}
 
 class MainLayout extends NavigatorLayout {
   state = { roomName: '' }
@@ -66,6 +73,11 @@ class MainLayout extends NavigatorLayout {
           hideTopbar: true,
         };
         break;
+      case 'Statistics':
+        params = {
+          hideTopbar: true,
+        };
+        break;
       default:
         break;
     }
@@ -74,6 +86,9 @@ class MainLayout extends NavigatorLayout {
       renderStatusBar: () => <StatusBar barStyle="default" />,
     };
   }
+
+
+
 
   /**
    * @desc
@@ -88,6 +103,32 @@ class MainLayout extends NavigatorLayout {
     let schema = {};
     let uiConfig = {};
     const { dispatch, devInfo, dpState } = this.props;
+
+    // if (this.prevDp !== dpState) {
+    //   GlobalToast.show({
+    //     text: JSON.stringify({ customize_scene_set: dpState.customize_scene_set }),
+    //     text: test,
+    //     showIcon: false,
+    //     contentStyle: {},
+    //     showPosition: 'bottom',
+    //     onFinish: () => {
+    //       GlobalToast.hide();
+    //     },
+    //   });
+    // }
+    if (this.prevDp && this.prevDp.power_switch !== dpState.power_switch) {
+      countConfig.powerSwitch++;
+    }
+
+    if (this.prevDp && this.prevDp.switch_led !== dpState.switch_led) {
+      countConfig.lightSwitch++;
+    }
+
+    if (this.prevDp && this.prevDp.volume !== dpState.volume) {
+      countConfig.volunmArr[dpState.volume]++;
+    }
+
+    this.prevDp = dpState;
 
     if (!_.isEmpty(devInfo)) {
       schema = devInfo.schema || {};
@@ -169,6 +210,21 @@ class MainLayout extends NavigatorLayout {
             uiConfig={uiConfig}
             dispatch={dispatch}
             navigator={navigator}
+          />
+        );
+        break;
+      case 'Statistics':
+        // case 'main':
+        component = (
+          <Statistics
+            devInfo={devInfo}
+            // dpData={{ state: dpState, schema, uiConfig }}
+            dpState={dpState}
+            schema={schema}
+            uiConfig={uiConfig}
+            dispatch={dispatch}
+            navigator={navigator}
+            countData={countConfig}
           />
         );
         break;

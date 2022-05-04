@@ -85,17 +85,12 @@ class TopBar extends Component {
               style={{ width: convertX(110), height: convertX(34) }}
             /> */}
             <Text style={{ height: convertX(34), fontSize: 20, color: isWhite ? 'rgb(30,60,100)' : 'white' }}>智能灯控系统</Text>
-            <View style={{ flexDirection: 'row', width: convertX(70) }}>
-              <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>
-                <Image
-                  source={settingIcon}
-                  style={{ width: convertX(24), height: convertX(24), marginRight: convertX(14) }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.handleBtn()}>
-                <Image source={subtractIcon} style={{ width: convertX(24), height: convertX(24) }} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity onPress={() => TYNative.showDeviceMenu()}>
+              <Image
+                source={settingIcon}
+                style={{ width: convertX(24), height: convertX(24) }}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </View>

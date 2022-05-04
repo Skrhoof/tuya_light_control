@@ -38,15 +38,15 @@ const darkBar = [
     offIcon: monitor_off_dark,
   },
   {
-    text: getLang('dsc_routines'),
+    text: '统计',
     onIcon: routines_on_dark,
     offIcon: routines_off_dark,
   },
-  {
-    text: getLang('dsc_setting'),
-    onIcon: settings_on_dark,
-    offIcon: settings_off_dark,
-  },
+  // {
+  //   text: getLang('dsc_setting'),
+  //   onIcon: settings_on_dark,
+  //   offIcon: settings_off_dark,
+  // },
 ];
 
 const lightBar = [
@@ -61,15 +61,15 @@ const lightBar = [
     offIcon: monitor_off_light,
   },
   {
-    text: getLang('dsc_routines'),
+    text: '统计',
     onIcon: routines_on_light,
     offIcon: routines_off_light,
   },
-  {
-    text: getLang('dsc_setting'),
-    onIcon: settings_on_light,
-    offIcon: settings_off_light,
-  },
+  // {
+  //   text: getLang('dsc_setting'),
+  //   onIcon: settings_on_light,
+  //   offIcon: settings_off_light,
+  // },
 ];
 
 export default class BottomBar extends Component {
@@ -106,6 +106,9 @@ export default class BottomBar extends Component {
         break;
       case 1:
         navigator && navigator.push({ id: 'Around', index: index });
+        break;
+      case 2:
+        navigator && navigator.push({ id: 'Statistics', index: index });
         break;
 
       default:
@@ -179,7 +182,7 @@ const styles = StyleSheet.create({
   },
   // dark主题边框
   itemBox: {
-    width: viewWidth / 4,
+    width: viewWidth / 3,
     height: convertX(70),
     borderTopColor: '#3f4c7a',
     borderTopWidth: convertX(2),
@@ -188,7 +191,7 @@ const styles = StyleSheet.create({
   },
   // light主题边框
   itemWhiteBox: {
-    width: viewWidth / 4,
+    width: viewWidth / 3,
     height: convertX(70),
     borderTopColor: '#e6eef4',
     borderTopWidth: convertX(2),
