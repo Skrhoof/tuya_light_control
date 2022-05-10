@@ -121,7 +121,6 @@ export default class Index extends Component {
                                                 </View>
                                             }
                                             innerRadius={35}
-                                            // colorPickerImage={color}
                                             hsb={hsb}
                                             onValueChange={onStopScroll && onStopScroll}
                                             onComplete={onCompleteChange && onCompleteChange}

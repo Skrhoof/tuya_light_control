@@ -106,28 +106,37 @@ export default class Statistics extends Component {
         return dayArr
     }
 
-    radomDate = (num) => {
-        return Array(num).fill(1).map(v => Math.floor(Math.random() * (16 - 4)) + 4);
+    radomDate = (num, min, max) => {
+        return Array(num).fill(1).map(v => Math.floor(Math.random() * (max - min)) + min);
     }
 
     render() {
         const { countData } = this.props;
         const { powerSwitch, lightSwitch, volunmArr } = countData;
         const { isWhite, switchBtn, active, volumeBtn, timely } = this.state;
-        let days = [], radomDate = [];
-        days = this.getDayArr(...this.timeForMat(6));
-        // console.log(this.getDayArr(...this.timeForMat(7)), '------days----');
-        radomDate = this.radomDate(7);
+        let days = [], radomDate = [], interval = 0;
+        let startendTime = [];
+        if (timely == 'weekly') {
+            startendTime = this.timeForMat(6)
+            days = this.getDayArr(...startendTime);
+            radomDate = this.radomDate(7, 4, 16);
+        } else {
+            startendTime = this.timeForMat(30)
+            days = this.getDayArr(...startendTime);
+            radomDate = this.radomDate(31, 4, 16);
+            interval = 4
+        }
+
         const option = {
             xAxis: {
-                // data: ['2022-04-27', '2022-04-28', '2022-04-29', '2022-04-30', '2022-05-01', '2022-05-02', '2022-05-03', '2022-05-04'],
                 data: days,
                 axisLabel: {
                     rotate: 45,
-                    interval: 0
+                    interval: interval
                 }
             },
             yAxis: {
+                name: 'h'
             },
             series: [
                 {
@@ -139,8 +148,36 @@ export default class Statistics extends Component {
             title: {
                 text: "光照时间统计",
                 left: "center",
+                subtext: `${startendTime[0]}至${startendTime[1]}`,
                 textStyle: {
                     fontSize: 15
+                },
+                subtextStyle: {
+                    fontSize: 12
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'line',
+                    lineStyle: {
+                        type: 'dashed',
+                        color: '#919191',
+                    },
+                    axis: 'x',
+                    snap: true,
+                    label: {
+                        show: false,
+                    },
+                },
+                showContent: true,
+                confine: true,
+                backgroundColor: '#4A4A4A',
+                borderColor: '#FF5050',
+                borderWidth: 2,
+                transitionDuration: 0,
+                textStyle: {
+                    color: '#fff',
                 },
             },
         }

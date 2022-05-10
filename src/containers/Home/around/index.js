@@ -4,6 +4,7 @@ import axios from 'axios'
 import TopBar from '../../../components/TopBar';
 import BottomBar from '../../../components/BottomBar';
 import { convertX } from '../../../utils';
+import noPhoto from '../../../assets/img/noPhoto.png'
 
 export default class Around extends Component {
 
@@ -53,23 +54,28 @@ export default class Around extends Component {
   }
 
   componentDidMount() {
-    axios.get('https://restapi.amap.com/v3/place/text',
-      {
-        params: {
-          key: '35f9b93e22da80fb9105e71b329ce0f2',
-          keywords: '灯具',
-          city: '杭州',
-          children: 1,
-          offset: 20,
-          page: 1,
-          extensions: 'all'
-        }
-      }).then(response => {
-        console.log(response.data);
-        this.setState({ dataList: response.data.pois });
-      }, error => {
-        console.log(error);
-      })
+    navigator.geolocation.getCurrentPosition((pos) => {
+      const { coords } = pos;
+      // console.log(coords.longitude, coords.latitude);
+      axios.get('https://restapi.amap.com/v3/place/text',
+        {
+          params: {
+            key: '35f9b93e22da80fb9105e71b329ce0f2',
+            keywords: '灯具',
+            location: coords.longitude + ',' + coords.latitude,
+            children: 1,
+            offset: 20,
+            page: 1,
+            extensions: 'all'
+          }
+        }).then(response => {
+          console.log(response.data);
+          this.setState({ dataList: response.data.pois });
+        }, error => {
+          console.log(error);
+        })
+    })
+
   }
 
   render() {
@@ -85,7 +91,10 @@ export default class Around extends Component {
             return (
               <View style={{ padding: convertX(10), flexDirection: 'row', backgroundColor: 'rgba(156, 222, 256,0.5)', marginVertical: convertX(5) }}>
                 <View style={{ flex: 1 }}>
-                  <Image source={{ uri: item.photos[0].url }} style={{ width: convertX(80), height: convertX(80), borderRadius: 10 }} />
+                  <Image source={
+                    item.photos[0] ?
+                      { uri: item.photos[0] && item.photos[0].url } : noPhoto
+                  } style={{ width: convertX(80), height: convertX(80), borderRadius: 10 }} />
                 </View>
                 <View style={{ justifyContent: 'space-between', marginLeft: convertX(20), flex: 4 }}>
                   <Text style={{ fontSize: 19, fontWeight: 'bold' }}>{item.name}</Text>
